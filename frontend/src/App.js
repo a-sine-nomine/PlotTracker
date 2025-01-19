@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import Login from "./Login";
+import Homepage from "./Homepage";
+import { useUser } from "./UserProvider";
 
 function App() {
+  const [roles, setRoles] = useState([]);
+  const user = useUser();
+
+  useEffect(() => {
+    setRoles(getRolesFromJWT());
+  }, [user.jwt]);
+
+  function getRolesFromJWT() {
+    if (user.jwt) {
+      const decodedJwt = jwtDecode(user.jwt);
+      return decodedJwt.authorities;
+    }
+    return [];
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/homepage" element={<Homepage />} />
+    </Routes>
   );
 }
 
