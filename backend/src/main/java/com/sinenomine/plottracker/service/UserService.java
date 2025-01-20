@@ -1,5 +1,6 @@
 package com.sinenomine.plottracker.service;
 
+import com.sinenomine.plottracker.dto.UserDto;
 import com.sinenomine.plottracker.model.Users;
 import com.sinenomine.plottracker.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,12 @@ public class UserService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public Users register(Users user) {
-        user.setPassword(encoder.encode(user.getPassword()));
-        repo.save(user);
-        return user;
+    public Users register(UserDto userDto) {
+        Users newUser = new Users();
+        newUser.setUsername(userDto.getUsername());
+        newUser.setPassword(encoder.encode(userDto.getPassword()));
+        repo.save(newUser);
+        return newUser;
     }
 
     public String verify(Users user) {

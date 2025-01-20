@@ -1,5 +1,6 @@
 package com.sinenomine.plottracker.controller;
 
+import com.sinenomine.plottracker.dto.UserDto;
 import com.sinenomine.plottracker.model.Users;
 import com.sinenomine.plottracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,8 @@ public class UserController {
     private UserService service;
 
     @PostMapping("/api/auth/register")
-    public Users register(@RequestBody Users user) {
-        return service.register(user);
+    public Users register(@RequestBody UserDto userDto) {
+        return service.register(userDto);
 
     }
 
