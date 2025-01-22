@@ -23,20 +23,22 @@ const Login = () => {
       },
       method: "post",
       body: JSON.stringify(reqBody),
+      credentials: "include",
     })
       .then((response) => {
-        if (response.status === 200) return response.text();
-        else if (response.status === 401 || response.status === 403) {
-          setErrorMsg("Invalid username or password");
-        } else {
-          setErrorMsg("Something went wrong, try again later");
-        }
-      })
-      .then((data) => {
-        if (data) {
-          user.setJwt(data);
+        if (response.status === 200) {
+          user.setIsAuthenticated(true);
           navigate("/homepage");
         }
+        else if (response.status === 401 || response.status === 403) {
+          setErrorMsg("Invalid username or password.");
+        } else {
+          setErrorMsg("Something went wrong, try again later.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error during login:", error);
+        setErrorMsg("An error occurred during login.");
       });
   }
 
