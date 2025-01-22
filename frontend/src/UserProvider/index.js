@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState } from "react";
 import Cookies from "js-cookie";
+
 const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-  const [jwt, setJwt] = useState(Cookies.get("jwt"));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const value = { jwt, setJwt };
+  const value = { isAuthenticated, setIsAuthenticated };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
