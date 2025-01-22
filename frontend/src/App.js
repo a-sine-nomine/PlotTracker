@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Login from "./Login";
 import Homepage from "./Homepage";
 import { useUser } from "./UserProvider";
+import PrivateRoute from "./PrivateRoute";
 
 function App() {
   const [roles, setRoles] = useState([]);
@@ -25,7 +25,14 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/homepage" element={<Homepage />} />
+      <Route
+        path="/homepage"
+        element={
+          <PrivateRoute>
+            <Homepage />
+          </PrivateRoute>
+        }
+      />
     </Routes>
   );
 }

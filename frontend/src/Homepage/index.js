@@ -16,31 +16,49 @@ import { useUser } from "../UserProvider";
 
 const Homepage = () => {
   let navigate = useNavigate();
-  const user = useUser();
+  const { isAuthenticated, setIsAuthenticated, setUser } = useUser();
 
   const [stories, setStories] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!user.isAuthenticated) {
-      navigate("/login");
-      return;
-    }
-
-    ajax(`/api/story`, "GET")
-    .then(
-      (response) => {
-        setStories(response.map((story) => ({
-          id: story.id,
-          number: story.number,
-          name: story.name
-        })));
+    const fetchStories = async () => {
+      if (!isAuthenticated) {
+        navigate("/login");
+        return;
       }
-    ).catch((err) => {
-      console.error("Failed to fetch stories:", err);
-      setError("Failed to load stories. Please try again later.");
-    });;
-  }, [user.isAuthenticated, navigate]);
+
+      try {
+        const response = await ajax(`/api/story`, "GET");
+        console.log("Fetch Stories Response Status:", response.status);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Fetched Stories Data:", data);
+
+          if (Array.isArray(data)) {
+            setStories(
+              data.map((story) => ({
+                id: story.id,
+                number: story.number,
+                name: story.name,
+              }))
+            );
+          } else {
+            console.error("Expected an array but received:", data);
+            setError("Unexpected response format from server.");
+          }
+        } else {
+          setError("Failed to load stories. Please try again later.");
+        }
+      } catch (err) {
+        console.error("Failed to fetch stories:", err);
+        setError("Failed to load stories. Please try again later.");
+      }
+    };
+
+    fetchStories();
+  }, [isAuthenticated, navigate]);
 
 
   return (<Container>

@@ -1,4 +1,4 @@
-function ajax(url, requestMethod, requestBody) {
+const ajax = async (url, requestMethod, requestBody = null) => {
   const fetchData = {
     headers: {
       "Content-Type": "application/json",
@@ -11,20 +11,19 @@ function ajax(url, requestMethod, requestBody) {
     fetchData.body = JSON.stringify(requestBody);
   }
 
-  return fetch(url, fetchData).then((response) => {
+  try {
+    const response = await fetch(url, fetchData);
     if (response.status === 200 || response.status === 201) {
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        return response.json();
-      } else {
-        return response.text();
-      } 
+      return response;
     } else {
       return response.text().then((text) => {
         throw new Error(text || `Request failed with status ${response.status}`);
       });
     }
-  });
-}
+  } catch (error) {
+    console.error("AJAX request failed:", error);
+    throw error;
+  }
+};
 
 export default ajax;
