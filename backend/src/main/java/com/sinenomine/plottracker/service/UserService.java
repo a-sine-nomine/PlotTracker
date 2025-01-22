@@ -26,6 +26,10 @@ public class UserService {
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public Users register(UserDto userDto) {
+        if (repo.findByUsername(userDto.getUsername()) != null) {
+            throw new RuntimeException("Username already exists");
+        }
+
         Users newUser = new Users();
         newUser.setUsername(userDto.getUsername());
         newUser.setPassword(encoder.encode(userDto.getPassword()));
@@ -34,11 +38,17 @@ public class UserService {
     }
 
     public String verify(Users user) {
-        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(user.getUsername());
-        } else {
-            return "fail";
+        try {
+            Authentication authentication = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+            );
+            if (authentication.isAuthenticated()) {
+                return jwtService.generateToken(user.getUsername());
+            } else {
+                throw new RuntimeException("Authentication failed");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid username or password");
         }
     }
 }

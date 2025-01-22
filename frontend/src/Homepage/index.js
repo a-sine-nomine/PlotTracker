@@ -22,11 +22,14 @@ const Homepage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    ajax(`/api/story`, "GET", user.jwt)
+    if (!user.isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+
+    ajax(`/api/story`, "GET")
     .then(
       (response) => {
-        console.log(response);
-        //const storyData = storyResponse[0];
         setStories(response.map((story) => ({
           id: story.id,
           number: story.number,
@@ -37,7 +40,7 @@ const Homepage = () => {
       console.error("Failed to fetch stories:", err);
       setError("Failed to load stories. Please try again later.");
     });;
-  }, []);
+  }, [user.isAuthenticated, navigate]);
 
 
   return (<Container>

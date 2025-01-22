@@ -10,17 +10,17 @@ function App() {
   const [roles, setRoles] = useState([]);
   const user = useUser();
 
-  useEffect(() => {
-    setRoles(getRolesFromJWT());
-  }, [user.jwt]);
+  // useEffect(() => {
+  //   setRoles(getRolesFromJWT());
+  // }, [user.jwt]);
 
-  function getRolesFromJWT() {
-    if (user.jwt) {
-      const decodedJwt = jwtDecode(user.jwt);
-      return decodedJwt.authorities;
-    }
-    return [];
-  }
+  // function getRolesFromJWT() {
+  //   if (user.jwt) {
+  //     const decodedJwt = jwtDecode(user.jwt);
+  //     return decodedJwt.authorities;
+  //   }
+  //   return [];
+  // }
 
   return (
     <Routes>

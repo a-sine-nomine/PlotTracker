@@ -7,6 +7,7 @@ import com.sinenomine.plottracker.service.StoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -17,12 +18,14 @@ import java.util.Set;
 public class HelloController {
     @Autowired
     private StoryService storyService;
-    @Autowired
-    private JWTService jwtService;
 
     @GetMapping("")
-    public ResponseEntity<?> ping(@RequestHeader (name="Authorization") String token) {
-        String username = jwtService.extractUserName(token.substring(7));
+    public ResponseEntity<?> ping(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        String username = userDetails.getUsername();
         Set<Story> storyByUser = storyService.findByUser(username);
         return ResponseEntity.ok(storyByUser);
     }
