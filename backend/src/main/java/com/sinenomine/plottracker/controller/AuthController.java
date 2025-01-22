@@ -13,12 +13,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class UserController {
+@RequestMapping("/api/auth")
+public class AuthController {
 
     @Autowired
     private UserService service;
 
-    @PostMapping("/api/auth/register")
+    @PostMapping("register")
     public ResponseEntity<?> register(@RequestBody UserDto userDto) {
         try {
             Users createdUser = service.register(userDto);
@@ -29,7 +30,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/api/auth/login")
+    @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody UserDto userDto, HttpServletResponse response) {
         try {
             String token = service.verify(new Users(userDto.getUsername(), userDto.getPassword()));
@@ -48,7 +49,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/auth/validate")
+    @GetMapping("validate")
     public ResponseEntity<?> validateToken(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails != null) {
             return ResponseEntity.ok("Valid");
@@ -57,7 +58,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/auth/logout")
+    @GetMapping("logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("jwt", null);
         cookie.setHttpOnly(true);
