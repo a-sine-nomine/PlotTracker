@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Button, Col, Container, Row, Form } from "react-bootstrap";
+import { Button, Section, Box, Input, Col, Container, Row, Form, Alert, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserProvider";
+import "./Login.css";
 
 const Login = () => {
   const user = useUser();
@@ -10,23 +11,24 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(null);
   
-  function sendLoginRequest() {
+  const sendLoginRequest = async () => {
     setErrorMsg("");
     const reqBody = {
       username: username,
       password: password,
     };
 
-    fetch("/api/auth/login", {
+    try {
+      const response = await fetch("/api/auth/login", {
       headers: {
         "Content-Type": "application/json",
       },
       method: "post",
       body: JSON.stringify(reqBody),
       credentials: "include",
-    })
-      .then((response) => {
-        if (response.status === 200) {
+    });
+    
+    if (response.status === 200) {
           user.setIsAuthenticated(true);
           navigate("/homepage");
         }
@@ -35,12 +37,12 @@ const Login = () => {
         } else {
           setErrorMsg("Something went wrong, try again later.");
         }
-      })
-      .catch((error) => {
+      }
+      catch(error) {
         console.error("Error during login:", error);
         setErrorMsg("An error occurred during login.");
-      });
-  }
+      }
+  };
 
   return (
     <>
