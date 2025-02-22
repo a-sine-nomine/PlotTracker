@@ -9,21 +9,23 @@ import jakarta.persistence.*;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(nullable = false, unique = true)
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(nullable = false, unique = true, length = 50)
     private String username;
     @Column(nullable = false)
     private String password;
 
-    public Users() {}
+    public Users() {
+    }
 
     public Users(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public int getId() {
-        return id;
+    public Long getId() {
+        return userId;
     }
 
     public String getUsername() {
@@ -45,7 +47,7 @@ public class Users {
     @Override
     public String toString() {
         return "Users{" +
-                "id=" + id +
+                "id=" + userId +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
