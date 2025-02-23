@@ -1,25 +1,41 @@
 package com.sinenomine.plottracker.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+
 import java.util.Objects;
 
 @Entity
 public class Story {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Integer number;
-    private String name;
-    @ManyToOne(optional = false)
+    @Column(name = "story_id")
+    private Long storyId;
+
+    @Column(nullable = false)
+    private String title;
+
+    private String description;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private Users user;
 
-    public Long getId() {
-        return id;
+//    @OneToMany(mappedBy = "story", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<PlotEvent> plotEvents = new ArrayList<>();
+
+    public Story() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Story(Users user, String title) {
+        this.user = user;
+        this.title = title;
+    }
+
+    public Long getStoryId() {
+        return storyId;
+    }
+
+    public void setStoryId(Long storyId) {
+        this.storyId = storyId;
     }
 
     public Users getUser() {
@@ -30,32 +46,40 @@ public class Story {
         this.user = user;
     }
 
-    public Integer getNumber() {
-        return number;
+    public String getTitle() {
+        return title;
     }
 
-    public void setNumber(Integer number) {
-        this.number = number;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDescription(String description) {
+        this.description = description;
     }
+
+//    public List<PlotEvent> getPlotEvents() {
+//        return plotEvents;
+//    }
+//
+//    public void setPlotEvents(List<PlotEvent> plotEvents) {
+//        this.plotEvents = plotEvents;
+//    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Story that = (Story) o;
-        return number.equals(that.number) && user.equals(that.user);
+        return storyId.equals(that.storyId) && user.equals(that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, user);
+        return Objects.hash(storyId, user);
     }
 }
