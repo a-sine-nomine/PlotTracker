@@ -98,7 +98,7 @@ public class StoryService {
     }
 
     // Helper method to ensure the story exists and belongs to the current user
-    private Story getStoryByIdAndUser(Long storyId, String username) {
+    Story getStoryByIdAndUser(Long storyId, String username) {
         Story story = storyRepo.findById(storyId)
                 .orElseThrow(() -> new RuntimeException("Story not found"));
         if (!story.getUser().getUsername().equals(username)) {

@@ -12,6 +12,10 @@ public class Tag {
     @Column(name = "tag_id")
     private Long tagId;
 
+    @ManyToOne
+    @JoinColumn(name = "story_id", nullable = false)
+    private Story story;
+
     @Column(name = "tag_name", nullable = false, length = 100)
     private String tagName;
 
@@ -37,6 +41,14 @@ public class Tag {
 
     public void setTagId(Long tagId) {
         this.tagId = tagId;
+    }
+
+    public Story getStory() {
+        return story;
+    }
+
+    public void setStory(Story story) {
+        this.story = story;
     }
 
     public String getTagName() {

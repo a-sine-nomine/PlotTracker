@@ -15,8 +15,12 @@ public class TagType {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @OneToMany(mappedBy = "tagType", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tag> tags = new ArrayList<>();
+//    @OneToMany(mappedBy = "tagType", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Tag> tags = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "story_id", nullable = false)
+    private Story story;
 
     public TagType() {
     }
@@ -41,11 +45,11 @@ public class TagType {
         this.name = name;
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public Story getStory() {
+        return story;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public void setStory(Story story) {
+        this.story = story;
     }
 }
