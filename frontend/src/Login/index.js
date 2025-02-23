@@ -1,47 +1,45 @@
 import React, { useState } from "react";
-import { Button, Section, Box, Input, Col, Container, Row, Form, Alert, Card } from "react-bootstrap";
+import {
+  Button,
+  Section,
+  Box,
+  Input,
+  Col,
+  Container,
+  Row,
+  Form,
+  Alert,
+  Card,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserProvider";
+import apiService from "../Services/apiService";
 import "./Login.css";
 
 const Login = () => {
-  const user = useUser();
+  const { setIsAuthenticated } = useUser();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(null);
-  
+
   const sendLoginRequest = async () => {
     setErrorMsg("");
-    const reqBody = {
-      username: username,
-      password: password,
-    };
-
     try {
-      const response = await fetch("/api/auth/login", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "post",
-      body: JSON.stringify(reqBody),
-      credentials: "include",
-    });
-    
-    if (response.status === 200) {
-          user.setIsAuthenticated(true);
-          navigate("/homepage");
-        }
-        else if (response.status === 401 || response.status === 403) {
-          setErrorMsg("Invalid username or password.");
-        } else {
-          setErrorMsg("Something went wrong, try again later.");
-        }
+      const response = await apiService.login(username, password);
+
+      if (response.status === 200) {
+        setIsAuthenticated(true);
+        navigate("/homepage");
+      } else if (response.status === 401 || response.status === 403) {
+        setErrorMsg("Invalid username or password.");
+      } else {
+        setErrorMsg("Something went wrong, try again later.");
       }
-      catch(error) {
-        console.error("Error during login:", error);
-        setErrorMsg("An error occurred during login.");
-      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setErrorMsg("An error occurred during login.");
+    }
   };
 
   return (

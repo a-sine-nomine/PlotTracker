@@ -17,7 +17,9 @@ const ajax = async (url, requestMethod, requestBody = null) => {
       return response;
     } else {
       return response.text().then((text) => {
-        throw new Error(text || `Request failed with status ${response.status}`);
+        throw new Error(
+          text || `Request failed with status ${response.status}`
+        );
       });
     }
   } catch (error) {
