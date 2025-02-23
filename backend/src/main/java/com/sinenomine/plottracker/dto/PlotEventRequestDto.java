@@ -3,9 +3,12 @@ package com.sinenomine.plottracker.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 
-public class PlotEventDto {
+public class PlotEventRequestDto {
+    @NotBlank(message = "Event type is required")
     @JsonProperty("eventType")
     private String eventType;
+
+    @NotBlank(message = "Title is required")
     @JsonProperty("title")
     private String title;
     @JsonProperty("date")

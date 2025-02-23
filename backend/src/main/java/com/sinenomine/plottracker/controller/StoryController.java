@@ -1,6 +1,6 @@
 package com.sinenomine.plottracker.controller;
 
-import com.sinenomine.plottracker.dto.PlotEventDto;
+import com.sinenomine.plottracker.dto.PlotEventRequestDto;
 import com.sinenomine.plottracker.dto.StoryDto;
 import com.sinenomine.plottracker.enums.EventType;
 import com.sinenomine.plottracker.model.PlotEvent;
@@ -114,7 +114,7 @@ public class StoryController {
     @PostMapping("/{id}/plotevents")
     public ResponseEntity<?> addPlotEvent(@AuthenticationPrincipal UserDetails userDetails,
                                           @PathVariable Long id,
-                                          @Valid @RequestBody PlotEventDto plotEventDto,
+                                          @Valid @RequestBody PlotEventRequestDto plotEventRequestDto,
                                           BindingResult bindingResult) {
         if (userDetails == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
@@ -127,16 +127,16 @@ public class StoryController {
         // Convert the DTO into a PlotEvent entity.
         PlotEvent plotEvent = new PlotEvent();
         // Assuming the enum values in your EventType match the input string exactly.
-        plotEvent.setEventType(EventType.valueOf(plotEventDto.getEventType()));
-        plotEvent.setTitle(plotEventDto.getTitle());
-        plotEvent.setDate(plotEventDto.getDate());
-        plotEvent.setDescription(plotEventDto.getDescription());
-        plotEvent.setContent(plotEventDto.getContent());
+        plotEvent.setEventType(EventType.valueOf(plotEventRequestDto.getEventType()));
+        plotEvent.setTitle(plotEventRequestDto.getTitle());
+        plotEvent.setDate(plotEventRequestDto.getDate());
+        plotEvent.setDescription(plotEventRequestDto.getDescription());
+        plotEvent.setContent(plotEventRequestDto.getContent());
 
         // memoryRefId and nextEventId are optional.
         PlotEvent createdPlotEvent = storyService.addPlotEventToStory(
                 username, id, plotEvent,
-                plotEventDto.getMemoryRefId(), plotEventDto.getNextEventId()
+                plotEventRequestDto.getMemoryRefId(), plotEventRequestDto.getNextEventId()
         );
         createdPlotEvent.setStory(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPlotEvent);
