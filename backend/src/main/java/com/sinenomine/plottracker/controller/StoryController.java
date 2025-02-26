@@ -1,11 +1,10 @@
 package com.sinenomine.plottracker.controller;
 
-import com.sinenomine.plottracker.dto.PlotEventRequestDto;
-import com.sinenomine.plottracker.dto.StoryRequestDto;
-import com.sinenomine.plottracker.dto.StoryResponseDto;
+import com.sinenomine.plottracker.dto.*;
 import com.sinenomine.plottracker.enums.EventType;
 import com.sinenomine.plottracker.model.PlotEvent;
 import com.sinenomine.plottracker.model.Story;
+import com.sinenomine.plottracker.service.PlotEventService;
 import com.sinenomine.plottracker.service.StoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/stories")
@@ -25,6 +25,9 @@ import java.util.Set;
 public class StoryController {
     @Autowired
     private StoryService storyService;
+
+    @Autowired
+    private PlotEventService plotEventService;
 
     // GET all user's stories
     @GetMapping("")
@@ -105,9 +108,8 @@ public class StoryController {
         }
         String username = userDetails.getUsername();
         Set<PlotEvent> plotEvents = storyService.getPlotEvents(username, id);
-        for (PlotEvent plotEvent : plotEvents)
-            plotEvent.setStory(null);
-        return ResponseEntity.ok(plotEvents);
+        List<PlotEventResponseDto> plotEventResponseDtos = plotEvents.stream().map(event -> plotEventService.convertToDto(event)).toList();
+        return ResponseEntity.ok(plotEventResponseDtos);
     }
 
     // POST add a new plot event to the user's story
