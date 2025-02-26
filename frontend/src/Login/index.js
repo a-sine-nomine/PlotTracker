@@ -16,19 +16,12 @@ const Login = () => {
   const sendLoginRequest = async () => {
     setErrorMsg("");
     try {
-      const response = await apiService.login(username, password);
-
-      if (response.status === 200) {
-        setIsAuthenticated(true);
-        navigate("/homepage");
-      } else if (response.status === 401 || response.status === 403) {
-        setErrorMsg("Invalid username or password.");
-      } else {
-        setErrorMsg("Something went wrong, try again later.");
-      }
+      await apiService.login(username, password);
+      setIsAuthenticated(true);
+      navigate("/homepage");
     } catch (error) {
       console.error("Error during login:", error);
-      setErrorMsg("An error occurred during login.");
+      setErrorMsg(error.message || "An error occurred during login.");
     }
   };
 
