@@ -1,16 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Section,
-  Box,
-  Input,
-  Col,
-  Container,
-  Row,
-  Form,
-  Alert,
-  Card,
-} from "react-bootstrap";
+import { Button, Container, Row, Col, Form, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserProvider";
 import apiService from "../Services/apiService";
@@ -19,6 +8,7 @@ import "./Login.css";
 const Login = () => {
   const { setIsAuthenticated } = useUser();
   const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(null);
@@ -43,76 +33,71 @@ const Login = () => {
   };
 
   return (
-    <>
-      <Container>
-        <Row className="justify-content-center mt-5">
-          <Col md="8" lg="6">
-            <Form.Group className="mb-3" controlId="username">
-              <Form.Label className="fs-4">Username</Form.Label>
-              <Form.Control
-                type="email"
-                size="lg"
-                placeholder="joe@gmail.com"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-
-        <Row className="justify-content-center">
-          <Col md="8" lg="6">
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label className="fs-4">Password</Form.Label>
-              <Form.Control
-                type="password"
-                size="lg"
-                placeholder="Type in your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        {errorMsg ? (
-          <Row className="justify-content-center mb-4">
-            <Col md="8" lg="6">
-              <div className="" style={{ color: "red", fontWeight: "bold" }}>
-                {errorMsg}
-              </div>
-            </Col>
-          </Row>
-        ) : (
-          <></>
-        )}
-        <Row className="justify-content-center">
-          <Col
-            md="8"
-            lg="6"
-            className="mt-2 d-flex flex-column gap-5 flex-md-row justify-content-md-between"
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+      <Card
+        className="p-4 shadow"
+        style={{ borderRadius: "1rem", minWidth: "350px" }}
+      >
+        <Card.Body>
+          <h1
+            className="text-center mb-4"
+            style={{ fontFamily: "Helvetica, Arial, sans-serif" }}
           >
-            <Button
-              id="submit"
-              type="button"
-              size="lg"
-              onClick={() => sendLoginRequest()}
-            >
+            PlotTracker
+          </h1>
+          <p className="text-center text-muted mb-4">
+            Log in to your account to view your stories.
+          </p>
+
+          <Form.Group className="mb-3" controlId="username">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoComplete="off"
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="off"
+            />
+          </Form.Group>
+
+          {errorMsg && (
+            <div className="text-danger mb-3" style={{ fontWeight: "bold" }}>
+              {errorMsg}
+            </div>
+          )}
+
+          <div className="d-grid">
+            <Button variant="primary" onClick={sendLoginRequest}>
               Login
             </Button>
-            <Button
-              variant="secondary"
-              type="button"
-              size="lg"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Register
-            </Button>
-          </Col>
-        </Row>
-      </Container>
-    </>
+          </div>
+
+          <div className="text-center mt-3">
+            <small className="text-muted">
+              Don&#39;t have an account?{" "}
+              <span
+                className="text-primary text-decoration-underline"
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate("/register")}
+              >
+                Sign up
+              </span>
+            </small>
+          </div>
+        </Card.Body>
+      </Card>
+    </div>
   );
 };
 
