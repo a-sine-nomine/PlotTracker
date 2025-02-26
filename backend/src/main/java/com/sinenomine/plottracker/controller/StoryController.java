@@ -1,7 +1,8 @@
 package com.sinenomine.plottracker.controller;
 
 import com.sinenomine.plottracker.dto.PlotEventRequestDto;
-import com.sinenomine.plottracker.dto.StoryDto;
+import com.sinenomine.plottracker.dto.StoryRequestDto;
+import com.sinenomine.plottracker.dto.StoryResponseDto;
 import com.sinenomine.plottracker.enums.EventType;
 import com.sinenomine.plottracker.model.PlotEvent;
 import com.sinenomine.plottracker.model.Story;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -31,16 +33,14 @@ public class StoryController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
 
         String username = userDetails.getUsername();
-        Set<Story> stories = storyService.findByUser(username);
-        for (Story story : stories)
-            story.setUser(null);
+        List<StoryResponseDto> stories = storyService.findByUser(username);
         return ResponseEntity.ok(stories);
     }
 
     // POST create a new story for the user
     @PostMapping("")
     public ResponseEntity<?> createStory(@AuthenticationPrincipal UserDetails userDetails,
-                                         @Valid @RequestBody StoryDto storyDto, BindingResult bindingResult) {
+                                         @Valid @RequestBody StoryRequestDto storyRequestDto, BindingResult bindingResult) {
         if (userDetails == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
 
@@ -48,7 +48,7 @@ public class StoryController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
 
         String username = userDetails.getUsername();
-        Story createdStory = storyService.createStory(username, storyDto);
+        Story createdStory = storyService.createStory(username, storyRequestDto);
         createdStory.setUser(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdStory);
     }
@@ -70,7 +70,7 @@ public class StoryController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateStory(@AuthenticationPrincipal UserDetails userDetails,
                                          @PathVariable Long id,
-                                         @Valid @RequestBody StoryDto storyDto,
+                                         @Valid @RequestBody StoryRequestDto storyRequestDto,
                                          BindingResult bindingResult) {
         if (userDetails == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
@@ -79,7 +79,7 @@ public class StoryController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
 
         String username = userDetails.getUsername();
-        Story updatedStory = storyService.updateStory(username, id, storyDto);
+        Story updatedStory = storyService.updateStory(username, id, storyRequestDto);
         updatedStory.setUser(null);
         return ResponseEntity.ok(updatedStory);
     }
