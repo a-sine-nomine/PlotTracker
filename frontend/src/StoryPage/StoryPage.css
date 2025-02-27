@@ -1,0 +1,24 @@
+.storypage-container {
+  display: flex;
+  height: 100vh;
+}
+
+.left-panel {
+  width: 250px;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+}
+
+.center-panel {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.plot-event {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5rem;
+}

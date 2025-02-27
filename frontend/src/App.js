@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./Login";
 import Register from "./Register";
 import Homepage from "./Homepage";
+import StoryPage from "./StoryPage";
 import { useUser } from "./UserProvider";
 import PrivateRoute from "./PrivateRoute";
 
@@ -33,6 +34,14 @@ function App() {
         element={
           <PrivateRoute>
             <Homepage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/story/:storyId"
+        element={
+          <PrivateRoute>
+            <StoryPage />
           </PrivateRoute>
         }
       />
