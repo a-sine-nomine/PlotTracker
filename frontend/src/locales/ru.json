@@ -1,0 +1,27 @@
+{
+  "register": {
+    "title": "PlotTracker",
+    "description": "Создайте новый аккаунт, чтобы начать отслеживать ваши истории.",
+    "usernameLabel": "Имя пользователя",
+    "usernamePlaceholder": "Выберите имя пользователя",
+    "passwordLabel": "Пароль",
+    "passwordPlaceholder": "Выберите пароль",
+    "signUpButton": "Зарегистрироваться",
+    "loginHint": "Уже есть аккаунт?",
+    "loginLink": "Войти",
+    "errorDefault": "Произошла ошибка при регистрации.",
+    "success": "Регистрация прошла успешно! Теперь вы можете войти.",
+    "errorFallback": "Что-то пошло не так, попробуйте позже."
+  },
+  "login": {
+    "message": "Войдите в свой аккаунт, чтобы просмотреть свои истории.",
+    "username": "Имя пользователя",
+    "usernamePlaceholder": "Ваше имя пользователя",
+    "password": "Пароль",
+    "passwordPlaceholder": "Ваш пароль",
+    "loginButton": "Войти",
+    "noAccount": "Нет аккаунта?",
+    "signup": "Зарегистрироваться",
+    "errorMessage": "Произошла ошибка при входе."
+  }
+}

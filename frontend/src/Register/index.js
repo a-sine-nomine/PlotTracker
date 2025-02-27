@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Button, Container, Row, Col, Form, Card } from "react-bootstrap";
+import { Button, Card, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserProvider";
 import apiService from "../Services/apiService";
+import { useTranslation } from "react-i18next";
 import "./Register.css";
 
 const Register = () => {
+  const { t, i18n } = useTranslation();
   const { setIsAuthenticated } = useUser();
   const navigate = useNavigate();
 
@@ -21,14 +23,19 @@ const Register = () => {
       const response = await apiService.register(username, password);
 
       if (response.status === 201) {
-        setSuccessMsg("Registration successful! You can now log in.");
+        setSuccessMsg(t("register.success"));
       } else {
-        setErrorMsg("Something went wrong, please try again later.");
+        setErrorMsg(t("register.errorFallback"));
       }
     } catch (error) {
       console.error("Error during registration:", error);
-      setErrorMsg(error.message || "An error occurred during registration.");
+      setErrorMsg(error.message || t("register.errorDefault"));
     }
+  };
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === "en" ? "ru" : "en";
+    i18n.changeLanguage(newLang);
   };
 
   return (
@@ -42,17 +49,17 @@ const Register = () => {
             className="text-center mb-4"
             style={{ fontFamily: "Helvetica, Arial, sans-serif" }}
           >
-            PlotTracker
+            {t("register.title")}
           </h1>
           <p className="text-center text-muted mb-4">
-            Create a new account to start tracking your stories.
+            {t("register.description")}
           </p>
 
           <Form.Group className="mb-3" controlId="username">
-            <Form.Label>Username</Form.Label>
+            <Form.Label>{t("register.usernameLabel")}</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Choose a username"
+              placeholder={t("register.usernamePlaceholder")}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoComplete="off"
@@ -60,10 +67,10 @@ const Register = () => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="password">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>{t("register.passwordLabel")}</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Choose a password"
+              placeholder={t("register.passwordPlaceholder")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="off"
@@ -83,21 +90,28 @@ const Register = () => {
 
           <div className="d-grid">
             <Button variant="primary" onClick={sendRegisterRequest}>
-              Sign Up
+              {t("register.signUpButton")}
             </Button>
           </div>
 
           <div className="text-center mt-3">
             <small className="text-muted">
-              Already have an account?{" "}
+              {t("register.loginHint")}{" "}
               <span
                 className="text-primary text-decoration-underline"
                 style={{ cursor: "pointer" }}
                 onClick={() => navigate("/login")}
               >
-                Log in
+                {t("register.loginLink")}
               </span>
             </small>
+          </div>
+
+          {}
+          <div className="language-switcher mt-3 text-center">
+            <span className="lang-toggle" onClick={toggleLanguage}>
+              {i18n.language === "en" ? "en" : "ру"}
+            </span>
           </div>
         </Card.Body>
       </Card>

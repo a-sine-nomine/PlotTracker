@@ -1,0 +1,27 @@
+{
+  "register": {
+    "title": "PlotTracker",
+    "description": "Create a new account to start tracking your stories.",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "Choose a username",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Choose a password",
+    "signUpButton": "Sign Up",
+    "loginHint": "Already have an account?",
+    "loginLink": "Log in",
+    "errorDefault": "An error occurred during registration.",
+    "success": "Registration successful! You can now log in.",
+    "errorFallback": "Something went wrong, please try again later."
+  },
+  "login": {
+    "message": "Log in to your account to view your stories.",
+    "username": "Username",
+    "usernamePlaceholder": "Your username",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "loginButton": "Login",
+    "noAccount": "Don't have an account?",
+    "signup": "Sign up",
+    "errorMessage": "An error occurred during login."
+  }
+}

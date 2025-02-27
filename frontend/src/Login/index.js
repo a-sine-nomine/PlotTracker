@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Button, Container, Row, Col, Form, Card } from "react-bootstrap";
+import { Button, Card, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserProvider";
 import apiService from "../Services/apiService";
+import { useTranslation } from "react-i18next";
 import "./Login.css";
 
 const Login = () => {
+  const { t, i18n } = useTranslation();
   const { setIsAuthenticated } = useUser();
   const navigate = useNavigate();
 
@@ -21,8 +23,13 @@ const Login = () => {
       navigate("/homepage");
     } catch (error) {
       console.error("Error during login:", error);
-      setErrorMsg(error.message || "An error occurred during login.");
+      setErrorMsg(error.message || t("login.errorMessage"));
     }
+  };
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === "en" ? "ru" : "en";
+    i18n.changeLanguage(newLang);
   };
 
   return (
@@ -38,15 +45,13 @@ const Login = () => {
           >
             PlotTracker
           </h1>
-          <p className="text-center text-muted mb-4">
-            Log in to your account to view your stories.
-          </p>
+          <p className="text-center text-muted mb-4">{t("login.message")}</p>
 
           <Form.Group className="mb-3" controlId="username">
-            <Form.Label>Username</Form.Label>
+            <Form.Label>{t("login.username")}</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Your username"
+              placeholder={t("login.usernamePlaceholder")}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoComplete="off"
@@ -54,10 +59,10 @@ const Login = () => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="password">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>{t("login.password")}</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Your password"
+              placeholder={t("login.passwordPlaceholder")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="off"
@@ -72,21 +77,27 @@ const Login = () => {
 
           <div className="d-grid">
             <Button variant="primary" onClick={sendLoginRequest}>
-              Login
+              {t("login.loginButton")}
             </Button>
           </div>
 
           <div className="text-center mt-3">
             <small className="text-muted">
-              Don&#39;t have an account?{" "}
+              {t("login.noAccount")}{" "}
               <span
                 className="text-primary text-decoration-underline"
                 style={{ cursor: "pointer" }}
                 onClick={() => navigate("/register")}
               >
-                Sign up
+                {t("login.signup")}
               </span>
             </small>
+          </div>
+
+          <div className="language-switcher mt-3 text-center">
+            <span className="lang-toggle" onClick={toggleLanguage}>
+              {i18n.language === "en" ? "en" : "ру"}
+            </span>
           </div>
         </Card.Body>
       </Card>
