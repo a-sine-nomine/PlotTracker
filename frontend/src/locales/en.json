@@ -23,5 +23,30 @@
     "noAccount": "Don't have an account?",
     "signup": "Sign up",
     "errorMessage": "An error occurred during login."
+  },
+  "homepage": {
+    "title": "Stories",
+    "hint": "Select a story from the left to view its plot events."
+  },
+  "toolbar": {
+    "brand": "PlotTracker",
+    "file": "File",
+    "help": "Help",
+    "newStory": "New Story",
+    "newEvent": "New Event",
+    "newTag": "New Tag",
+    "documentation": "Documentation",
+    "about": "About",
+    "logOut": "Log out",
+    "aboutTitle": "About PlotTracker",
+    "aboutBodyLine1": "PlotTracker is a web application for tracking your creative stories and their plot events.",
+    "aboutBodyLine2": "Current Version: 0.0.1"
+  },
+  "newStoryModal": {
+    "title": "New Story",
+    "formTitle": "Title",
+    "formDescription": "Description",
+    "cancel": "Cancel",
+    "save": "Save"
   }
 }

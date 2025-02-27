@@ -23,5 +23,30 @@
     "noAccount": "Нет аккаунта?",
     "signup": "Зарегистрироваться",
     "errorMessage": "Произошла ошибка при входе."
+  },
+  "homepage": {
+    "title": "Истории",
+    "hint": "Выберите историю слева, чтобы просмотреть её события."
+  },
+  "toolbar": {
+    "brand": "PlotTracker",
+    "file": "Файл",
+    "help": "Помощь",
+    "newStory": "Новая история",
+    "newEvent": "Новое событие",
+    "newTag": "Новый тег",
+    "documentation": "Документация",
+    "about": "О программе",
+    "logOut": "Выйти",
+    "aboutTitle": "О PlotTracker",
+    "aboutBodyLine1": "PlotTracker — это веб-приложение для отслеживания ваших творческих историй и их событий.",
+    "aboutBodyLine2": "Текущая версия: 0.0.1"
+  },
+  "newStoryModal": {
+    "title": "Новая история",
+    "formTitle": "Название",
+    "formDescription": "Описание",
+    "cancel": "Отмена",
+    "save": "Сохранить"
   }
 }
