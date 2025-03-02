@@ -35,6 +35,7 @@
     "newStory": "Новая история",
     "newEvent": "Новое событие",
     "newTag": "Новый тег",
+    "newTagType": "Новый тип тега",
     "documentation": "Документация",
     "about": "О программе",
     "logOut": "Выйти",
@@ -54,6 +55,13 @@
     "storyLabel": "Выберите историю",
     "tagNameLabel": "Имя тега",
     "tagTypeLabel": "Тип тега",
+    "cancel": "Отмена",
+    "save": "Сохранить"
+  },
+  "newTagTypeModal": {
+    "title": "Новый тип тега",
+    "storyLabel": "Выберите историю",
+    "tagTypeNameLabel": "Имя",
     "cancel": "Отмена",
     "save": "Сохранить"
   },

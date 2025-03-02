@@ -17,9 +17,15 @@ const Toolbar = ({ onNewStoryCreated }) => {
 
   const [showNewTagModal, setShowNewTagModal] = useState(false);
   const [newTagName, setNewTagName] = useState("");
-  const [selectedStoryId, setSelectedStoryId] = useState("");
+  const [selectedStoryIdForTag, setSelectedStoryIdForTag] = useState("");
   const [selectedTagTypeId, setSelectedTagTypeId] = useState("");
   const [tagTypes, setTagTypes] = useState([]);
+
+  const [showNewTagTypeModal, setShowNewTagTypeModal] = useState(false);
+  const [newTagTypeName, setNewTagTypeName] = useState("");
+  const [selectedStoryIdForTagType, setSelectedStoryIdForTagType] =
+    useState("");
+
   const [userStories, setUserStories] = useState([]);
 
   useEffect(() => {
@@ -29,7 +35,8 @@ const Toolbar = ({ onNewStoryCreated }) => {
         const data = await response.json();
         setUserStories(data);
         if (data.length > 0) {
-          setSelectedStoryId(data[0].storyId);
+          setSelectedStoryIdForTag(data[0].storyId);
+          setSelectedStoryIdForTagType(data[0].storyId);
         }
       } catch (error) {
         console.error("Error fetching user stories:", error);
@@ -40,9 +47,9 @@ const Toolbar = ({ onNewStoryCreated }) => {
 
   useEffect(() => {
     const fetchTagTypes = async () => {
-      if (!selectedStoryId) return;
+      if (!selectedStoryIdForTag) return;
       try {
-        const response = await apiService.getTagTypes(selectedStoryId);
+        const response = await apiService.getTagTypes(selectedStoryIdForTag);
         const data = await response.json();
         setTagTypes(data);
         if (data.length > 0) {
@@ -53,7 +60,7 @@ const Toolbar = ({ onNewStoryCreated }) => {
       }
     };
     fetchTagTypes();
-  }, [selectedStoryId]);
+  }, [selectedStoryIdForTag]);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === "en" ? "ru" : "en";
@@ -94,13 +101,34 @@ const Toolbar = ({ onNewStoryCreated }) => {
         tagName: newTagName,
         tagTypeId: selectedTagTypeId,
       };
-      const response = await apiService.createTag(selectedStoryId, tagDto);
+      const response = await apiService.createTag(
+        selectedStoryIdForTag,
+        tagDto
+      );
       const data = await response.json();
       console.log("New tag created:", data);
       setNewTagName("");
       setShowNewTagModal(false);
     } catch (error) {
       console.error("Error creating new tag:", error);
+    }
+  };
+
+  const handleSaveNewTagType = async () => {
+    try {
+      const tagTypeDto = {
+        name: newTagTypeName,
+      };
+      const response = await apiService.createTagType(
+        selectedStoryIdForTagType,
+        tagTypeDto
+      );
+      const data = await response.json();
+      console.log("New tag type created:", data);
+      setNewTagTypeName("");
+      setShowNewTagTypeModal(false);
+    } catch (error) {
+      console.error("Error creating new tag type:", error);
     }
   };
 
@@ -120,6 +148,9 @@ const Toolbar = ({ onNewStoryCreated }) => {
               <Dropdown.Item disabled>{t("toolbar.newEvent")}</Dropdown.Item>
               <Dropdown.Item onClick={() => setShowNewTagModal(true)}>
                 {t("toolbar.newTag")}
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => setShowNewTagTypeModal(true)}>
+                {t("toolbar.newTagType")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -227,15 +258,14 @@ const Toolbar = ({ onNewStoryCreated }) => {
               <Form.Label>{t("newTagModal.storyLabel")}</Form.Label>
               <Form.Control
                 as="select"
-                value={selectedStoryId}
-                onChange={(e) => setSelectedStoryId(e.target.value)}
+                value={selectedStoryIdForTag}
+                onChange={(e) => setSelectedStoryIdForTag(e.target.value)}
               >
-                {userStories &&
-                  userStories.map((story) => (
-                    <option key={story.storyId} value={story.storyId}>
-                      {story.title}
-                    </option>
-                  ))}
+                {userStories.map((story) => (
+                  <option key={story.storyId} value={story.storyId}>
+                    {story.title}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
 
@@ -258,12 +288,11 @@ const Toolbar = ({ onNewStoryCreated }) => {
                 value={selectedTagTypeId}
                 onChange={(e) => setSelectedTagTypeId(e.target.value)}
               >
-                {tagTypes &&
-                  tagTypes.map((tt) => (
-                    <option key={tt.tagTypeId} value={tt.tagTypeId}>
-                      {tt.name}
-                    </option>
-                  ))}
+                {tagTypes.map((tt) => (
+                  <option key={tt.tagTypeId} value={tt.tagTypeId}>
+                    {tt.name}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
           </Form>
@@ -274,6 +303,57 @@ const Toolbar = ({ onNewStoryCreated }) => {
           </Button>
           <Button variant="primary" onClick={handleSaveNewTag}>
             {t("newTagModal.save")}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* New Tag Type Modal */}
+      <Modal
+        show={showNewTagTypeModal}
+        onHide={() => setShowNewTagTypeModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>{t("newTagTypeModal.title")}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            {/* Story Select */}
+            <Form.Group controlId="formSelectStoryForTagType" className="mb-3">
+              <Form.Label>{t("newTagTypeModal.storyLabel")}</Form.Label>
+              <Form.Control
+                as="select"
+                value={selectedStoryIdForTagType}
+                onChange={(e) => setSelectedStoryIdForTagType(e.target.value)}
+              >
+                {userStories.map((story) => (
+                  <option key={story.storyId} value={story.storyId}>
+                    {story.title}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+
+            {/* Tag Type Name */}
+            <Form.Group controlId="formTagTypeName" className="mb-3">
+              <Form.Label>{t("newTagTypeModal.tagTypeNameLabel")}</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder={t("newTagTypeModal.tagTypeNameLabel")}
+                value={newTagTypeName}
+                onChange={(e) => setNewTagTypeName(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowNewTagTypeModal(false)}
+          >
+            {t("newTagTypeModal.cancel")}
+          </Button>
+          <Button variant="primary" onClick={handleSaveNewTagType}>
+            {t("newTagTypeModal.save")}
           </Button>
         </Modal.Footer>
       </Modal>

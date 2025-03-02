@@ -35,6 +35,7 @@
     "newStory": "New Story",
     "newEvent": "New Event",
     "newTag": "New Tag",
+    "newTagType": "New Tag Type",
     "documentation": "Documentation",
     "about": "About",
     "logOut": "Log out",
@@ -54,6 +55,13 @@
     "storyLabel": "Select Story",
     "tagNameLabel": "Tag Name",
     "tagTypeLabel": "Tag Type",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "newTagTypeModal": {
+    "title": "New Tag Type",
+    "storyLabel": "Select Story",
+    "tagTypeNameLabel": "Tag Type Name",
     "cancel": "Cancel",
     "save": "Save"
   },
