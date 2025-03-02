@@ -1,6 +1,6 @@
 .toolbar {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .language-toggle {
@@ -13,4 +13,8 @@
 
 .language-toggle:hover {
   color: #0056b3;
+}
+
+.toolbar .dropdown-menu {
+  min-width: 150px;
 }
