@@ -49,6 +49,14 @@
     "cancel": "Cancel",
     "save": "Save"
   },
+  "newTagModal": {
+    "title": "New Tag",
+    "storyLabel": "Select Story",
+    "tagNameLabel": "Tag Name",
+    "tagTypeLabel": "Tag Type",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
   "deleteConfirmation": {
     "title": "Delete Story",
     "body": "Are you sure you want to delete this story? This will delete all events.",

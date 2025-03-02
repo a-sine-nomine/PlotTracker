@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar, Nav, Dropdown, Modal, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import apiService from "../Services/apiService";
@@ -14,6 +14,46 @@ const Toolbar = ({ onNewStoryCreated }) => {
   const [newStoryDescription, setNewStoryDescription] = useState("");
 
   const [showAboutModal, setShowAboutModal] = useState(false);
+
+  const [showNewTagModal, setShowNewTagModal] = useState(false);
+  const [newTagName, setNewTagName] = useState("");
+  const [selectedStoryId, setSelectedStoryId] = useState("");
+  const [selectedTagTypeId, setSelectedTagTypeId] = useState("");
+  const [tagTypes, setTagTypes] = useState([]);
+  const [userStories, setUserStories] = useState([]);
+
+  useEffect(() => {
+    const fetchUserStories = async () => {
+      try {
+        const response = await apiService.getStories();
+        const data = await response.json();
+        setUserStories(data);
+        if (data.length > 0) {
+          setSelectedStoryId(data[0].storyId);
+        }
+      } catch (error) {
+        console.error("Error fetching user stories:", error);
+      }
+    };
+    fetchUserStories();
+  }, []);
+
+  useEffect(() => {
+    const fetchTagTypes = async () => {
+      if (!selectedStoryId) return;
+      try {
+        const response = await apiService.getTagTypes(selectedStoryId);
+        const data = await response.json();
+        setTagTypes(data);
+        if (data.length > 0) {
+          setSelectedTagTypeId(data[0].tagTypeId);
+        }
+      } catch (error) {
+        console.error("Error fetching tag types:", error);
+      }
+    };
+    fetchTagTypes();
+  }, [selectedStoryId]);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === "en" ? "ru" : "en";
@@ -48,6 +88,22 @@ const Toolbar = ({ onNewStoryCreated }) => {
     }
   };
 
+  const handleSaveNewTag = async () => {
+    try {
+      const tagDto = {
+        tagName: newTagName,
+        tagTypeId: selectedTagTypeId,
+      };
+      const response = await apiService.createTag(selectedStoryId, tagDto);
+      const data = await response.json();
+      console.log("New tag created:", data);
+      setNewTagName("");
+      setShowNewTagModal(false);
+    } catch (error) {
+      console.error("Error creating new tag:", error);
+    }
+  };
+
   return (
     <>
       <Navbar bg="light" expand="lg" className="toolbar">
@@ -62,7 +118,9 @@ const Toolbar = ({ onNewStoryCreated }) => {
                 {t("toolbar.newStory")}
               </Dropdown.Item>
               <Dropdown.Item disabled>{t("toolbar.newEvent")}</Dropdown.Item>
-              <Dropdown.Item disabled>{t("toolbar.newTag")}</Dropdown.Item>
+              <Dropdown.Item onClick={() => setShowNewTagModal(true)}>
+                {t("toolbar.newTag")}
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
 
@@ -153,6 +211,69 @@ const Toolbar = ({ onNewStoryCreated }) => {
         <Modal.Footer>
           <Button variant="primary" onClick={() => setShowAboutModal(false)}>
             Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* New Tag Modal */}
+      <Modal show={showNewTagModal} onHide={() => setShowNewTagModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{t("newTagModal.title")}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            {/* Story Select */}
+            <Form.Group controlId="formSelectStory" className="mb-3">
+              <Form.Label>{t("newTagModal.storyLabel")}</Form.Label>
+              <Form.Control
+                as="select"
+                value={selectedStoryId}
+                onChange={(e) => setSelectedStoryId(e.target.value)}
+              >
+                {userStories &&
+                  userStories.map((story) => (
+                    <option key={story.storyId} value={story.storyId}>
+                      {story.title}
+                    </option>
+                  ))}
+              </Form.Control>
+            </Form.Group>
+
+            {/* Tag Name */}
+            <Form.Group controlId="formTagName" className="mb-3">
+              <Form.Label>{t("newTagModal.tagNameLabel")}</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder={t("newTagModal.tagNameLabel")}
+                value={newTagName}
+                onChange={(e) => setNewTagName(e.target.value)}
+              />
+            </Form.Group>
+
+            {/* Tag Type */}
+            <Form.Group controlId="formTagType" className="mb-3">
+              <Form.Label>{t("newTagModal.tagTypeLabel")}</Form.Label>
+              <Form.Control
+                as="select"
+                value={selectedTagTypeId}
+                onChange={(e) => setSelectedTagTypeId(e.target.value)}
+              >
+                {tagTypes &&
+                  tagTypes.map((tt) => (
+                    <option key={tt.tagTypeId} value={tt.tagTypeId}>
+                      {tt.name}
+                    </option>
+                  ))}
+              </Form.Control>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowNewTagModal(false)}>
+            {t("newTagModal.cancel")}
+          </Button>
+          <Button variant="primary" onClick={handleSaveNewTag}>
+            {t("newTagModal.save")}
           </Button>
         </Modal.Footer>
       </Modal>
