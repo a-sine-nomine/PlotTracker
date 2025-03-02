@@ -135,7 +135,13 @@ const Toolbar = ({ onNewStoryCreated }) => {
   return (
     <>
       <Navbar bg="light" expand="lg" className="toolbar">
-        <Navbar.Brand className="ms-3">{t("toolbar.brand")}</Navbar.Brand>
+        <Navbar.Brand
+          className="ms-3"
+          onClick={() => navigate("/homepage")}
+          style={{ cursor: "pointer" }}
+        >
+          {t("toolbar.brand")}
+        </Navbar.Brand>
         <Nav className="me-auto">
           <Dropdown>
             <Dropdown.Toggle variant="light" id="dropdown-file">
