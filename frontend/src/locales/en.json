@@ -70,5 +70,10 @@
     "body": "Are you sure you want to delete this story? This will delete all events.",
     "cancel": "Cancel",
     "confirm": "Delete"
+  },
+  "storyPage": {
+    "tags": "Tags",
+    "tagTypes": "Tag Types",
+    "noEvents": "No plot events available for this story."
   }
 }

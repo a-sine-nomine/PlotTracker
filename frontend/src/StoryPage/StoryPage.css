@@ -1,14 +1,100 @@
-.storypage-container {
+.storypage-wrapper {
   display: flex;
+  flex-direction: column;
   height: 100vh;
 }
 
+.storypage-container {
+  display: flex;
+  flex: 1;
+}
+
 .left-panel {
-  width: 250px;
-  background-color: #f8f9fa;
-  padding: 1rem;
+  width: 300px;
+  background: #ffffff;
+  border-right: 1px solid #dfe3e8;
+  padding: 20px;
   overflow-y: auto;
-  border-right: 1px solid #ddd;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.panel-header {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 1px solid #dfe3e8;
+  padding-bottom: 10px;
+}
+
+.tags-section-header {
+  font-size: 1.2rem;
+  font-weight: normal;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 0.5rem;
+}
+
+.tags-group {
+  margin-left: 10px;
+}
+
+.tag-type-group {
+  margin-bottom: 0.5rem;
+}
+
+.item-row {
+  margin: 10px 0;
+  padding: 8px;
+  background-color: #f7f9fc;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  font-size: 1rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+.item-text {
+  display: inline-block;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.item-row:hover {
+  background-color: #e1e7ec;
+  transform: translateX(5px);
+}
+
+.item-row:hover .icon {
+  opacity: 1;
+}
+
+.item-edit-icon {
+  right: 30px;
+}
+
+.item-delete-icon {
+  right: 5px;
+  color: red;
+}
+
+.tags-list {
+  margin-left: 20px;
+}
+
+.section-divider {
+  border: 0;
+  border-top: 1px solid #dfe3e8;
+  margin: 0.5rem 0;
 }
 
 .center-panel {
