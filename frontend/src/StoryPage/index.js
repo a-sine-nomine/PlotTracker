@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Modal, Button, Form } from "react-bootstrap";
 import apiService from "../Services/apiService";
 import Toolbar from "../Toolbar";
 import { useTranslation } from "react-i18next";
+import TagTypeRow from "./TagTypeRow";
 import "./StoryPage.css";
 
 const StoryPage = () => {
@@ -14,7 +14,6 @@ const StoryPage = () => {
   const [storyDetails, setStoryDetails] = useState(null);
   const [tags, setTags] = useState([]);
   const [tagTypes, setTagTypes] = useState([]);
-
   const [tagsSectionOpen, setTagsSectionOpen] = useState(false);
   const [openTagTypes, setOpenTagTypes] = useState({});
 
@@ -32,7 +31,7 @@ const StoryPage = () => {
     fetchPlotEvents();
   }, [storyId]);
 
-  //Fetch story details
+  //Fetch story details (for title)
   useEffect(() => {
     const fetchStoryDetails = async () => {
       try {
@@ -82,9 +81,7 @@ const StoryPage = () => {
   //Group tags by tagTypeId and sort each group alphabetically by tagName
   const groupedTags = {};
   tags.forEach((tag) => {
-    if (!groupedTags[tag.tagTypeId]) {
-      groupedTags[tag.tagTypeId] = [];
-    }
+    if (!groupedTags[tag.tagTypeId]) groupedTags[tag.tagTypeId] = [];
     groupedTags[tag.tagTypeId].push(tag);
   });
   Object.keys(groupedTags).forEach((key) => {
@@ -98,158 +95,27 @@ const StoryPage = () => {
     }));
   };
 
-  //Inline component for editing a tag
-  const TagRow = ({ tag }) => {
-    const [editing, setEditing] = useState(false);
-    const [newTagName, setNewTagName] = useState(tag.tagName);
-
-    const handleRenameSubmit = async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      try {
-        const response = await apiService.updateTag(storyId, tag.tagId, {
-          tagName: newTagName,
-          tagTypeId: tag.tagTypeId,
-        });
-        const updatedTag = await response.json();
-        setTags((prev) =>
-          prev.map((t) => (t.tagId === tag.tagId ? updatedTag : t))
-        );
-      } catch (error) {
-        console.error("Error updating tag:", error);
-      }
-      setEditing(false);
-    };
-
-    const handleDelete = async (e) => {
-      e.stopPropagation();
-      try {
-        await apiService.deleteTag(storyId, tag.tagId);
-        setTags((prev) => prev.filter((t) => t.tagId !== tag.tagId));
-      } catch (error) {
-        console.error("Error deleting tag:", error);
-      }
-    };
-
-    const handleKeyDown = (e) => {
-      if (e.key === "Enter") {
-        handleRenameSubmit(e);
-      }
-    };
-
-    return (
-      <div className="item-row" onClick={(e) => e.stopPropagation()}>
-        {editing ? (
-          <form onSubmit={handleRenameSubmit} className="item-rename-form">
-            <input
-              type="text"
-              value={newTagName}
-              onChange={(e) => setNewTagName(e.target.value)}
-              onKeyDown={handleKeyDown}
-              autoFocus
-            />
-            <button type="submit">Save</button>
-          </form>
-        ) : (
-          <span className="item-text">{tag.tagName}</span>
-        )}
-        {!editing && (
-          <>
-            <span
-              className="icon item-edit-icon"
-              onClick={(e) => {
-                e.stopPropagation();
-                setEditing(true);
-              }}
-            >
-              ✎
-            </span>
-            <span className="icon item-delete-icon" onClick={handleDelete}>
-              🗑
-            </span>
-          </>
-        )}
-      </div>
+  const updateTag = (updatedTag) => {
+    setTags((prev) =>
+      prev.map((t) => (t.tagId === updatedTag.tagId ? updatedTag : t))
     );
   };
 
-  //Inline component for editing a tag type
-  const TagTypeRow = ({ tagType, onToggle }) => {
-    const [editing, setEditing] = useState(false);
-    const [newName, setNewName] = useState(tagType.name);
+  const deleteTag = (deletedTagId) => {
+    setTags((prev) => prev.filter((t) => t.tagId !== deletedTagId));
+  };
 
-    const handleRenameSubmit = async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      try {
-        const response = await apiService.updateTagType(
-          storyId,
-          tagType.tagTypeId,
-          { name: newName }
-        );
-        const updatedTagType = await response.json();
-        setTagTypes((prev) =>
-          prev.map((tt) =>
-            tt.tagTypeId === tagType.tagTypeId ? updatedTagType : tt
-          )
-        );
-      } catch (error) {
-        console.error("Error updating tag type:", error);
-      }
-      setEditing(false);
-    };
+  const updateTagType = (updatedTagType) => {
+    setTagTypes((prev) =>
+      prev.map((tt) =>
+        tt.tagTypeId === updatedTagType.tagTypeId ? updatedTagType : tt
+      )
+    );
+  };
 
-    const handleDelete = async (e) => {
-      e.stopPropagation();
-      try {
-        await apiService.deleteTagType(storyId, tagType.tagTypeId);
-        setTagTypes((prev) =>
-          prev.filter((tt) => tt.tagTypeId !== tagType.tagTypeId)
-        );
-      } catch (error) {
-        console.error("Error deleting tag type:", error);
-      }
-    };
-
-    const handleKeyDown = (e) => {
-      if (e.key === "Enter") {
-        handleRenameSubmit(e);
-      }
-    };
-
-    return (
-      <div className="item-row" onClick={onToggle}>
-        {editing ? (
-          <form onSubmit={handleRenameSubmit} className="item-rename-form">
-            <input
-              type="text"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              onKeyDown={handleKeyDown}
-              autoFocus
-            />
-            <button type="submit">Save</button>
-          </form>
-        ) : (
-          <span className="item-text">{tagType.name}</span>
-        )}
-        {!editing && (
-          <>
-            <span
-              className="icon item-edit-icon"
-              onClick={(e) => {
-                e.stopPropagation();
-                setEditing(true);
-              }}
-            >
-              ✎
-            </span>
-            <span className="icon item-delete-icon" onClick={handleDelete}>
-              🗑
-            </span>
-          </>
-        )}
-      </div>
+  const deleteTagType = (deletedTagTypeId) => {
+    setTagTypes((prev) =>
+      prev.filter((tt) => tt.tagTypeId !== deletedTagTypeId)
     );
   };
 
@@ -271,20 +137,18 @@ const StoryPage = () => {
             {tagsSectionOpen && (
               <div className="tags-group">
                 {sortedTagTypes.map((tt) => (
-                  <div key={tt.tagTypeId} className="tag-type-group">
-                    <TagTypeRow
-                      tagType={tt}
-                      onToggle={() => toggleTagType(tt.tagTypeId)}
-                    />
-                    {openTagTypes[tt.tagTypeId] && (
-                      <div className="tags-list">
-                        {(groupedTags[tt.tagTypeId] || []).map((tag) => (
-                          <TagRow key={tag.tagId} tag={tag} />
-                        ))}
-                      </div>
-                    )}
-                    <hr className="section-divider" />
-                  </div>
+                  <TagTypeRow
+                    key={tt.tagTypeId}
+                    tagType={tt}
+                    tags={groupedTags[tt.tagTypeId] || []}
+                    isOpen={!!openTagTypes[tt.tagTypeId]}
+                    onToggle={() => toggleTagType(tt.tagTypeId)}
+                    storyId={storyId}
+                    onTagUpdated={updateTag}
+                    onTagDeleted={deleteTag}
+                    onTagTypeUpdated={updateTagType}
+                    onTagTypeDeleted={deleteTagType}
+                  />
                 ))}
               </div>
             )}

@@ -66,14 +66,26 @@
     "save": "Save"
   },
   "deleteConfirmation": {
-    "title": "Delete Story",
-    "body": "Are you sure you want to delete this story? This will delete all events.",
+    "story": {
+      "title": "Delete Story",
+      "body": "Are you sure you want to delete this story? This will delete all events."
+    },
+    "tag": {
+      "title": "Delete Tag",
+      "body": "Are you sure you want to delete this tag? This action cannot be undone."
+    },
+    "tagType": {
+      "title": "Delete Tag Type",
+      "body": "Are you sure you want to delete this tag type? This will remove all tags under it."
+    },
     "cancel": "Cancel",
     "confirm": "Delete"
   },
   "storyPage": {
     "tags": "Tags",
     "tagTypes": "Tag Types",
-    "noEvents": "No plot events available for this story."
+    "noEvents": "No plot events available for this story.",
+    "noTags": "No tags.",
+    "noTagTypes": "No tag types."
   }
 }
