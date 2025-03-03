@@ -50,6 +50,19 @@
     "cancel": "Cancel",
     "save": "Save"
   },
+  "newEventModal": {
+    "title": "New Event",
+    "eventTypeLabel": "Event Type",
+    "titleLabel": "Title",
+    "dateLabel": "Date",
+    "descriptionLabel": "Description",
+    "contentLabel": "Content",
+    "memoryRefIdLabel": "Memory Reference",
+    "nextEventIdLabel": "Next Event",
+    "noneOption": "None",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
   "newTagModal": {
     "title": "New Tag",
     "storyLabel": "Select Story",

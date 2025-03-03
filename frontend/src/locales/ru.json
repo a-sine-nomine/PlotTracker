@@ -50,6 +50,19 @@
     "cancel": "Отмена",
     "save": "Сохранить"
   },
+  "newEventModal": {
+    "title": "Новое событие",
+    "eventTypeLabel": "Тип события",
+    "titleLabel": "Название",
+    "dateLabel": "Дата",
+    "descriptionLabel": "Описание",
+    "contentLabel": "Содержание",
+    "memoryRefIdLabel": "Воспоминание",
+    "nextEventIdLabel": "Следующее событие",
+    "noneOption": "Отсутствует",
+    "cancel": "Отмена",
+    "save": "Сохранить"
+  },
   "newTagModal": {
     "title": "Новый тэг",
     "storyLabel": "Выберите историю",
