@@ -3,6 +3,8 @@ package com.sinenomine.plottracker.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.Set;
+
 public class PlotEventRequestDto {
     @NotBlank(message = "Event type is required")
     @JsonProperty("eventType")
@@ -21,6 +23,9 @@ public class PlotEventRequestDto {
     private Long memoryRefId;  // optional
     @JsonProperty("nextEventId")
     private Long nextEventId;  // optional
+
+    @JsonProperty("tags")
+    private Set<Long> tags;
 
     public String getEventType() {
         return eventType;
@@ -76,5 +81,12 @@ public class PlotEventRequestDto {
 
     public void setNextEventId(Long nextEventId) {
         this.nextEventId = nextEventId;
+    }
+    public Set<Long> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Long> tags) {
+        this.tags = tags;
     }
 }

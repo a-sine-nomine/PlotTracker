@@ -28,6 +28,9 @@ public class StoryService {
     @Autowired
     private PlotEventRepo plotEventRepo;
 
+    @Autowired
+    private PlotEventService plotEventService;
+
 
     // Get all stories for a user
     public List<StoryResponseDto> findByUser(String username) {
@@ -78,7 +81,7 @@ public class StoryService {
     }
 
     // Add a new plot event to a given story; if provided, resolve memoryRef and nextEvent
-    public PlotEvent addPlotEventToStory(String username, Long storyId, PlotEvent plotEvent, Long memoryRefId, Long nextEventId) {
+    public PlotEvent addPlotEventToStory(String username, Long storyId, PlotEvent plotEvent, Long memoryRefId, Long nextEventId, Set<Long> tags) {
         Story story = getStoryByIdAndUser(storyId, username);
         plotEvent.setStory(story);
 
@@ -93,9 +96,11 @@ public class StoryService {
             plotEvent.setNextEvent(nextEvent);
         }
         PlotEvent savedPlotEvent = plotEventRepo.save(plotEvent);
+        for(Long tag: tags)
+            plotEventService.addTagToPlotEvent(savedPlotEvent.getEventId(), tag, username);
 //        story.getPlotEvents().add(savedPlotEvent);
-        storyRepo.save(story);
-        return savedPlotEvent;
+        //storyRepo.save(story);
+        return plotEventService.getPlotEventById(savedPlotEvent.getEventId(), username);
     }
 
     // Helper method to ensure the story exists and belongs to the current user

@@ -126,21 +126,18 @@ public class StoryController {
 
         String username = userDetails.getUsername();
 
-        // Convert the DTO into a PlotEvent entity.
         PlotEvent plotEvent = new PlotEvent();
-        // Assuming the enum values in your EventType match the input string exactly.
         plotEvent.setEventType(EventType.valueOf(plotEventRequestDto.getEventType()));
         plotEvent.setTitle(plotEventRequestDto.getTitle());
         plotEvent.setDate(plotEventRequestDto.getDate());
         plotEvent.setDescription(plotEventRequestDto.getDescription());
         plotEvent.setContent(plotEventRequestDto.getContent());
 
-        // memoryRefId and nextEventId are optional.
         PlotEvent createdPlotEvent = storyService.addPlotEventToStory(
                 username, id, plotEvent,
-                plotEventRequestDto.getMemoryRefId(), plotEventRequestDto.getNextEventId()
+                plotEventRequestDto.getMemoryRefId(), plotEventRequestDto.getNextEventId(), plotEventRequestDto.getTags()
         );
-        createdPlotEvent.setStory(null);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPlotEvent);
+        PlotEventResponseDto responseDto = plotEventService.convertToDto(createdPlotEvent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 }
