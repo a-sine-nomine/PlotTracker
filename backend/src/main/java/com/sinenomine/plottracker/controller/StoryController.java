@@ -1,10 +1,10 @@
 package com.sinenomine.plottracker.controller;
 
-import com.sinenomine.plottracker.dto.PlotEventRequestDto;
-import com.sinenomine.plottracker.dto.StoryDto;
+import com.sinenomine.plottracker.dto.*;
 import com.sinenomine.plottracker.enums.EventType;
 import com.sinenomine.plottracker.model.PlotEvent;
 import com.sinenomine.plottracker.model.Story;
+import com.sinenomine.plottracker.service.PlotEventService;
 import com.sinenomine.plottracker.service.StoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/stories")
@@ -24,6 +26,9 @@ public class StoryController {
     @Autowired
     private StoryService storyService;
 
+    @Autowired
+    private PlotEventService plotEventService;
+
     // GET all user's stories
     @GetMapping("")
     public ResponseEntity<?> getAllStories(@AuthenticationPrincipal UserDetails userDetails) {
@@ -31,16 +36,14 @@ public class StoryController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
 
         String username = userDetails.getUsername();
-        Set<Story> stories = storyService.findByUser(username);
-        for (Story story : stories)
-            story.setUser(null);
+        List<StoryResponseDto> stories = storyService.findByUser(username);
         return ResponseEntity.ok(stories);
     }
 
     // POST create a new story for the user
     @PostMapping("")
     public ResponseEntity<?> createStory(@AuthenticationPrincipal UserDetails userDetails,
-                                         @Valid @RequestBody StoryDto storyDto, BindingResult bindingResult) {
+                                         @Valid @RequestBody StoryRequestDto storyRequestDto, BindingResult bindingResult) {
         if (userDetails == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
 
@@ -48,7 +51,7 @@ public class StoryController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
 
         String username = userDetails.getUsername();
-        Story createdStory = storyService.createStory(username, storyDto);
+        Story createdStory = storyService.createStory(username, storyRequestDto);
         createdStory.setUser(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdStory);
     }
@@ -70,7 +73,7 @@ public class StoryController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateStory(@AuthenticationPrincipal UserDetails userDetails,
                                          @PathVariable Long id,
-                                         @Valid @RequestBody StoryDto storyDto,
+                                         @Valid @RequestBody StoryRequestDto storyRequestDto,
                                          BindingResult bindingResult) {
         if (userDetails == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
@@ -79,7 +82,7 @@ public class StoryController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
 
         String username = userDetails.getUsername();
-        Story updatedStory = storyService.updateStory(username, id, storyDto);
+        Story updatedStory = storyService.updateStory(username, id, storyRequestDto);
         updatedStory.setUser(null);
         return ResponseEntity.ok(updatedStory);
     }
@@ -105,9 +108,8 @@ public class StoryController {
         }
         String username = userDetails.getUsername();
         Set<PlotEvent> plotEvents = storyService.getPlotEvents(username, id);
-        for (PlotEvent plotEvent : plotEvents)
-            plotEvent.setStory(null);
-        return ResponseEntity.ok(plotEvents);
+        List<PlotEventResponseDto> plotEventResponseDtos = plotEvents.stream().map(event -> plotEventService.convertToDto(event)).toList();
+        return ResponseEntity.ok(plotEventResponseDtos);
     }
 
     // POST add a new plot event to the user's story
@@ -124,21 +126,18 @@ public class StoryController {
 
         String username = userDetails.getUsername();
 
-        // Convert the DTO into a PlotEvent entity.
         PlotEvent plotEvent = new PlotEvent();
-        // Assuming the enum values in your EventType match the input string exactly.
         plotEvent.setEventType(EventType.valueOf(plotEventRequestDto.getEventType()));
         plotEvent.setTitle(plotEventRequestDto.getTitle());
         plotEvent.setDate(plotEventRequestDto.getDate());
         plotEvent.setDescription(plotEventRequestDto.getDescription());
         plotEvent.setContent(plotEventRequestDto.getContent());
 
-        // memoryRefId and nextEventId are optional.
         PlotEvent createdPlotEvent = storyService.addPlotEventToStory(
                 username, id, plotEvent,
-                plotEventRequestDto.getMemoryRefId(), plotEventRequestDto.getNextEventId()
+                plotEventRequestDto.getMemoryRefId(), plotEventRequestDto.getNextEventId(), plotEventRequestDto.getTags()
         );
-        createdPlotEvent.setStory(null);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPlotEvent);
+        PlotEventResponseDto responseDto = plotEventService.convertToDto(createdPlotEvent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 }

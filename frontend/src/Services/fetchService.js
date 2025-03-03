@@ -1,29 +1,24 @@
-const ajax = async (url, requestMethod, requestBody = null) => {
-  const fetchData = {
+const ajax = async (url, method, body = null) => {
+  const options = {
     headers: {
       "Content-Type": "application/json",
     },
-    method: requestMethod,
+    method,
     credentials: "include",
   };
 
-  if (requestBody) {
-    fetchData.body = JSON.stringify(requestBody);
+  if (body) {
+    options.body = JSON.stringify(body);
   }
 
-  try {
-    const response = await fetch(url, fetchData);
-    if (response.status === 200 || response.status === 201) {
-      return response;
-    } else {
-      return response.text().then((text) => {
-        throw new Error(text || `Request failed with status ${response.status}`);
-      });
-    }
-  } catch (error) {
-    console.error("AJAX request failed:", error);
-    throw error;
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      errorText || `Request failed with status ${response.status}`
+    );
   }
+  return response;
 };
 
 export default ajax;

@@ -1,0 +1,104 @@
+.homepage-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.homepage-container {
+  display: flex;
+  flex: 1;
+  background-color: #eef2f5;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.left-panel {
+  width: 300px;
+  background: #ffffff;
+  border-right: 1px solid #dfe3e8;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.panel-header {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 1px solid #dfe3e8;
+  padding-bottom: 10px;
+}
+
+.story-title {
+  margin: 10px 0;
+  padding: 8px;
+  background-color: #f7f9fc;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  font-size: 1rem;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.story-title:hover {
+  background-color: #e1e7ec;
+  transform: translateX(5px);
+}
+
+.story-text {
+  display: inline-block;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.story-title:hover .icon {
+  opacity: 1;
+}
+
+.edit-icon {
+  right: 32px;
+}
+
+.delete-icon {
+  right: 8px;
+  color: red;
+}
+
+.rename-form {
+  display: inline-flex;
+  align-items: center;
+}
+
+.rename-form input {
+  font-size: 1rem;
+  padding: 2px 5px;
+  margin-right: 5px;
+}
+
+.center-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.center-hint {
+  font-size: 1.5rem;
+  color: #666;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}

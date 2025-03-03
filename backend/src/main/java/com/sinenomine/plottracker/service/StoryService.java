@@ -1,6 +1,7 @@
 package com.sinenomine.plottracker.service;
 
-import com.sinenomine.plottracker.dto.StoryDto;
+import com.sinenomine.plottracker.dto.StoryRequestDto;
+import com.sinenomine.plottracker.dto.StoryResponseDto;
 import com.sinenomine.plottracker.model.PlotEvent;
 import com.sinenomine.plottracker.model.Story;
 import com.sinenomine.plottracker.model.Users;
@@ -27,21 +28,24 @@ public class StoryService {
     @Autowired
     private PlotEventRepo plotEventRepo;
 
+    @Autowired
+    private PlotEventService plotEventService;
+
 
     // Get all stories for a user
-    public Set<Story> findByUser(String username) {
-        return storyRepo.findByUser(username);
+    public List<StoryResponseDto> findByUser(String username) {
+        return storyRepo.findByUserResponses(username);
     }
 
     // Create a new story for the current user
-    public Story createStory(String username, StoryDto storyDto) {
+    public Story createStory(String username, StoryRequestDto storyRequestDto) {
         Users user = userRepo.findByUsername(username);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
         Story story = new Story();
-        story.setTitle(storyDto.getTitle());
-        story.setDescription(storyDto.getDescription());
+        story.setTitle(storyRequestDto.getTitle());
+        story.setDescription(storyRequestDto.getDescription());
         story.setUser(user);
         return storyRepo.save(story);
     }
@@ -52,10 +56,10 @@ public class StoryService {
     }
 
     // Update an existing story
-    public Story updateStory(String username, Long storyId, StoryDto storyDto) {
+    public Story updateStory(String username, Long storyId, StoryRequestDto storyRequestDto) {
         Story existingStory = getStoryByIdAndUser(storyId, username);
-        existingStory.setTitle(storyDto.getTitle());
-        existingStory.setDescription(storyDto.getDescription());
+        existingStory.setTitle(storyRequestDto.getTitle());
+        existingStory.setDescription(storyRequestDto.getDescription());
         return storyRepo.save(existingStory);
     }
 
@@ -77,7 +81,7 @@ public class StoryService {
     }
 
     // Add a new plot event to a given story; if provided, resolve memoryRef and nextEvent
-    public PlotEvent addPlotEventToStory(String username, Long storyId, PlotEvent plotEvent, Long memoryRefId, Long nextEventId) {
+    public PlotEvent addPlotEventToStory(String username, Long storyId, PlotEvent plotEvent, Long memoryRefId, Long nextEventId, Set<Long> tags) {
         Story story = getStoryByIdAndUser(storyId, username);
         plotEvent.setStory(story);
 
@@ -92,9 +96,11 @@ public class StoryService {
             plotEvent.setNextEvent(nextEvent);
         }
         PlotEvent savedPlotEvent = plotEventRepo.save(plotEvent);
+        for(Long tag: tags)
+            plotEventService.addTagToPlotEvent(savedPlotEvent.getEventId(), tag, username);
 //        story.getPlotEvents().add(savedPlotEvent);
-        storyRepo.save(story);
-        return savedPlotEvent;
+        //storyRepo.save(story);
+        return plotEventService.getPlotEventById(savedPlotEvent.getEventId(), username);
     }
 
     // Helper method to ensure the story exists and belongs to the current user

@@ -1,0 +1,104 @@
+{
+  "register": {
+    "title": "PlotTracker",
+    "description": "Create a new account to start tracking your stories.",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "Choose a username",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Choose a password",
+    "signUpButton": "Sign Up",
+    "loginHint": "Already have an account?",
+    "loginLink": "Log in",
+    "errorDefault": "An error occurred during registration.",
+    "success": "Registration successful! You can now log in.",
+    "errorFallback": "Something went wrong, please try again later."
+  },
+  "login": {
+    "message": "Log in to your account to view your stories.",
+    "username": "Username",
+    "usernamePlaceholder": "Your username",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "loginButton": "Login",
+    "noAccount": "Don't have an account?",
+    "signup": "Sign up",
+    "errorMessage": "An error occurred during login."
+  },
+  "homepage": {
+    "title": "Stories",
+    "hint": "Select a story from the left to view its plot events."
+  },
+  "toolbar": {
+    "brand": "PlotTracker",
+    "file": "File",
+    "help": "Help",
+    "newStory": "New Story",
+    "newEvent": "New Event",
+    "newTag": "New Tag",
+    "newTagType": "New Tag Type",
+    "documentation": "Documentation",
+    "about": "About",
+    "logOut": "Log out",
+    "aboutTitle": "About PlotTracker",
+    "aboutBodyLine1": "PlotTracker is a web application for tracking your creative stories and their plot events.",
+    "aboutBodyLine2": "Current Version: 0.0.1"
+  },
+  "newStoryModal": {
+    "title": "New Story",
+    "formTitle": "Title",
+    "formDescription": "Description",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "newEventModal": {
+    "title": "New Event",
+    "eventTypeLabel": "Event Type",
+    "titleLabel": "Title",
+    "dateLabel": "Date",
+    "descriptionLabel": "Description",
+    "contentLabel": "Content",
+    "memoryRefIdLabel": "Memory Reference",
+    "nextEventIdLabel": "Next Event",
+    "noneOption": "None",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "newTagModal": {
+    "title": "New Tag",
+    "storyLabel": "Select Story",
+    "tagNameLabel": "Tag Name",
+    "tagTypeLabel": "Tag Type",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "newTagTypeModal": {
+    "title": "New Tag Type",
+    "storyLabel": "Select Story",
+    "tagTypeNameLabel": "Tag Type Name",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "deleteConfirmation": {
+    "story": {
+      "title": "Delete Story",
+      "body": "Are you sure you want to delete this story? This will delete all events."
+    },
+    "tag": {
+      "title": "Delete Tag",
+      "body": "Are you sure you want to delete this tag? This action cannot be undone."
+    },
+    "tagType": {
+      "title": "Delete Tag Type",
+      "body": "Are you sure you want to delete this tag type? This will remove all tags under it."
+    },
+    "cancel": "Cancel",
+    "confirm": "Delete"
+  },
+  "storyPage": {
+    "tags": "Tags",
+    "tagTypes": "Tag Types",
+    "noEvents": "No plot events available for this story.",
+    "noTags": "No tags.",
+    "noTagTypes": "No tag types."
+  }
+}

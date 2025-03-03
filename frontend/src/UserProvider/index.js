@@ -10,7 +10,10 @@ const UserProvider = ({ children }) => {
     const validateAuth = async () => {
       try {
         const response = await ajax(`/api/auth/validate`, "GET");
-        console.log("UserProvider validateAuth response status:", response.status);
+        console.log(
+          "UserProvider validateAuth response status:",
+          response.status
+        );
 
         if (response.status === 200) {
           setIsAuthenticated(true);

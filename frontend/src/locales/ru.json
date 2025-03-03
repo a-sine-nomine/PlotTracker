@@ -1,0 +1,103 @@
+{
+  "register": {
+    "title": "PlotTracker",
+    "description": "Создайте новый аккаунт, чтобы начать отслеживать ваши истории.",
+    "usernameLabel": "Имя пользователя",
+    "usernamePlaceholder": "Выберите имя пользователя",
+    "passwordLabel": "Пароль",
+    "passwordPlaceholder": "Выберите пароль",
+    "signUpButton": "Зарегистрироваться",
+    "loginHint": "Уже есть аккаунт?",
+    "loginLink": "Войти",
+    "errorDefault": "Произошла ошибка при регистрации.",
+    "success": "Регистрация прошла успешно! Теперь вы можете войти.",
+    "errorFallback": "Что-то пошло не так, попробуйте позже."
+  },
+  "login": {
+    "message": "Войдите в свой аккаунт, чтобы просмотреть свои истории.",
+    "username": "Имя пользователя",
+    "usernamePlaceholder": "Ваше имя пользователя",
+    "password": "Пароль",
+    "passwordPlaceholder": "Ваш пароль",
+    "loginButton": "Войти",
+    "noAccount": "Нет аккаунта?",
+    "signup": "Зарегистрироваться",
+    "errorMessage": "Произошла ошибка при входе."
+  },
+  "homepage": {
+    "title": "Истории",
+    "hint": "Выберите историю слева, чтобы просмотреть её события."
+  },
+  "toolbar": {
+    "brand": "PlotTracker",
+    "file": "Файл",
+    "help": "Помощь",
+    "newStory": "Новая история",
+    "newEvent": "Новое событие",
+    "newTag": "Новый тег",
+    "newTagType": "Новый тип тега",
+    "documentation": "Документация",
+    "about": "О программе",
+    "logOut": "Выйти",
+    "aboutTitle": "О PlotTracker",
+    "aboutBodyLine1": "PlotTracker — это веб-приложение для отслеживания ваших творческих историй и их событий.",
+    "aboutBodyLine2": "Текущая версия: 0.0.1"
+  },
+  "newStoryModal": {
+    "title": "Новая история",
+    "formTitle": "Название",
+    "formDescription": "Описание",
+    "cancel": "Отмена",
+    "save": "Сохранить"
+  },
+  "newEventModal": {
+    "title": "Новое событие",
+    "eventTypeLabel": "Тип события",
+    "titleLabel": "Название",
+    "dateLabel": "Дата",
+    "descriptionLabel": "Описание",
+    "contentLabel": "Содержание",
+    "memoryRefIdLabel": "Воспоминание",
+    "nextEventIdLabel": "Следующее событие",
+    "noneOption": "Отсутствует",
+    "cancel": "Отмена",
+    "save": "Сохранить"
+  },
+  "newTagModal": {
+    "title": "Новый тэг",
+    "storyLabel": "Выберите историю",
+    "tagNameLabel": "Имя тега",
+    "tagTypeLabel": "Тип тега",
+    "cancel": "Отмена",
+    "save": "Сохранить"
+  },
+  "newTagTypeModal": {
+    "title": "Новый тип тега",
+    "storyLabel": "Выберите историю",
+    "tagTypeNameLabel": "Имя",
+    "cancel": "Отмена",
+    "save": "Сохранить"
+  },
+  "deleteConfirmation": {
+    "story": {
+      "title": "Удалить историю",
+      "body": "Вы уверены, что хотите удалить эту историю? Это приведет к удалению всех связанных событий."
+    },
+    "tag": {
+      "title": "Удалить тег",
+      "body": "Вы уверены, что хотите удалить этот тег? Это действие нельзя отменить."
+    },
+    "tagType": {
+      "title": "Удалить тип тега",
+      "body": "Вы уверены, что хотите удалить этот тип тегов? Это приведет к удалению всех тегов под ним."
+    },
+    "cancel": "Отмена",
+    "confirm": "Удалить"
+  },
+  "storyPage": {
+    "tags": "Тэги",
+    "noEvents": "Для этой истории нет сюжетных событий.",
+    "noTags": "Нет тегов.",
+    "noTagTypes": "Нет типов тегов."
+  }
+}

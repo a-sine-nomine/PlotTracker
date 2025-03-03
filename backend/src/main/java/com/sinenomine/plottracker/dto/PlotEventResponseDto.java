@@ -32,6 +32,17 @@ public class PlotEventResponseDto {
         this.tags = tags;
     }
 
+    public PlotEventResponseDto(String eventType, Long eventId, String title, String date, String description, String content, Long memoryRefId, Long nextEventId) {
+        this.eventType = eventType;
+        this.eventId = eventId;
+        this.title = title;
+        this.date = date;
+        this.description = description;
+        this.content = content;
+        this.memoryRefId = memoryRefId;
+        this.nextEventId = nextEventId;
+    }
+
     public Long getEventId() {
         return eventId;
     }

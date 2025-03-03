@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserProvider";
 import apiService from "../Services/apiService";
 import { useTranslation } from "react-i18next";
-import "./Login.css";
+import "./Register.css";
 
-const Login = () => {
+const Register = () => {
   const { t, i18n } = useTranslation();
   const { setIsAuthenticated } = useUser();
   const navigate = useNavigate();
@@ -14,16 +14,22 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
 
-  const sendLoginRequest = async () => {
+  const sendRegisterRequest = async () => {
     setErrorMsg("");
+    setSuccessMsg("");
     try {
-      await apiService.login(username, password);
-      setIsAuthenticated(true);
-      navigate("/homepage");
+      const response = await apiService.register(username, password);
+
+      if (response.status === 201) {
+        setSuccessMsg(t("register.success"));
+      } else {
+        setErrorMsg(t("register.errorFallback"));
+      }
     } catch (error) {
-      console.error("Error during login:", error);
-      setErrorMsg(error.message || t("login.errorMessage"));
+      console.error("Error during registration:", error);
+      setErrorMsg(error.message || t("register.errorDefault"));
     }
   };
 
@@ -43,15 +49,17 @@ const Login = () => {
             className="text-center mb-4"
             style={{ fontFamily: "Helvetica, Arial, sans-serif" }}
           >
-            PlotTracker
+            {t("register.title")}
           </h1>
-          <p className="text-center text-muted mb-4">{t("login.message")}</p>
+          <p className="text-center text-muted mb-4">
+            {t("register.description")}
+          </p>
 
           <Form.Group className="mb-3" controlId="username">
-            <Form.Label>{t("login.username")}</Form.Label>
+            <Form.Label>{t("register.usernameLabel")}</Form.Label>
             <Form.Control
               type="text"
-              placeholder={t("login.usernamePlaceholder")}
+              placeholder={t("register.usernamePlaceholder")}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoComplete="off"
@@ -59,10 +67,10 @@ const Login = () => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="password">
-            <Form.Label>{t("login.password")}</Form.Label>
+            <Form.Label>{t("register.passwordLabel")}</Form.Label>
             <Form.Control
               type="password"
-              placeholder={t("login.passwordPlaceholder")}
+              placeholder={t("register.passwordPlaceholder")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="off"
@@ -74,26 +82,32 @@ const Login = () => {
               {errorMsg}
             </div>
           )}
+          {successMsg && (
+            <div className="text-success mb-3" style={{ fontWeight: "bold" }}>
+              {successMsg}
+            </div>
+          )}
 
           <div className="d-grid">
-            <Button variant="primary" onClick={sendLoginRequest}>
-              {t("login.loginButton")}
+            <Button variant="primary" onClick={sendRegisterRequest}>
+              {t("register.signUpButton")}
             </Button>
           </div>
 
           <div className="text-center mt-3">
             <small className="text-muted">
-              {t("login.noAccount")}{" "}
+              {t("register.loginHint")}{" "}
               <span
                 className="text-primary text-decoration-underline"
                 style={{ cursor: "pointer" }}
-                onClick={() => navigate("/register")}
+                onClick={() => navigate("/login")}
               >
-                {t("login.signup")}
+                {t("register.loginLink")}
               </span>
             </small>
           </div>
 
+          {}
           <div className="language-switcher mt-3 text-center">
             <span className="lang-toggle" onClick={toggleLanguage}>
               {i18n.language === "en" ? "en" : "ру"}
@@ -105,4 +119,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
