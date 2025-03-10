@@ -68,6 +68,7 @@
     "storyLabel": "Select Story",
     "tagNameLabel": "Tag Name",
     "tagTypeLabel": "Tag Type",
+    "colorLabel": "Color",
     "cancel": "Cancel",
     "save": "Save"
   },

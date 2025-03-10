@@ -86,13 +86,19 @@ public class PlotEventService {
                         tag.getTagId(),
                         tag.getTagName(),
                         tag.getTagType().getTagTypeId(),
-                        tag.getTagType().getName()))
+                        tag.getTagType().getName(),
+                        tag.getColor()))
                 .collect(Collectors.toList());
 
         return new PlotEventResponseDto(
+                event.getEventType().name(),
                 event.getEventId(),
                 event.getTitle(),
-                event.getEventType().name(), // or however you wish to represent the enum
+                event.getDate(),
+                event.getDescription(),
+                event.getContent(),
+                event.getMemoryRef() == null ? null : event.getMemoryRef().getEventId(),
+                event.getNextEvent() == null ? null : event.getNextEvent().getEventId(),
                 tagDtos);
     }
 }

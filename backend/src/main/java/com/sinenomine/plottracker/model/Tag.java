@@ -19,6 +19,9 @@ public class Tag {
     @Column(name = "tag_name", nullable = false, length = 100)
     private String tagName;
 
+    @Column(name = "color", nullable = false, length = 7)
+    private String color;
+
     // Relationship to TagType
     @ManyToOne
     @JoinColumn(name = "tag_type_id", nullable = false)
@@ -30,9 +33,10 @@ public class Tag {
     public Tag() {
     }
 
-    public Tag(String tagName, TagType tagType) {
+    public Tag(String tagName, TagType tagType, String color) {
         this.tagName = tagName;
         this.tagType = tagType;
+        this.color = color;
     }
 
     public Long getTagId() {
@@ -57,6 +61,14 @@ public class Tag {
 
     public void setTagName(String tagName) {
         this.tagName = tagName;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public TagType getTagType() {

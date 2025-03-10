@@ -18,6 +18,7 @@ const Toolbar = ({ onNewStoryCreated }) => {
 
   const [showNewTagModal, setShowNewTagModal] = useState(false);
   const [newTagName, setNewTagName] = useState("");
+  const [newTagColor, setNewTagColor] = useState("#000000");
   const [selectedStoryIdForTag, setSelectedStoryIdForTag] = useState("");
   const [selectedTagTypeId, setSelectedTagTypeId] = useState("");
   const [tagTypes, setTagTypes] = useState([]);
@@ -125,6 +126,7 @@ const Toolbar = ({ onNewStoryCreated }) => {
       const tagDto = {
         tagName: newTagName,
         tagTypeId: selectedTagTypeId,
+        color: newTagColor,
       };
       const response = await apiService.createTag(
         selectedStoryIdForTag,
@@ -133,6 +135,7 @@ const Toolbar = ({ onNewStoryCreated }) => {
       const data = await response.json();
       console.log("New tag created:", data);
       setNewTagName("");
+      setNewTagColor("#000000");
       setShowNewTagModal(false);
     } catch (error) {
       console.error("Error creating new tag:", error);
@@ -465,6 +468,16 @@ const Toolbar = ({ onNewStoryCreated }) => {
                   </option>
                 ))}
               </Form.Control>
+            </Form.Group>
+
+            {/* New Color Field */}
+            <Form.Group controlId="formTagColor" className="mb-3">
+              <Form.Label>{t("newTagModal.colorLabel")}</Form.Label>
+              <Form.Control
+                type="color"
+                value={newTagColor}
+                onChange={(e) => setNewTagColor(e.target.value)}
+              />
             </Form.Group>
           </Form>
         </Modal.Body>

@@ -32,7 +32,7 @@ public class PlotEventResponseDto {
         this.tags = tags;
     }
 
-    public PlotEventResponseDto(String eventType, Long eventId, String title, String date, String description, String content, Long memoryRefId, Long nextEventId) {
+    public PlotEventResponseDto(String eventType, Long eventId, String title, String date, String description, String content, Long memoryRefId, Long nextEventId, List<TagResponseDto> tags) {
         this.eventType = eventType;
         this.eventId = eventId;
         this.title = title;
@@ -41,6 +41,7 @@ public class PlotEventResponseDto {
         this.content = content;
         this.memoryRefId = memoryRefId;
         this.nextEventId = nextEventId;
+        this.tags = tags;
     }
 
     public Long getEventId() {

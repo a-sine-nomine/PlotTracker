@@ -68,6 +68,7 @@
     "storyLabel": "Выберите историю",
     "tagNameLabel": "Имя тега",
     "tagTypeLabel": "Тип тега",
+    "colorLabel": "Цвет",
     "cancel": "Отмена",
     "save": "Сохранить"
   },

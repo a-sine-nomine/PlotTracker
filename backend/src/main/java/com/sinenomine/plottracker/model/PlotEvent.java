@@ -35,17 +35,22 @@ public class PlotEvent {
     private String content;
 
     // Self-reference for memory_ref_id
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "memory_ref_id", foreignKey = @ForeignKey(name = "FK_memory_ref"))
     private PlotEvent memoryRef;
 
     // Self-reference for next_event_id
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "prev_event_id", foreignKey = @ForeignKey(name = "FK_prev_event"))
+    private PlotEvent prevEvent;
+
+    // Self-reference for next_event_id
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "next_event_id", foreignKey = @ForeignKey(name = "FK_next_event"))
     private PlotEvent nextEvent;
 
     // Relationship to Tag via a join table PlotEventTag
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "PlotEventTag",
             joinColumns = @JoinColumn(name = "event_id"),

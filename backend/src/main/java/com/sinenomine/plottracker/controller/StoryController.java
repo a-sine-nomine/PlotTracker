@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -100,15 +101,19 @@ public class StoryController {
     }
 
     // GET all plot events for a specific story
-    @GetMapping("/{id}/plotevents")
+    @GetMapping("/{id}/plotevents{sortBy}")
     public ResponseEntity<?> getPlotEvents(@AuthenticationPrincipal UserDetails userDetails,
-                                           @PathVariable Long id) {
+                                           @PathVariable Long id,
+                                           @PathVariable String sortBy) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
         String username = userDetails.getUsername();
         Set<PlotEvent> plotEvents = storyService.getPlotEvents(username, id);
         List<PlotEventResponseDto> plotEventResponseDtos = plotEvents.stream().map(event -> plotEventService.convertToDto(event)).toList();
+        if(sortBy.equals("date")) {
+            plotEventResponseDtos.sort(Comparator.comparing(PlotEventResponseDto::getDate));
+        }
         return ResponseEntity.ok(plotEventResponseDtos);
     }
 
