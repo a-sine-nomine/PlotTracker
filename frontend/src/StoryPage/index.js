@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import apiService from "../Services/apiService";
 import Toolbar from "../Toolbar";
+import Plotline from "./Plotline";
 import { useTranslation } from "react-i18next";
 import TagTypeRow from "./TagTypeRow";
 import "./StoryPage.css";
@@ -21,7 +22,7 @@ const StoryPage = () => {
   useEffect(() => {
     const fetchPlotEvents = async () => {
       try {
-        const response = await apiService.getPlotEvents(storyId);
+        const response = await apiService.getPlotEvents(storyId, "date");
         const data = await response.json();
         setPlotEvents(data);
       } catch (error) {
@@ -155,16 +156,7 @@ const StoryPage = () => {
           </div>
         </div>
         <div className="center-panel">
-          {plotEvents.length > 0 ? (
-            plotEvents.map((event) => (
-              <div key={event.eventId} className="plot-event">
-                <h5>{event.title}</h5>
-                {event.description && <p>{event.description}</p>}
-              </div>
-            ))
-          ) : (
-            <p>{t("storyPage.noEvents")}</p>
-          )}
+          <Plotline events={plotEvents} width={1200} height={800} />
         </div>
       </div>
     </div>
