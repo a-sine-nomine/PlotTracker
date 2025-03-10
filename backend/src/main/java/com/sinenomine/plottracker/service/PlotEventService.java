@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +43,9 @@ public class PlotEventService {
         event.setDate(dto.getDate());
         event.setDescription(dto.getDescription());
         event.setContent(dto.getContent());
+        //todo add protection
+        Set<Tag> tags = dto.getTags().stream().map(tagId -> tagRepo.findById(tagId).orElseThrow(() -> new RuntimeException("Tag not found"))).collect(Collectors.toSet());
+        event.setTags(tags);
         if (dto.getMemoryRefId() != null) {
             PlotEvent memoryRef = plotEventRepo.findById(dto.getMemoryRefId())
                     .orElseThrow(() -> new RuntimeException("Memory reference plot event not found"));

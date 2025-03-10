@@ -156,7 +156,12 @@ const StoryPage = () => {
           </div>
         </div>
         <div className="center-panel">
-          <Plotline events={plotEvents} width={1200} height={800} />
+          <Plotline
+            events={plotEvents}
+            width={1200}
+            height={800}
+            storyId={storyId}
+          />
         </div>
       </div>
     </div>
