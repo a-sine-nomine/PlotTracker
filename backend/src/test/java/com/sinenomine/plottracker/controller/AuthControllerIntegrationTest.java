@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 @Sql(value = "/test-data.sql", executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
 class AuthControllerIntegrationTest {
