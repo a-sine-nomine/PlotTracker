@@ -7,3 +7,7 @@ INSERT INTO tag_type(tag_type_id, name, story_id) VALUES
 INSERT INTO tag(tag_id, tag_name, tag_type_id, story_id, color) VALUES
 (1, 'Tag11', 1, 1, '#D0BBFF'),
 (2, 'Tag12', 1, 1, '#B8EAFF');
+INSERT INTO plot_event(event_id, content, date, description, event_type, title, memory_ref_id, next_event_id, prev_event_id, story_id) VALUES
+(1, 'TestContent', '1500.01.01', 'TestDescription', 'dated', 'TestTitle', null, null, null, 1);
+INSERT INTO plot_event_tag(event_id, tag_id) VALUES
+(1, 1);
