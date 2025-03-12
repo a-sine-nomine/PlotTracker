@@ -49,7 +49,7 @@ class PlotEventControllerIntegrationTest {
     private Long tagId = 1L;
 
     @BeforeAll
-    void loginOnce() throws Exception {
+    void beforeAllLogin() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setUsername("TestUser1");
         userDto.setPassword("password");
