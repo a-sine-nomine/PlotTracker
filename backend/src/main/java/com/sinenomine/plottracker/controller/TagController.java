@@ -48,7 +48,7 @@ public class TagController {
         if (bindingResult.hasErrors())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
         Tag tag = tagService.createTag(storyId, tagRequestDto, userDetails.getUsername());
-        TagResponseDto tagResponseDto = new TagResponseDto(tag.getTagId(), tag.getTagName(), tag.getTagType().getTagTypeId(), tag.getTagType().getName());
+        TagResponseDto tagResponseDto = new TagResponseDto(tag.getTagId(), tag.getTagName(), tag.getTagType().getTagTypeId(), tag.getTagType().getName(), tag.getColor());
         return ResponseEntity.status(HttpStatus.CREATED).body(tagResponseDto);
     }
 
@@ -76,7 +76,7 @@ public class TagController {
         if (bindingResult.hasErrors())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
         Tag tag = tagService.updateTag(storyId, tagId, tagRequestDto, userDetails.getUsername());
-        TagResponseDto tagResponseDto = new TagResponseDto(tag.getTagId(), tag.getTagName(), tag.getTagType().getTagTypeId(), tag.getTagType().getName());
+        TagResponseDto tagResponseDto = new TagResponseDto(tag.getTagId(), tag.getTagName(), tag.getTagType().getTagTypeId(), tag.getTagType().getName(), tag.getColor());
         return ResponseEntity.ok(tagResponseDto);
     }
 

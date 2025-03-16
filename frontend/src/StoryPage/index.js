@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import apiService from "../Services/apiService";
 import Toolbar from "../Toolbar";
+import Plotline from "./Plotline";
+import VisualizationSettings from "./VisualizationSettings";
 import { useTranslation } from "react-i18next";
 import TagTypeRow from "./TagTypeRow";
 import "./StoryPage.css";
@@ -16,14 +18,15 @@ const StoryPage = () => {
   const [tagTypes, setTagTypes] = useState([]);
   const [tagsSectionOpen, setTagsSectionOpen] = useState(false);
   const [openTagTypes, setOpenTagTypes] = useState({});
+  const [filteredEvents, setFilteredEvents] = useState([]);
 
-  //Fetch plot events
   useEffect(() => {
     const fetchPlotEvents = async () => {
       try {
-        const response = await apiService.getPlotEvents(storyId);
+        const response = await apiService.getPlotEvents(storyId, "date");
         const data = await response.json();
         setPlotEvents(data);
+        setFilteredEvents(data);
       } catch (error) {
         console.error("Error fetching plot events:", error);
       }
@@ -31,7 +34,6 @@ const StoryPage = () => {
     fetchPlotEvents();
   }, [storyId]);
 
-  //Fetch story details (for title)
   useEffect(() => {
     const fetchStoryDetails = async () => {
       try {
@@ -45,7 +47,6 @@ const StoryPage = () => {
     fetchStoryDetails();
   }, [storyId]);
 
-  //Fetch tags
   useEffect(() => {
     const fetchTags = async () => {
       try {
@@ -59,7 +60,6 @@ const StoryPage = () => {
     fetchTags();
   }, [storyId]);
 
-  //Fetch tag types
   useEffect(() => {
     const fetchTagTypes = async () => {
       try {
@@ -73,12 +73,9 @@ const StoryPage = () => {
     fetchTagTypes();
   }, [storyId]);
 
-  //Sort tag types alphabetically by name
   const sortedTagTypes = [...tagTypes].sort((a, b) =>
     a.name.localeCompare(b.name)
   );
-
-  //Group tags by tagTypeId and sort each group alphabetically by tagName
   const groupedTags = {};
   tags.forEach((tag) => {
     if (!groupedTags[tag.tagTypeId]) groupedTags[tag.tagTypeId] = [];
@@ -119,6 +116,18 @@ const StoryPage = () => {
     );
   };
 
+  const handleFilterChange = ({ filterMode, checkedIds }) => {
+    const filtered = plotEvents.filter((event) => {
+      const eventTagIds = event.tags.map((t) => t.tagId);
+      if (filterMode === "or") {
+        return checkedIds.some((id) => eventTagIds.includes(id));
+      } else {
+        return checkedIds.every((id) => eventTagIds.includes(id));
+      }
+    });
+    setFilteredEvents(filtered);
+  };
+
   return (
     <div className="storypage-wrapper">
       <Toolbar />
@@ -155,16 +164,20 @@ const StoryPage = () => {
           </div>
         </div>
         <div className="center-panel">
-          {plotEvents.length > 0 ? (
-            plotEvents.map((event) => (
-              <div key={event.eventId} className="plot-event">
-                <h5>{event.title}</h5>
-                {event.description && <p>{event.description}</p>}
-              </div>
-            ))
-          ) : (
-            <p>{t("storyPage.noEvents")}</p>
-          )}
+          <div className="visualization-settings-container">
+            <VisualizationSettings
+              availableTags={tags}
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+          <div className="plotline-container">
+            <Plotline
+              events={filteredEvents}
+              width={1200}
+              height={800}
+              storyId={storyId}
+            />
+          </div>
         </div>
       </div>
     </div>

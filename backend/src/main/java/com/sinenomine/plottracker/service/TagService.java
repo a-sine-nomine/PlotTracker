@@ -47,7 +47,7 @@ public class TagService {
         if (!tag.getStory().getStoryId().equals(story.getStoryId())) {
             throw new RuntimeException("Unauthorized access to tag");
         }
-        TagResponseDto tagResponseDto = new TagResponseDto(tag.getTagId(), tag.getTagName(), tag.getTagType().getTagTypeId(), tag.getTagType().getName());
+        TagResponseDto tagResponseDto = new TagResponseDto(tag.getTagId(), tag.getTagName(), tag.getTagType().getTagTypeId(), tag.getTagType().getName(), tag.getColor());
         return tagResponseDto;
     }
 
@@ -61,6 +61,7 @@ public class TagService {
             throw new RuntimeException("Unauthorized access to tag type");
         tag.setTagType(tagType);
         tag.setStory(story);
+        tag.setColor(tagRequestDto.getColor());
         return tagRepo.save(tag);
     }
 
@@ -77,6 +78,7 @@ public class TagService {
         if (!tagType.getStory().getStoryId().equals(story.getStoryId()))
             throw new RuntimeException("Unauthorized access to tag type");
         tag.setTagType(tagType);
+        tag.setColor(tagRequestDto.getColor());
         return tagRepo.save(tag);
     }
 

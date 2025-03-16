@@ -68,6 +68,7 @@
     "storyLabel": "Выберите историю",
     "tagNameLabel": "Имя тега",
     "tagTypeLabel": "Тип тега",
+    "colorLabel": "Цвет",
     "cancel": "Отмена",
     "save": "Сохранить"
   },
@@ -99,5 +100,12 @@
     "noEvents": "Для этой истории нет сюжетных событий.",
     "noTags": "Нет тегов.",
     "noTagTypes": "Нет типов тегов."
+  },
+  "visualSettings": {
+    "filterOr": "Фильтр по принципу 'или'",
+    "filterAnd": "Фильтр по принципу 'и'",
+    "selectFilterMode": "Выберите режим фильтра",
+    "checkAll": "Отметить все",
+    "apply": "Применить"
   }
 }

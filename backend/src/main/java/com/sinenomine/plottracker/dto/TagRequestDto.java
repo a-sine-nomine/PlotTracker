@@ -11,6 +11,9 @@ public class TagRequestDto {
     @JsonProperty("tagName")
     private String tagName;
 
+    @JsonProperty("color")
+    private String color;
+
     @NotNull(message = "Tag type id is required")
     @JsonProperty("tagTypeId")
     private Long tagTypeId;
@@ -21,6 +24,14 @@ public class TagRequestDto {
 
     public void setTagName(String tagName) {
         this.tagName = tagName;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public Long getTagTypeId() {

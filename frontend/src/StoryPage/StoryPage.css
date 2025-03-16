@@ -107,6 +107,12 @@
   flex: 1;
   padding: 1rem;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.plotline-container {
+  flex: 1;
 }
 
 .plot-event {

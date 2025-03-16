@@ -5,16 +5,18 @@ public class TagResponseDto {
     private String tagName;
     private Long tagTypeId;
     private String tagTypeName;
+    private String color;
 
     // Constructors
     public TagResponseDto() {
     }
 
-    public TagResponseDto(Long tagId, String tagName, Long tagTypeId, String tagTypeName) {
+    public TagResponseDto(Long tagId, String tagName, Long tagTypeId, String tagTypeName, String color) {
         this.tagId = tagId;
         this.tagName = tagName;
         this.tagTypeId = tagTypeId;
         this.tagTypeName = tagTypeName;
+        this.color = color;
     }
 
     public Long getTagId() {
@@ -47,5 +49,13 @@ public class TagResponseDto {
 
     public void setTagTypeName(String tagTypeName) {
         this.tagTypeName = tagTypeName;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }
