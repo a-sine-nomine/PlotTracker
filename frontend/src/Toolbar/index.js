@@ -329,6 +329,7 @@ const Toolbar = ({ onNewStoryCreated }) => {
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Header>{username}</Dropdown.Header>
+              <Dropdown.Divider />
               <Dropdown.Item onClick={() => setShowChangePasswordModal(true)}>
                 {t("userOptions.changePassword", "Change password")}
               </Dropdown.Item>
