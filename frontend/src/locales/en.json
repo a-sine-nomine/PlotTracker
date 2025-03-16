@@ -101,5 +101,12 @@
     "noEvents": "No plot events available for this story.",
     "noTags": "No tags.",
     "noTagTypes": "No tag types."
+  },
+  "visualSettings": {
+    "filterOr": "Filter with 'or'",
+    "filterAnd": "Filter with 'and'",
+    "selectFilterMode": "Select filter mode",
+    "checkAll": "Check All",
+    "apply": "Apply"
   }
 }
