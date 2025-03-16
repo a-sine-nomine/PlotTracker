@@ -79,6 +79,19 @@
     "cancel": "Cancel",
     "save": "Save"
   },
+  "userOptions": {
+    "changePassword": "Change password",
+    "logOut": "Log out",
+    "deleteAccount": "Delete account",
+    "oldPassword": "Old password",
+    "newPassword": "New password",
+    "repeatNewPassword": "Repeat new password",
+    "cancel": "Cancel",
+    "change": "Change",
+    "passwordMismatch": "New passwords do not match",
+    "passwordChanged": "Password changed successfully",
+    "passwordIncorrect": "Incorrect current password"
+  },
   "deleteConfirmation": {
     "story": {
       "title": "Delete Story",

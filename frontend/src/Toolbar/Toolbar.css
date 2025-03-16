@@ -18,3 +18,26 @@
 .toolbar .dropdown-menu {
   min-width: 150px;
 }
+
+.user-options .user-dropdown-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background-color: #007bff;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.user-name {
+  font-size: 0.9rem;
+  white-space: nowrap;
+}

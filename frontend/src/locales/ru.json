@@ -79,6 +79,19 @@
     "cancel": "Отмена",
     "save": "Сохранить"
   },
+  "userOptions": {
+    "changePassword": "Изменить пароль",
+    "logOut": "Выйти",
+    "deleteAccount": "Удалить аккаунт",
+    "oldPassword": "Старый пароль",
+    "newPassword": "Новый пароль",
+    "repeatNewPassword": "Повторите новый пароль",
+    "cancel": "Отмена",
+    "change": "Изменить",
+    "passwordMismatch": "Новые пароли не совпадают",
+    "passwordChanged": "Пароль изменен успешно",
+    "passwordIncorrect": "Неправильный старый пароль"
+  },
   "deleteConfirmation": {
     "story": {
       "title": "Удалить историю",

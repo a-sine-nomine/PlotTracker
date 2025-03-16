@@ -11,6 +11,10 @@ const apiService = {
   logout: () => ajax(`${API_BASE}/auth/logout`, "GET"),
   validateAuth: () => ajax(`${API_BASE}/auth/validate`, "GET"),
 
+  // ----- User -----
+  changePassword: (passwordDto) =>
+    ajax(`${API_BASE}/user/password`, "PUT", passwordDto),
+
   // ----- Story -----
   getStories: () => ajax(`${API_BASE}/stories`, "GET"),
   getStoryDetails: (storyId) => ajax(`${API_BASE}/stories/${storyId}`, "GET"),

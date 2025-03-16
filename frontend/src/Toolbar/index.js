@@ -10,6 +10,7 @@ const Toolbar = ({ onNewStoryCreated }) => {
   const navigate = useNavigate();
   const { storyId } = useParams();
 
+  const [username, setUsername] = useState("VeryLongLongUsername");
   const [showNewStoryModal, setShowNewStoryModal] = useState(false);
   const [newStoryTitle, setNewStoryTitle] = useState("");
   const [newStoryDescription, setNewStoryDescription] = useState("");
@@ -39,6 +40,13 @@ const Toolbar = ({ onNewStoryCreated }) => {
   const [storyEvents, setStoryEvents] = useState([]);
 
   const [userStories, setUserStories] = useState([]);
+
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [repeatNewPassword, setRepeatNewPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
 
   useEffect(() => {
     const fetchUserStories = async () => {
@@ -190,6 +198,40 @@ const Toolbar = ({ onNewStoryCreated }) => {
     }
   };
 
+  const displayUsername = (name) => {
+    if (!name) return "";
+    return name.length <= 15 ? name : name.substring(0, 15) + "...";
+  };
+
+  const handleChangePassword = async () => {
+    if (newPassword !== repeatNewPassword) {
+      setPasswordError(
+        t("userOptions.passwordMismatch", "New passwords do not match")
+      );
+      return;
+    }
+    setPasswordError("");
+    setPasswordSuccess("");
+    const passwordDto = {
+      currentPassword: oldPassword,
+      newPassword: newPassword,
+    };
+    try {
+      const response = await apiService.changePassword(passwordDto);
+      setPasswordSuccess(
+        t("userOptions.passwordChanged", "Password changed successfully")
+      );
+      setOldPassword("");
+      setNewPassword("");
+      setRepeatNewPassword("");
+    } catch (error) {
+      setPasswordError(
+        error.message ||
+          t("userOptions.passwordIncorrect", "Incorrect current password")
+      );
+    }
+  };
+
   return (
     <>
       <Navbar bg="light" expand="lg" className="toolbar">
@@ -242,7 +284,34 @@ const Toolbar = ({ onNewStoryCreated }) => {
           </Dropdown>
         </Nav>
 
-        <Nav className="ms-auto me-3">
+        <Nav className="ms-auto me-3 user-options">
+          {/* User Options Dropdown */}
+          <Dropdown align="end">
+            <Dropdown.Toggle
+              variant="link"
+              id="user-dropdown"
+              className="user-dropdown-toggle"
+            >
+              <div className="user-avatar">
+                {username.charAt(0).toUpperCase()}
+              </div>
+              <div className="user-name">{displayUsername(username)}</div>
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Header>{username}</Dropdown.Header>
+              <Dropdown.Item onClick={() => setShowChangePasswordModal(true)}>
+                {t("userOptions.changePassword", "Change password")}
+              </Dropdown.Item>
+              <Dropdown.Item disabled>
+                {t("userOptions.logOut", "Log out")}
+              </Dropdown.Item>
+              <Dropdown.Item disabled>
+                {t("userOptions.deleteAccount", "Delete account")}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+
+          {}
           <Button
             variant="link"
             className="language-toggle"
@@ -250,11 +319,73 @@ const Toolbar = ({ onNewStoryCreated }) => {
           >
             {i18n.language === "en" ? "en" : "ру"}
           </Button>
-          <Button variant="outline-secondary" onClick={handleLogout}>
-            {t("toolbar.logOut")}
-          </Button>
         </Nav>
       </Navbar>
+
+      {/* Change Password Modal */}
+      <Modal
+        show={showChangePasswordModal}
+        onHide={() => {
+          setShowChangePasswordModal(false);
+          setPasswordError("");
+          setPasswordSuccess("");
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {t("userOptions.changePassword", "Change password")}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {passwordError && <p className="error-message">{passwordError}</p>}
+          {passwordSuccess && (
+            <p className="success-message">{passwordSuccess}</p>
+          )}
+          <Form>
+            <Form.Group controlId="oldPassword" className="mb-3">
+              <Form.Label>
+                {t("userOptions.oldPassword", "Old password")}
+              </Form.Label>
+              <Form.Control
+                type="password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="newPassword" className="mb-3">
+              <Form.Label>
+                {t("userOptions.newPassword", "New password")}
+              </Form.Label>
+              <Form.Control
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="repeatNewPassword" className="mb-3">
+              <Form.Label>
+                {t("userOptions.repeatNewPassword", "Repeat new password")}
+              </Form.Label>
+              <Form.Control
+                type="password"
+                value={repeatNewPassword}
+                onChange={(e) => setRepeatNewPassword(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowChangePasswordModal(false)}
+          >
+            {t("userOptions.cancel", "Cancel")}
+          </Button>
+          <Button variant="primary" onClick={handleChangePassword}>
+            {t("userOptions.change", "Change")}
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       {/* New Story Modal */}
       <Modal
