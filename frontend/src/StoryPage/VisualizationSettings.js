@@ -48,6 +48,7 @@ const VisualizationSettings = ({ availableTags, onFilterChange }) => {
       .filter((tagId) => checkedTags[tagId])
       .map((id) => Number(id));
     onFilterChange({ filterMode, checkedIds });
+    setShowModeDropdown(false);
   };
 
   return (

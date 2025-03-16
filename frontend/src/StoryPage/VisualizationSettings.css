@@ -1,9 +1,6 @@
-.visualization-settings-container {
-  margin-bottom: 10px;
-}
-
 .visualization-settings-panel {
-  border: 1px solid #ddd;
+  position: relative;
+  border: 0px solid #ddd;
   padding: 5px 10px;
   background: #f8f9fa;
   margin-bottom: 10px;
@@ -14,13 +11,20 @@
 
 .vs-header {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   margin-bottom: 5px;
 }
 
 .vs-dropdown {
-  border-top: 1px solid #ddd;
-  padding-top: 5px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 130%;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 10px;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .vs-controls {
