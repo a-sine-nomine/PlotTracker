@@ -302,7 +302,7 @@ const Toolbar = ({ onNewStoryCreated }) => {
               <Dropdown.Item onClick={() => setShowChangePasswordModal(true)}>
                 {t("userOptions.changePassword", "Change password")}
               </Dropdown.Item>
-              <Dropdown.Item disabled>
+              <Dropdown.Item onClick={() => handleLogout(true)}>
                 {t("userOptions.logOut", "Log out")}
               </Dropdown.Item>
               <Dropdown.Item disabled>
