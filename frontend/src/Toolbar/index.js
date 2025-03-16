@@ -11,6 +11,7 @@ const Toolbar = ({ onNewStoryCreated }) => {
   const { storyId } = useParams();
 
   const [username, setUsername] = useState("VeryLongLongUsername");
+
   const [showNewStoryModal, setShowNewStoryModal] = useState(false);
   const [newStoryTitle, setNewStoryTitle] = useState("");
   const [newStoryDescription, setNewStoryDescription] = useState("");
@@ -47,6 +48,10 @@ const Toolbar = ({ onNewStoryCreated }) => {
   const [repeatNewPassword, setRepeatNewPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
+
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [deleteAccountPassword, setDeleteAccountPassword] = useState("");
+  const [deleteAccountError, setDeleteAccountError] = useState("");
 
   useEffect(() => {
     const fetchUserStories = async () => {
@@ -198,11 +203,6 @@ const Toolbar = ({ onNewStoryCreated }) => {
     }
   };
 
-  const displayUsername = (name) => {
-    if (!name) return "";
-    return name.length <= 15 ? name : name.substring(0, 15) + "...";
-  };
-
   const handleChangePassword = async () => {
     if (newPassword !== repeatNewPassword) {
       setPasswordError(
@@ -228,6 +228,20 @@ const Toolbar = ({ onNewStoryCreated }) => {
       setPasswordError(
         error.message ||
           t("userOptions.passwordIncorrect", "Incorrect current password")
+      );
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleteAccountError("");
+    const passwordDto = { password: deleteAccountPassword };
+    try {
+      await apiService.deleteUser(passwordDto);
+      navigate("/register");
+    } catch (error) {
+      setDeleteAccountError(
+        error.message ||
+          t("userOptions.deleteAccountError", "Password is incorrect")
       );
     }
   };
@@ -295,7 +309,11 @@ const Toolbar = ({ onNewStoryCreated }) => {
               <div className="user-avatar">
                 {username.charAt(0).toUpperCase()}
               </div>
-              <div className="user-name">{displayUsername(username)}</div>
+              <div className="user-name">
+                {username.length <= 15
+                  ? username
+                  : username.substring(0, 15) + "..."}
+              </div>
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Header>{username}</Dropdown.Header>
@@ -305,13 +323,11 @@ const Toolbar = ({ onNewStoryCreated }) => {
               <Dropdown.Item onClick={() => handleLogout(true)}>
                 {t("userOptions.logOut", "Log out")}
               </Dropdown.Item>
-              <Dropdown.Item disabled>
+              <Dropdown.Item onClick={() => setShowDeleteAccountModal(true)}>
                 {t("userOptions.deleteAccount", "Delete account")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-
-          {}
           <Button
             variant="link"
             className="language-toggle"
@@ -383,6 +399,51 @@ const Toolbar = ({ onNewStoryCreated }) => {
           </Button>
           <Button variant="primary" onClick={handleChangePassword}>
             {t("userOptions.change", "Change")}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Delete Account Modal */}
+      <Modal
+        show={showDeleteAccountModal}
+        onHide={() => {
+          setShowDeleteAccountModal(false);
+          setDeleteAccountError("");
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {t("userOptions.deleteAccount", "Delete account")}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            {t(
+              "userOptions.deleteAccountWarning",
+              "This action is permanent. Please enter your password to confirm account deletion."
+            )}
+          </p>
+          {deleteAccountError && (
+            <p className="error-message">{deleteAccountError}</p>
+          )}
+          <Form.Group controlId="deleteAccountPassword" className="mb-3">
+            <Form.Label>{t("userOptions.password", "Password")}</Form.Label>
+            <Form.Control
+              type="password"
+              value={deleteAccountPassword}
+              onChange={(e) => setDeleteAccountPassword(e.target.value)}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowDeleteAccountModal(false)}
+          >
+            {t("userOptions.cancel", "Cancel")}
+          </Button>
+          <Button variant="danger" onClick={handleDeleteAccount}>
+            {t("userOptions.delete", "Delete")}
           </Button>
         </Modal.Footer>
       </Modal>

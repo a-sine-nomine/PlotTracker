@@ -90,7 +90,11 @@
     "change": "Изменить",
     "passwordMismatch": "Новые пароли не совпадают",
     "passwordChanged": "Пароль изменен успешно",
-    "passwordIncorrect": "Неправильный старый пароль"
+    "passwordIncorrect": "Неправильный старый пароль",
+    "deleteAccountError": "Неверный пароль",
+    "deleteAccountWarning": "Это действие является необратимым. Пожалуйста, введите свой пароль для подтверждения удаления учетной записи.",
+    "password": "Пароль",
+    "delete": "Удалить"
   },
   "deleteConfirmation": {
     "story": {

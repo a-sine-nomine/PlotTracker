@@ -90,7 +90,11 @@
     "change": "Change",
     "passwordMismatch": "New passwords do not match",
     "passwordChanged": "Password changed successfully",
-    "passwordIncorrect": "Incorrect current password"
+    "passwordIncorrect": "Incorrect current password",
+    "deleteAccountError": "Password is incorrect",
+    "deleteAccountWarning": "This action is permanent. Please enter your password to confirm account deletion.",
+    "password": "Password",
+    "delete": "Delete"
   },
   "deleteConfirmation": {
     "story": {

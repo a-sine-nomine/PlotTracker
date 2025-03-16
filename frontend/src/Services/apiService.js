@@ -14,6 +14,7 @@ const apiService = {
   // ----- User -----
   changePassword: (passwordDto) =>
     ajax(`${API_BASE}/user/password`, "PUT", passwordDto),
+  deleteUser: (passwordDto) => ajax(`${API_BASE}/user`, "DELETE", passwordDto),
 
   // ----- Story -----
   getStories: () => ajax(`${API_BASE}/stories`, "GET"),
