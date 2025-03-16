@@ -1,0 +1,50 @@
+.visualization-settings-container {
+  margin-bottom: 10px;
+}
+
+.visualization-settings-panel {
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  background: #f8f9fa;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.vs-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.vs-dropdown {
+  border-top: 1px solid #ddd;
+  padding-top: 5px;
+}
+
+.vs-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.vs-check-all {
+  margin-right: 10px;
+}
+
+.vs-checkboxes {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.vs-group {
+  margin-bottom: 5px;
+  padding: 0 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.vs-group-label {
+  font-weight: bold;
+  margin-bottom: 3px;
+}
