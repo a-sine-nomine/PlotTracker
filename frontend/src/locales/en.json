@@ -79,6 +79,23 @@
     "cancel": "Cancel",
     "save": "Save"
   },
+  "userOptions": {
+    "changePassword": "Change password",
+    "logOut": "Log out",
+    "deleteAccount": "Delete account",
+    "oldPassword": "Old password",
+    "newPassword": "New password",
+    "repeatNewPassword": "Repeat new password",
+    "cancel": "Cancel",
+    "change": "Change",
+    "passwordMismatch": "New passwords do not match",
+    "passwordChanged": "Password changed successfully",
+    "passwordIncorrect": "Incorrect current password",
+    "deleteAccountError": "Password is incorrect",
+    "deleteAccountWarning": "This action is permanent. Please enter your password to confirm account deletion.",
+    "password": "Password",
+    "delete": "Delete"
+  },
   "deleteConfirmation": {
     "story": {
       "title": "Delete Story",
