@@ -12,6 +12,7 @@ const apiService = {
   validateAuth: () => ajax(`${API_BASE}/auth/validate`, "GET"),
 
   // ----- User -----
+  getUserDetails: () => ajax(`${API_BASE}/user`, "GET"),
   changePassword: (passwordDto) =>
     ajax(`${API_BASE}/user/password`, "PUT", passwordDto),
   deleteUser: (passwordDto) => ajax(`${API_BASE}/user`, "DELETE", passwordDto),

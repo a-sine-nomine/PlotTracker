@@ -72,4 +72,22 @@ public class UserController {
         userRepo.delete(user);
         return ResponseEntity.ok("User deleted successfully");
     }
+
+    @GetMapping("")
+    public ResponseEntity<?> getUser(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Not authenticated");
+        }
+
+        Users user = userRepo.findByUsername(userDetails.getUsername());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("User not found");
+        }
+        user.setPassword(null);
+        return ResponseEntity.ok(user);
+    }
 }

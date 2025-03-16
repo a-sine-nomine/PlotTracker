@@ -9,8 +9,7 @@ const Toolbar = ({ onNewStoryCreated }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { storyId } = useParams();
-
-  const [username, setUsername] = useState("VeryLongLongUsername");
+  const [username, setUsername] = useState("");
 
   const [showNewStoryModal, setShowNewStoryModal] = useState(false);
   const [newStoryTitle, setNewStoryTitle] = useState("");
@@ -100,6 +99,19 @@ const Toolbar = ({ onNewStoryCreated }) => {
     };
     fetchStoryEvents();
   }, [storyId]);
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const response = await apiService.getUserDetails();
+        const data = await response.json();
+        setUsername(data.username);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+    fetchUsername();
+  }, [username]);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === "en" ? "ru" : "en";
