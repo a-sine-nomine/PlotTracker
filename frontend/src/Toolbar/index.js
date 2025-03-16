@@ -328,7 +328,9 @@ const Toolbar = ({ onNewStoryCreated }) => {
               </div>
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Header>{username}</Dropdown.Header>
+              <Dropdown.Header className="user-options-username">
+                {username}
+              </Dropdown.Header>
               <Dropdown.Divider />
               <Dropdown.Item onClick={() => setShowChangePasswordModal(true)}>
                 {t("userOptions.changePassword", "Change password")}
@@ -336,7 +338,10 @@ const Toolbar = ({ onNewStoryCreated }) => {
               <Dropdown.Item onClick={() => handleLogout(true)}>
                 {t("userOptions.logOut", "Log out")}
               </Dropdown.Item>
-              <Dropdown.Item onClick={() => setShowDeleteAccountModal(true)}>
+              <Dropdown.Item
+                onClick={() => setShowDeleteAccountModal(true)}
+                className="user-options-delete-account"
+              >
                 {t("userOptions.deleteAccount", "Delete account")}
               </Dropdown.Item>
             </Dropdown.Menu>

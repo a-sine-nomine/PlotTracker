@@ -41,3 +41,13 @@
   font-size: 0.9rem;
   white-space: nowrap;
 }
+
+.user-options-username {
+  margin-left: 15px;
+  padding: 0;
+  color: navy;
+}
+
+.user-options-delete-account {
+  color: red;
+}
