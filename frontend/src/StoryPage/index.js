@@ -20,11 +20,13 @@ const StoryPage = () => {
   const [openTagTypes, setOpenTagTypes] = useState({});
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [groupBy, setGroupBy] = useState("");
+  const [sortBy, setSortBy] = useState("date");
 
+  // Fetch events, story details, tags, and tagTypes as before...
   useEffect(() => {
     const fetchPlotEvents = async () => {
       try {
-        const response = await apiService.getPlotEvents(storyId, "date");
+        const response = await apiService.getPlotEvents(storyId, sortBy);
         const data = await response.json();
         setPlotEvents(data);
         setFilteredEvents(data);
@@ -33,7 +35,7 @@ const StoryPage = () => {
       }
     };
     fetchPlotEvents();
-  }, [storyId]);
+  }, [storyId, sortBy]);
 
   useEffect(() => {
     const fetchStoryDetails = async () => {
@@ -112,8 +114,10 @@ const StoryPage = () => {
     filterMode,
     checkedIds,
     groupBy: newGroupBy,
+    sortBy: newSortBy,
   }) => {
     setGroupBy(newGroupBy);
+    setSortBy(newSortBy);
     const filtered = plotEvents.filter((event) => {
       const eventTagIds = event.tags.map((t) => t.tagId);
       const eventGroupTags = event.tags.filter(
@@ -176,6 +180,7 @@ const StoryPage = () => {
               tagTypes={tagTypes}
               onFilterChange={handleFilterChange}
               onGroupByChange={(groupBy) => setGroupBy(groupBy)}
+              onSortByChange={(sort) => setSortBy(sort)}
             />
           </div>
           <div className="plotline-container">
@@ -185,7 +190,6 @@ const StoryPage = () => {
               height={800}
               storyId={storyId}
               onEventUpdated={(updatedEvent) => {
-                // Refresh plot events after update if needed.
                 setPlotEvents((prev) =>
                   prev.map((e) =>
                     e.eventId === updatedEvent.eventId ? updatedEvent : e
@@ -193,6 +197,7 @@ const StoryPage = () => {
                 );
               }}
               groupBy={groupBy}
+              sortBy={sortBy}
             />
           </div>
         </div>

@@ -8,13 +8,16 @@ const VisualizationSettings = ({
   tagTypes,
   onFilterChange,
   onGroupByChange,
+  onSortByChange,
 }) => {
   const { t } = useTranslation();
 
   const [filterMode, setFilterMode] = useState("or");
   const [showModeDropdown, setShowModeDropdown] = useState(false);
   const [checkedTags, setCheckedTags] = useState({});
+
   const [groupBy, setGroupBy] = useState("");
+  const [sortBy, setSortBy] = useState("date");
 
   useEffect(() => {
     const newChecked = {};
@@ -24,13 +27,18 @@ const VisualizationSettings = ({
     setCheckedTags(newChecked);
   }, [availableTags, filterMode]);
 
-  // When tagTypes prop changes, set the default groupBy (if not already set).
+  // Set default groupBy when tagTypes change.
   useEffect(() => {
     if (tagTypes && tagTypes.length > 0 && !groupBy) {
       setGroupBy(tagTypes[0].tagTypeId);
       if (onGroupByChange) onGroupByChange(tagTypes[0].tagTypeId);
     }
   }, [tagTypes, groupBy, onGroupByChange]);
+
+  // Notify parent of sortBy changes.
+  useEffect(() => {
+    if (onSortByChange) onSortByChange(sortBy);
+  }, [sortBy, onSortByChange]);
 
   const toggleCheckAll = () => {
     const allChecked = Object.values(checkedTags).every((v) => v === true);
@@ -41,13 +49,13 @@ const VisualizationSettings = ({
     setCheckedTags(newChecked);
   };
 
+  // Group availableTags by tag type.
   const groupedTags = {};
   availableTags.forEach((tag) => {
     const group = tag.tagTypeName || "Other";
     if (!groupedTags[group]) groupedTags[group] = [];
     groupedTags[group].push(tag);
   });
-
   const sortedGroups = Object.keys(groupedTags)
     .sort((a, b) => a.localeCompare(b))
     .map((groupName) => ({
@@ -61,7 +69,7 @@ const VisualizationSettings = ({
     const checkedIds = Object.keys(checkedTags)
       .filter((tagId) => checkedTags[tagId])
       .map((id) => Number(id));
-    onFilterChange({ filterMode, checkedIds, groupBy });
+    onFilterChange({ filterMode, checkedIds, groupBy, sortBy });
     setShowModeDropdown(false);
   };
 
@@ -76,9 +84,9 @@ const VisualizationSettings = ({
             ? t("visualSettings.filterOr", "Filter with 'or'")
             : t("visualSettings.filterAnd", "Filter with 'and'")}
         </Button>
-        {/* New Group By select placed on the left side */}
+        {/* Group By select */}
         <Form.Group controlId="groupBySelect" className="vs-groupby">
-          <Form.Label classname="vs-groupby-label">
+          <Form.Label className="vs-groupby-label">
             {t("visualSettings.groupBy", "Group by")}
           </Form.Label>
           <Form.Control
@@ -94,6 +102,26 @@ const VisualizationSettings = ({
                 {tt.name}
               </option>
             ))}
+          </Form.Control>
+        </Form.Group>
+        {/* Sort By select */}
+        <Form.Group controlId="sortBySelect" className="vs-sortby">
+          <Form.Label className="vs-sortby-label">
+            {t("visualSettings.sortBy", "Sort by")}
+          </Form.Label>
+          <Form.Control
+            as="select"
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+            }}
+          >
+            <option value="date">
+              {t("visualSettings.sortByDate", "Sort by date")}
+            </option>
+            <option value="story">
+              {t("visualSettings.sortByPlot", "Sort by plot")}
+            </option>
           </Form.Control>
         </Form.Group>
       </div>
