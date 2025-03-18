@@ -10,6 +10,7 @@ const Plotline = ({
   height = 300,
   onEventUpdated,
   storyId,
+  groupBy,
 }) => {
   const [hoveredEventId, setHoveredEventId] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -20,7 +21,7 @@ const Plotline = ({
     if (!event.date) return;
     const timestamp = parseDate(event.date);
     event.tags.forEach((tag) => {
-      if (tag.tagTypeName === "Персонаж") {
+      if (Number(tag.tagTypeId) === Number(groupBy)) {
         characterEvents.push({
           eventId: event.eventId,
           date: timestamp,
@@ -33,7 +34,7 @@ const Plotline = ({
   });
 
   if (characterEvents.length === 0) {
-    return <div>No character events to display.</div>;
+    return <div>No events to display for this group.</div>;
   }
 
   const dates = characterEvents.map((e) => e.date);
@@ -128,9 +129,47 @@ const Plotline = ({
     }
   };
 
+  // Build vertical grid lines for years.
+  const gridLines = [];
+  const minYear = new Date(minDate).getFullYear();
+  const maxYear = new Date(maxDate).getFullYear();
+  const totalYears = maxYear - minYear + 1;
+  const labelStep = totalYears > 10 ? Math.ceil(totalYears / 10) : 1;
+  for (let year = minYear; year <= maxYear; year++) {
+    const yearTime = new Date(year, 0, 1).getTime();
+    if (yearTime < minDate || yearTime > maxDate) continue;
+    const x = xScale(yearTime);
+    gridLines.push(
+      <line
+        key={`line-${year}`}
+        x1={x}
+        y1={0}
+        x2={x}
+        y2={height - 20}
+        stroke="#ccc"
+        strokeWidth="1"
+      />
+    );
+    if ((year - minYear) % labelStep === 0) {
+      gridLines.push(
+        <text
+          key={`label-${year}`}
+          x={x}
+          y={15}
+          fontSize="10"
+          fill="#666"
+          textAnchor="middle"
+        >
+          {year}
+        </text>
+      );
+    }
+  }
+
   return (
     <>
       <svg width={width} height={height}>
+        {gridLines}
         <line
           x1={marginLeft}
           y1={height - 20}
@@ -140,6 +179,7 @@ const Plotline = ({
           strokeWidth="1"
         />
         {paths}
+        {dots}
         <text
           x={marginLeft}
           y={height - 5}
@@ -158,45 +198,6 @@ const Plotline = ({
         >
           {new Date(maxDate).toISOString().slice(0, 10)}
         </text>
-        {(() => {
-          const minYear = new Date(minDate).getFullYear();
-          const maxYear = new Date(maxDate).getFullYear();
-          const gridLines = [];
-          const totalYears = maxYear - minYear + 1;
-          const labelStep = totalYears > 10 ? Math.ceil(totalYears / 10) : 1;
-          for (let year = minYear; year <= maxYear; year++) {
-            const yearTime = new Date(year, 0, 1).getTime();
-            if (yearTime < minDate || yearTime > maxDate) continue;
-            const x = xScale(yearTime);
-            gridLines.push(
-              <line
-                key={`line-${year}`}
-                x1={x}
-                y1={0}
-                x2={x}
-                y2={height - 20}
-                stroke="#ccc"
-                strokeWidth="1"
-              />
-            );
-            if ((year - minYear) % labelStep === 0) {
-              gridLines.push(
-                <text
-                  key={`label-${year}`}
-                  x={x}
-                  y={15}
-                  fontSize="10"
-                  fill="#666"
-                  textAnchor="middle"
-                >
-                  {year}
-                </text>
-              );
-            }
-          }
-          return gridLines;
-        })()}
-        {dots}
       </svg>
       {showEditModal && editingEvent && (
         <EditEventModal

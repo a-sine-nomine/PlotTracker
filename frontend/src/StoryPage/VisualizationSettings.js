@@ -3,12 +3,18 @@ import { Button, Dropdown, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import "./VisualizationSettings.css";
 
-const VisualizationSettings = ({ availableTags, onFilterChange }) => {
+const VisualizationSettings = ({
+  availableTags,
+  tagTypes,
+  onFilterChange,
+  onGroupByChange,
+}) => {
   const { t } = useTranslation();
 
   const [filterMode, setFilterMode] = useState("or");
   const [showModeDropdown, setShowModeDropdown] = useState(false);
   const [checkedTags, setCheckedTags] = useState({});
+  const [groupBy, setGroupBy] = useState("");
 
   useEffect(() => {
     const newChecked = {};
@@ -17,6 +23,14 @@ const VisualizationSettings = ({ availableTags, onFilterChange }) => {
     });
     setCheckedTags(newChecked);
   }, [availableTags, filterMode]);
+
+  // When tagTypes prop changes, set the default groupBy (if not already set).
+  useEffect(() => {
+    if (tagTypes && tagTypes.length > 0 && !groupBy) {
+      setGroupBy(tagTypes[0].tagTypeId);
+      if (onGroupByChange) onGroupByChange(tagTypes[0].tagTypeId);
+    }
+  }, [tagTypes, groupBy, onGroupByChange]);
 
   const toggleCheckAll = () => {
     const allChecked = Object.values(checkedTags).every((v) => v === true);
@@ -47,7 +61,7 @@ const VisualizationSettings = ({ availableTags, onFilterChange }) => {
     const checkedIds = Object.keys(checkedTags)
       .filter((tagId) => checkedTags[tagId])
       .map((id) => Number(id));
-    onFilterChange({ filterMode, checkedIds });
+    onFilterChange({ filterMode, checkedIds, groupBy });
     setShowModeDropdown(false);
   };
 
@@ -62,6 +76,26 @@ const VisualizationSettings = ({ availableTags, onFilterChange }) => {
             ? t("visualSettings.filterOr", "Filter with 'or'")
             : t("visualSettings.filterAnd", "Filter with 'and'")}
         </Button>
+        {/* New Group By select placed on the left side */}
+        <Form.Group controlId="groupBySelect" className="vs-groupby">
+          <Form.Label classname="vs-groupby-label">
+            {t("visualSettings.groupBy", "Group by")}
+          </Form.Label>
+          <Form.Control
+            as="select"
+            value={groupBy}
+            onChange={(e) => {
+              setGroupBy(e.target.value);
+              if (onGroupByChange) onGroupByChange(e.target.value);
+            }}
+          >
+            {tagTypes.map((tt) => (
+              <option key={tt.tagTypeId} value={tt.tagTypeId}>
+                {tt.name}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
       </div>
       {showModeDropdown && (
         <div className="vs-dropdown">
