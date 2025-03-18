@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -104,15 +105,36 @@ public class StoryController {
     @GetMapping("/{id}/plotevents{sortBy}")
     public ResponseEntity<?> getPlotEvents(@AuthenticationPrincipal UserDetails userDetails,
                                            @PathVariable Long id,
-                                           @PathVariable String sortBy) {
+                                           @RequestParam String sortBy) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
         String username = userDetails.getUsername();
-        Set<PlotEvent> plotEvents = storyService.getPlotEvents(username, id);
-        List<PlotEventResponseDto> plotEventResponseDtos = plotEvents.stream().map(event -> plotEventService.convertToDto(event)).toList();
-        if(sortBy.equals("date")) {
+        Set<PlotEvent> events = storyService.getPlotEvents(username, id);
+        List<PlotEventResponseDto> plotEventResponseDtos;
+        if (sortBy.equals("story")) {
+            PlotEvent firstEvent = events.stream()
+                    .filter(e -> e.getPrevEvent() == null)
+                    .findFirst()
+                    .orElse(null);
+            List<PlotEvent> orderedEvents = new ArrayList<>();
+            while (firstEvent != null) {
+                System.out.println(firstEvent.getEventId());
+                orderedEvents.add(firstEvent);
+                firstEvent = firstEvent.getNextEvent();
+            }
+            plotEventResponseDtos = orderedEvents.stream()
+                    .map(event -> plotEventService.convertToDto(event))
+                    .collect(Collectors.toList());
+        } else if (sortBy.equals("date")) {
+            plotEventResponseDtos = events.stream()
+                    .map(event -> plotEventService.convertToDto(event))
+                    .collect(Collectors.toList());
             plotEventResponseDtos.sort(Comparator.comparing(PlotEventResponseDto::getDate));
+        } else {
+            plotEventResponseDtos = events.stream()
+                    .map(event -> plotEventService.convertToDto(event))
+                    .collect(Collectors.toList());
         }
         return ResponseEntity.ok(plotEventResponseDtos);
     }

@@ -30,8 +30,7 @@ public class PlotEvent {
     @Column
     private String description;
 
-    @Lob
-    @Column
+    @Column(columnDefinition="TEXT")
     private String content;
 
     // Self-reference for memory_ref_id
@@ -129,6 +128,14 @@ public class PlotEvent {
 
     public void setMemoryRef(PlotEvent memoryRef) {
         this.memoryRef = memoryRef;
+    }
+
+    public PlotEvent getPrevEvent() {
+        return prevEvent;
+    }
+
+    public void setPrevEvent(PlotEvent prevEvent) {
+        this.prevEvent = prevEvent;
     }
 
     public PlotEvent getNextEvent() {
