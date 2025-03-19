@@ -304,7 +304,7 @@ const Plotline = ({
                 fetchEventDetails(e.eventId);
               }}
             />
-            <text x={x + 10} y={y + 5} fontSize="10" fill="#000">
+            <text x={x + 10} y={y + 11} fontSize="10" fill="#303F9E">
               {e.title}
             </text>
           </g>

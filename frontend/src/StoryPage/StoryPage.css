@@ -120,3 +120,11 @@
   border-bottom: 1px solid #ccc;
   padding-bottom: 0.5rem;
 }
+
+.tag-color-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+  display: inline-block;
+}

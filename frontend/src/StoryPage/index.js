@@ -22,7 +22,6 @@ const StoryPage = () => {
   const [groupBy, setGroupBy] = useState("");
   const [sortBy, setSortBy] = useState("date");
 
-  // Fetch events, story details, tags, and tagTypes as before...
   useEffect(() => {
     const fetchPlotEvents = async () => {
       try {
