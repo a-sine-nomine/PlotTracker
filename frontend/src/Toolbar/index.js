@@ -258,6 +258,24 @@ const Toolbar = ({ onNewStoryCreated }) => {
     }
   };
 
+  const handleExport = async (exportType) => {
+    if (!storyId) return;
+    try {
+      const response = await apiService.exportStory(storyId, exportType);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "plot_events.docx";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error exporting story:", error);
+    }
+  };
+
   return (
     <>
       <Navbar bg="light" expand="lg" className="toolbar">
@@ -305,6 +323,19 @@ const Toolbar = ({ onNewStoryCreated }) => {
               </Dropdown.Item>
               <Dropdown.Item onClick={() => setShowAboutModal(true)}>
                 {t("toolbar.about")}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Dropdown align="end" className="export-dropdown">
+            <Dropdown.Toggle variant="light" id="dropdown-export">
+              {t("toolbar.export", "Export")}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => handleExport("script")}>
+                {t("toolbar.exportAsScript", "As script")}
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => handleExport("novel")}>
+                {t("toolbar.exportAsNovel", "As novel")}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
