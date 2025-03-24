@@ -126,9 +126,9 @@ const Homepage = () => {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>{t("deleteConfirmation.title")}</Modal.Title>
+            <Modal.Title>{t("deleteConfirmation.story.title")}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{t("deleteConfirmation.body")}</Modal.Body>
+          <Modal.Body>{t("deleteConfirmation.story.body")}</Modal.Body>
           <Modal.Footer>
             <Button
               variant="secondary"
