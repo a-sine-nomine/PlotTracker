@@ -7,7 +7,7 @@ import com.sinenomine.plottracker.dto.TagTypeResponseDto;
 import com.sinenomine.plottracker.model.Tag;
 import com.sinenomine.plottracker.model.TagType;
 import com.sinenomine.plottracker.service.TagService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,19 +15,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/stories/{storyId}")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"}, allowCredentials = "true")
 public class TagController {
-    @Autowired
-    private TagService tagService;
 
-    // GET all tags of the story
+    private final TagService tagService;
+
+    public TagController(TagService tagService) {
+        this.tagService = tagService;
+    }
+
+    // GET all tags for the story
     @GetMapping("/tags")
     public ResponseEntity<?> getTags(@AuthenticationPrincipal UserDetails userDetails,
                                      @PathVariable Long storyId) {
@@ -37,7 +38,7 @@ public class TagController {
         return ResponseEntity.ok(tags);
     }
 
-    // POST add new tag to the story's tags
+    // POST create a new tag
     @PostMapping("/tags")
     public ResponseEntity<?> createTag(@AuthenticationPrincipal UserDetails userDetails,
                                        @PathVariable Long storyId,
@@ -47,24 +48,29 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         if (bindingResult.hasErrors())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-        Tag tag = tagService.createTag(storyId, tagRequestDto, userDetails.getUsername());
-        TagResponseDto tagResponseDto = new TagResponseDto(tag.getTagId(), tag.getTagName(), tag.getTagType().getTagTypeId(), tag.getTagType().getName(), tag.getColor());
-        return ResponseEntity.status(HttpStatus.CREATED).body(tagResponseDto);
+        Tag createdTag = tagService.createTag(storyId, tagRequestDto, userDetails.getUsername());
+        TagResponseDto responseDto = new TagResponseDto(
+                createdTag.getTagId(),
+                createdTag.getTagName(),
+                createdTag.getTagType().getTagTypeId(),
+                createdTag.getTagType().getName(),
+                createdTag.getColor()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    // GET one tag by id
-    //todo make it light
+    // GET a specific tag by id
     @GetMapping("/tags/{tagId}")
     public ResponseEntity<?> getTag(@AuthenticationPrincipal UserDetails userDetails,
                                     @PathVariable Long storyId,
                                     @PathVariable Long tagId) {
         if (userDetails == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        TagResponseDto tag = tagService.getTag(storyId, tagId, userDetails.getUsername());
-        return ResponseEntity.ok(tag);
+        TagResponseDto responseDto = tagService.getTag(storyId, tagId, userDetails.getUsername());
+        return ResponseEntity.ok(responseDto);
     }
 
-    // PUT update one tag by id
+    // PUT update a tag by id
     @PutMapping("/tags/{tagId}")
     public ResponseEntity<?> updateTag(@AuthenticationPrincipal UserDetails userDetails,
                                        @PathVariable Long storyId,
@@ -75,12 +81,18 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         if (bindingResult.hasErrors())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-        Tag tag = tagService.updateTag(storyId, tagId, tagRequestDto, userDetails.getUsername());
-        TagResponseDto tagResponseDto = new TagResponseDto(tag.getTagId(), tag.getTagName(), tag.getTagType().getTagTypeId(), tag.getTagType().getName(), tag.getColor());
-        return ResponseEntity.ok(tagResponseDto);
+        Tag updatedTag = tagService.updateTag(storyId, tagId, tagRequestDto, userDetails.getUsername());
+        TagResponseDto responseDto = new TagResponseDto(
+                updatedTag.getTagId(),
+                updatedTag.getTagName(),
+                updatedTag.getTagType().getTagTypeId(),
+                updatedTag.getTagType().getName(),
+                updatedTag.getColor()
+        );
+        return ResponseEntity.ok(responseDto);
     }
 
-    // DELETE one tag by id
+    // DELETE a tag by id
     @DeleteMapping("/tags/{tagId}")
     public ResponseEntity<?> deleteTag(@AuthenticationPrincipal UserDetails userDetails,
                                        @PathVariable Long storyId,
@@ -91,7 +103,7 @@ public class TagController {
         return ResponseEntity.ok("Tag deleted successfully");
     }
 
-    // GET all tagTypes of the story
+    // GET all tag types for the story
     @GetMapping("/tagtypes")
     public ResponseEntity<?> getTagTypes(@AuthenticationPrincipal UserDetails userDetails,
                                          @PathVariable Long storyId) {
@@ -101,7 +113,7 @@ public class TagController {
         return ResponseEntity.ok(tagTypes);
     }
 
-    // POST add new tagType to the story
+    // POST create a new tag type
     @PostMapping("/tagtypes")
     public ResponseEntity<?> createTagType(@AuthenticationPrincipal UserDetails userDetails,
                                            @PathVariable Long storyId,
@@ -111,13 +123,15 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         if (bindingResult.hasErrors())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-        TagType tagType = tagService.createTagType(storyId, tagTypeRequestDto, userDetails.getUsername());
-        TagTypeResponseDto tagTypeResponseDto = new TagTypeResponseDto(tagType.getTagTypeId(), tagType.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(tagTypeResponseDto);
+        TagType createdTagType = tagService.createTagType(storyId, tagTypeRequestDto, userDetails.getUsername());
+        TagTypeResponseDto responseDto = new TagTypeResponseDto(
+                createdTagType.getTagTypeId(),
+                createdTagType.getName()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    // GET one tagType by id
-    //todo make it light
+    // GET a specific tag type by id
     @GetMapping("/tagtypes/{tagTypeId}")
     public ResponseEntity<?> getTagType(@AuthenticationPrincipal UserDetails userDetails,
                                         @PathVariable Long storyId,
@@ -125,11 +139,14 @@ public class TagController {
         if (userDetails == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         TagType tagType = tagService.getTagType(storyId, tagTypeId, userDetails.getUsername());
-        TagTypeResponseDto tagTypeResponseDto = new TagTypeResponseDto(tagType.getTagTypeId(), tagType.getName());
-        return ResponseEntity.ok(tagTypeResponseDto);
+        TagTypeResponseDto responseDto = new TagTypeResponseDto(
+                tagType.getTagTypeId(),
+                tagType.getName()
+        );
+        return ResponseEntity.ok(responseDto);
     }
 
-    // PUT update one tagType by id
+    // PUT update a tag type by id
     @PutMapping("/tagtypes/{tagTypeId}")
     public ResponseEntity<?> updateTagType(@AuthenticationPrincipal UserDetails userDetails,
                                            @PathVariable Long storyId,
@@ -140,12 +157,15 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         if (bindingResult.hasErrors())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-        TagType tagType = tagService.updateTagType(storyId, tagTypeId, tagTypeRequestDto, userDetails.getUsername());
-        TagTypeResponseDto tagTypeResponseDto = new TagTypeResponseDto(tagType.getTagTypeId(), tagType.getName());
-        return ResponseEntity.ok(tagTypeResponseDto);
+        TagType updatedTagType = tagService.updateTagType(storyId, tagTypeId, tagTypeRequestDto, userDetails.getUsername());
+        TagTypeResponseDto responseDto = new TagTypeResponseDto(
+                updatedTagType.getTagTypeId(),
+                updatedTagType.getName()
+        );
+        return ResponseEntity.ok(responseDto);
     }
 
-    // DELETE one tagType by id
+    // DELETE a tag type by id
     @DeleteMapping("/tagtypes/{tagTypeId}")
     public ResponseEntity<?> deleteTagType(@AuthenticationPrincipal UserDetails userDetails,
                                            @PathVariable Long storyId,

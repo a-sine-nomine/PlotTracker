@@ -1,24 +1,30 @@
 package com.sinenomine.plottracker.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class StoryResponseDto {
 
-    private Long StoryId;
+    @JsonProperty("storyId")
+    private Long storyId;
+
+    @JsonProperty("title")
     private String title;
 
+    @JsonProperty("description")
     private String description;
 
     public StoryResponseDto(Long storyId, String title, String description) {
-        StoryId = storyId;
+        this.storyId = storyId;
         this.title = title;
         this.description = description;
     }
 
     public Long getStoryId() {
-        return StoryId;
+        return storyId;
     }
 
     public void setStoryId(Long storyId) {
-        StoryId = storyId;
+        this.storyId = storyId;
     }
 
     public String getTitle() {

@@ -7,6 +7,7 @@ import java.util.Set;
 
 @Entity
 public class Tag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
@@ -22,14 +23,12 @@ public class Tag {
     @Column(name = "color", nullable = false, length = 7)
     private String color;
 
-    // Relationship to TagType
     @ManyToOne
     @JoinColumn(name = "tag_type_id", nullable = false)
     private TagType tagType;
 
     @ManyToMany(mappedBy = "tags")
     private Set<PlotEvent> plotEvents = new HashSet<>();
-
     public Tag() {
     }
 

@@ -2,11 +2,11 @@ package com.sinenomine.plottracker.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class TagType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_type_id")
@@ -14,9 +14,6 @@ public class TagType {
 
     @Column(nullable = false, length = 50)
     private String name;
-
-//    @OneToMany(mappedBy = "tagType", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Tag> tags = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "story_id", nullable = false)
@@ -51,5 +48,18 @@ public class TagType {
 
     public void setStory(Story story) {
         this.story = story;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TagType)) return false;
+        TagType tagType = (TagType) o;
+        return tagTypeId.equals(tagType.tagTypeId) && Objects.equals(story, tagType.story);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tagTypeId, story);
     }
 }

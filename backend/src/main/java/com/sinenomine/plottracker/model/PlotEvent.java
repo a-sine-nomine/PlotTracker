@@ -3,11 +3,12 @@ package com.sinenomine.plottracker.model;
 import com.sinenomine.plottracker.enums.EventType;
 import jakarta.persistence.*;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class PlotEvent {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")
@@ -30,25 +31,21 @@ public class PlotEvent {
     @Column
     private String description;
 
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
     private String content;
 
-    // Self-reference for memory_ref_id
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "memory_ref_id", foreignKey = @ForeignKey(name = "FK_memory_ref"))
     private PlotEvent memoryRef;
 
-    // Self-reference for next_event_id
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "prev_event_id", foreignKey = @ForeignKey(name = "FK_prev_event"))
     private PlotEvent prevEvent;
 
-    // Self-reference for next_event_id
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "next_event_id", foreignKey = @ForeignKey(name = "FK_next_event"))
     private PlotEvent nextEvent;
 
-    // Relationship to Tag via a join table PlotEventTag
     @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "PlotEventTag",
@@ -56,15 +53,6 @@ public class PlotEvent {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags = new HashSet<>();
-
-    public PlotEvent() {
-    }
-
-    public PlotEvent(Story story, EventType eventType, String title) {
-        this.story = story;
-        this.eventType = eventType;
-        this.title = title;
-    }
 
     public Long getEventId() {
         return eventId;
@@ -146,11 +134,11 @@ public class PlotEvent {
         this.nextEvent = nextEvent;
     }
 
-    public java.util.Set<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(java.util.Set<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 }

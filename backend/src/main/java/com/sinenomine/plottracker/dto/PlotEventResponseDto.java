@@ -6,33 +6,38 @@ import java.util.List;
 
 public class PlotEventResponseDto {
 
+    @JsonProperty("eventType")
     private String eventType;
+
+    @JsonProperty("eventId")
     private Long eventId;
+
+    @JsonProperty("title")
     private String title;
 
+    @JsonProperty("date")
     private String date;
 
+    @JsonProperty("description")
     private String description;
 
+    @JsonProperty("content")
     private String content;
 
+    @JsonProperty("memoryRefId")
     private Long memoryRefId;
 
+    @JsonProperty("nextEventId")
     private Long nextEventId;
 
+    @JsonProperty("tags")
     private List<TagResponseDto> tags;
 
     public PlotEventResponseDto() {
     }
 
-    public PlotEventResponseDto(Long eventId, String title, String eventType, List<TagResponseDto> tags) {
-        this.eventId = eventId;
-        this.title = title;
-        this.eventType = eventType;
-        this.tags = tags;
-    }
-
-    public PlotEventResponseDto(String eventType, Long eventId, String title, String date, String description, String content, Long memoryRefId, Long nextEventId, List<TagResponseDto> tags) {
+    public PlotEventResponseDto(String eventType, Long eventId, String title, String date, String description,
+                                String content, Long memoryRefId, Long nextEventId, List<TagResponseDto> tags) {
         this.eventType = eventType;
         this.eventId = eventId;
         this.title = title;
@@ -42,6 +47,14 @@ public class PlotEventResponseDto {
         this.memoryRefId = memoryRefId;
         this.nextEventId = nextEventId;
         this.tags = tags;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
     public Long getEventId() {
@@ -58,22 +71,6 @@ public class PlotEventResponseDto {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
-    public List<TagResponseDto> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<TagResponseDto> tags) {
-        this.tags = tags;
     }
 
     public String getDate() {
@@ -114,5 +111,13 @@ public class PlotEventResponseDto {
 
     public void setNextEventId(Long nextEventId) {
         this.nextEventId = nextEventId;
+    }
+
+    public List<TagResponseDto> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TagResponseDto> tags) {
+        this.tags = tags;
     }
 }
