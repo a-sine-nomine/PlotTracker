@@ -9,6 +9,7 @@ public class UserDto {
     @Size(max = 50, message = "Username must not exceed 50 characters")
     @JsonProperty("username")
     private String username;
+
     @NotBlank(message = "Password is required")
     @Size(max = 255, message = "Password must not exceed 255 characters")
     @JsonProperty("password")
