@@ -1,6 +1,5 @@
 package com.sinenomine.plottracker.repo;
 
-import com.sinenomine.plottracker.dto.TagResponseDto;
 import com.sinenomine.plottracker.dto.TagTypeResponseDto;
 import com.sinenomine.plottracker.model.TagType;
 import com.sinenomine.plottracker.model.Story;

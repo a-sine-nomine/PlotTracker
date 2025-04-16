@@ -7,7 +7,6 @@ public class TagResponseDto {
     private String tagTypeName;
     private String color;
 
-    // Constructors
     public TagResponseDto() {
     }
 

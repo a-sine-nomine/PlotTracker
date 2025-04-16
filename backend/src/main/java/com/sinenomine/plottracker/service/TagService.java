@@ -4,13 +4,14 @@ import com.sinenomine.plottracker.dto.TagRequestDto;
 import com.sinenomine.plottracker.dto.TagResponseDto;
 import com.sinenomine.plottracker.dto.TagTypeRequestDto;
 import com.sinenomine.plottracker.dto.TagTypeResponseDto;
+import com.sinenomine.plottracker.exception.ResourceNotFoundException;
+import com.sinenomine.plottracker.exception.UnauthorizedException;
 import com.sinenomine.plottracker.model.Story;
 import com.sinenomine.plottracker.model.Tag;
 import com.sinenomine.plottracker.model.TagType;
+import com.sinenomine.plottracker.repo.StoryRepo;
 import com.sinenomine.plottracker.repo.TagRepo;
 import com.sinenomine.plottracker.repo.TagTypeRepo;
-import com.sinenomine.plottracker.repo.StoryRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,17 +19,18 @@ import java.util.Set;
 
 @Service
 public class TagService {
-    @Autowired
-    private StoryRepo storyRepo;
 
-    @Autowired
-    private TagRepo tagRepo;
+    private final StoryRepo storyRepo;
+    private final TagRepo tagRepo;
+    private final TagTypeRepo tagTypeRepo;
+    private final StoryService storyService;
 
-    @Autowired
-    private TagTypeRepo tagTypeRepo;
-
-    @Autowired
-    private StoryService storyService;
+    public TagService(StoryRepo storyRepo, TagRepo tagRepo, TagTypeRepo tagTypeRepo, StoryService storyService) {
+        this.storyRepo = storyRepo;
+        this.tagRepo = tagRepo;
+        this.tagTypeRepo = tagTypeRepo;
+        this.storyService = storyService;
+    }
 
     public Set<Tag> getTags(Long storyId, String username) {
         Story story = storyService.getStoryByIdAndUser(storyId, username);
@@ -43,12 +45,13 @@ public class TagService {
     public TagResponseDto getTag(Long storyId, Long tagId, String username) {
         Story story = storyService.getStoryByIdAndUser(storyId, username);
         Tag tag = tagRepo.findById(tagId)
-                .orElseThrow(() -> new RuntimeException("Tag not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
         if (!tag.getStory().getStoryId().equals(story.getStoryId())) {
-            throw new RuntimeException("Unauthorized access to tag");
+            throw new UnauthorizedException("Unauthorized access to tag");
         }
-        TagResponseDto tagResponseDto = new TagResponseDto(tag.getTagId(), tag.getTagName(), tag.getTagType().getTagTypeId(), tag.getTagType().getName(), tag.getColor());
-        return tagResponseDto;
+        return new TagResponseDto(tag.getTagId(), tag.getTagName(),
+                tag.getTagType().getTagTypeId(),
+                tag.getTagType().getName(), tag.getColor());
     }
 
     public Tag createTag(Long storyId, TagRequestDto tagRequestDto, String username) {
@@ -56,9 +59,9 @@ public class TagService {
         Tag tag = new Tag();
         tag.setTagName(tagRequestDto.getTagName());
         TagType tagType = tagTypeRepo.findById(tagRequestDto.getTagTypeId())
-                .orElseThrow(() -> new RuntimeException("TagType not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("TagType not found"));
         if (!tagType.getStory().getStoryId().equals(story.getStoryId()))
-            throw new RuntimeException("Unauthorized access to tag type");
+            throw new UnauthorizedException("Unauthorized access to tag type");
         tag.setTagType(tagType);
         tag.setStory(story);
         tag.setColor(tagRequestDto.getColor());
@@ -68,15 +71,15 @@ public class TagService {
     public Tag updateTag(Long storyId, Long tagId, TagRequestDto tagRequestDto, String username) {
         Story story = storyService.getStoryByIdAndUser(storyId, username);
         Tag tag = tagRepo.findById(tagId)
-                .orElseThrow(() -> new RuntimeException("Tag not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
         if (!tag.getStory().getStoryId().equals(story.getStoryId())) {
-            throw new RuntimeException("Unauthorized access to tag");
+            throw new UnauthorizedException("Unauthorized access to tag");
         }
         tag.setTagName(tagRequestDto.getTagName());
         TagType tagType = tagTypeRepo.findById(tagRequestDto.getTagTypeId())
-                .orElseThrow(() -> new RuntimeException("TagType not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("TagType not found"));
         if (!tagType.getStory().getStoryId().equals(story.getStoryId()))
-            throw new RuntimeException("Unauthorized access to tag type");
+            throw new UnauthorizedException("Unauthorized access to tag type");
         tag.setTagType(tagType);
         tag.setColor(tagRequestDto.getColor());
         return tagRepo.save(tag);
@@ -85,9 +88,9 @@ public class TagService {
     public void deleteTag(Long storyId, Long tagId, String username) {
         Story story = storyService.getStoryByIdAndUser(storyId, username);
         Tag tag = tagRepo.findById(tagId)
-                .orElseThrow(() -> new RuntimeException("Tag not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
         if (!tag.getStory().getStoryId().equals(story.getStoryId())) {
-            throw new RuntimeException("Unauthorized access to tag");
+            throw new UnauthorizedException("Unauthorized access to tag");
         }
         tagRepo.delete(tag);
     }
@@ -100,9 +103,9 @@ public class TagService {
     public TagType getTagType(Long storyId, Long tagTypeId, String username) {
         Story story = storyService.getStoryByIdAndUser(storyId, username);
         TagType tagType = tagTypeRepo.findById(tagTypeId)
-                .orElseThrow(() -> new RuntimeException("TagType not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("TagType not found"));
         if (!tagType.getStory().getStoryId().equals(story.getStoryId())) {
-            throw new RuntimeException("Unauthorized access to tag type");
+            throw new UnauthorizedException("Unauthorized access to tag type");
         }
         return tagType;
     }
@@ -118,9 +121,9 @@ public class TagService {
     public TagType updateTagType(Long storyId, Long tagTypeId, TagTypeRequestDto tagTypeRequestDto, String username) {
         Story story = storyService.getStoryByIdAndUser(storyId, username);
         TagType tagType = tagTypeRepo.findById(tagTypeId)
-                .orElseThrow(() -> new RuntimeException("TagType not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("TagType not found"));
         if (!tagType.getStory().getStoryId().equals(story.getStoryId())) {
-            throw new RuntimeException("Unauthorized access to tag type");
+            throw new UnauthorizedException("Unauthorized access to tag type");
         }
         tagType.setName(tagTypeRequestDto.getName());
         return tagTypeRepo.save(tagType);
@@ -129,9 +132,9 @@ public class TagService {
     public void deleteTagType(Long storyId, Long tagTypeId, String username) {
         Story story = storyService.getStoryByIdAndUser(storyId, username);
         TagType tagType = tagTypeRepo.findById(tagTypeId)
-                .orElseThrow(() -> new RuntimeException("TagType not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("TagType not found"));
         if (!tagType.getStory().getStoryId().equals(story.getStoryId())) {
-            throw new RuntimeException("Unauthorized access to tag type");
+            throw new UnauthorizedException("Unauthorized access to tag type");
         }
         tagTypeRepo.delete(tagType);
     }
