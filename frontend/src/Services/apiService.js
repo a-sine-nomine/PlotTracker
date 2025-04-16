@@ -24,6 +24,8 @@ const apiService = {
   updateStory: (storyId, storyDto) =>
     ajax(`${API_BASE}/stories/${storyId}`, "PUT", storyDto),
   deleteStory: (storyId) => ajax(`${API_BASE}/stories/${storyId}`, "DELETE"),
+  exportStory: (storyId, exportType) =>
+    ajax(`${API_BASE}/stories/${storyId}/export`, "GET"),
 
   // ----- PlotEvent -----
   getPlotEvent: (eventId) => ajax(`${API_BASE}/plotEvents/${eventId}`, "GET"),
@@ -36,7 +38,7 @@ const apiService = {
   removeTagFromPlotEvent: (eventId, tagId) =>
     ajax(`${API_BASE}/plotEvents/${eventId}/tag/${tagId}`, "DELETE"),
   getPlotEvents: (storyId, sortBy) =>
-    ajax(`${API_BASE}/stories/${storyId}/plotevents?sortBy=${storyId}`, "GET"),
+    ajax(`${API_BASE}/stories/${storyId}/plotevents?sortBy=${sortBy}`, "GET"),
   addPlotEvent: (storyId, plotEventDto) =>
     ajax(`${API_BASE}/stories/${storyId}/plotevents`, "POST", plotEventDto),
 

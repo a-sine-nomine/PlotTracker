@@ -12,14 +12,44 @@
 .vs-header {
   display: flex;
   justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 5px;
+}
+
+/* Group By select styling */
+.vs-groupby {
+  margin: 0;
+  padding: 3px 8px;
+  border: 1px solid #346bf3;
+  color: #346bf3;
+  border-radius: 8px;
+}
+
+.vs-groupby-label {
+  margin-right: 5px;
+  font-size: 0.9rem;
+}
+
+/* Sort By select styling */
+.vs-sortby {
+  margin: 0;
+  padding: 3px 8px;
+  border: 1px solid #346bf3;
+  color: #346bf3;
+  border-radius: 8px;
+}
+
+.vs-sortby-label {
+  margin-right: 5px;
+  font-size: 0.9rem;
 }
 
 .vs-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 130%;
+  width: 80%;
   background: #f8f9fa;
   border: 1px solid #ddd;
   padding: 10px;

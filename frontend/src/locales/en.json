@@ -38,6 +38,9 @@
     "newTagType": "New Tag Type",
     "documentation": "Documentation",
     "about": "About",
+    "export": "Export",
+    "exportAsScript": "As script",
+    "exportAsNovel": "As novel",
     "logOut": "Log out",
     "aboutTitle": "About PlotTracker",
     "aboutBodyLine1": "PlotTracker is a web application for tracking your creative stories and their plot events.",
@@ -61,7 +64,8 @@
     "nextEventIdLabel": "Next Event",
     "noneOption": "None",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "tagsLabel": "Tags"
   },
   "newTagModal": {
     "title": "New Tag",

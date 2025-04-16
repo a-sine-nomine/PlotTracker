@@ -54,7 +54,15 @@ const TagRow = ({ tag, storyId, onTagUpdated, onTagDeleted }) => {
           <button type="submit">Save</button>
         </form>
       ) : (
-        <span className="item-text">{tag.tagName}</span>
+        <span className="item-text">
+          <span
+            className="tag-color-indicator"
+            style={{
+              backgroundColor: tag.color,
+            }}
+          ></span>
+          {tag.tagName}
+        </span>
       )}
       {!editing && (
         <>

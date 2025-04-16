@@ -38,6 +38,9 @@
     "newTagType": "Новый тип тега",
     "documentation": "Документация",
     "about": "О программе",
+    "export": "Экспорт",
+    "exportAsScript": "Как скрипт",
+    "exportAsNovel": "Как новела",
     "logOut": "Выйти",
     "aboutTitle": "О PlotTracker",
     "aboutBodyLine1": "PlotTracker — это веб-приложение для отслеживания ваших творческих историй и их событий.",
@@ -61,7 +64,8 @@
     "nextEventIdLabel": "Следующее событие",
     "noneOption": "Отсутствует",
     "cancel": "Отмена",
-    "save": "Сохранить"
+    "save": "Сохранить",
+    "tagsLabel": "Тэги"
   },
   "newTagModal": {
     "title": "Новый тэг",

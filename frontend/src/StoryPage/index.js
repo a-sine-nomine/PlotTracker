@@ -19,11 +19,13 @@ const StoryPage = () => {
   const [tagsSectionOpen, setTagsSectionOpen] = useState(false);
   const [openTagTypes, setOpenTagTypes] = useState({});
   const [filteredEvents, setFilteredEvents] = useState([]);
+  const [groupBy, setGroupBy] = useState("");
+  const [sortBy, setSortBy] = useState("date");
 
   useEffect(() => {
     const fetchPlotEvents = async () => {
       try {
-        const response = await apiService.getPlotEvents(storyId, "date");
+        const response = await apiService.getPlotEvents(storyId, sortBy);
         const data = await response.json();
         setPlotEvents(data);
         setFilteredEvents(data);
@@ -32,7 +34,7 @@ const StoryPage = () => {
       }
     };
     fetchPlotEvents();
-  }, [storyId]);
+  }, [storyId, sortBy]);
 
   useEffect(() => {
     const fetchStoryDetails = async () => {
@@ -66,24 +68,15 @@ const StoryPage = () => {
         const response = await apiService.getTagTypes(storyId);
         const data = await response.json();
         setTagTypes(data);
+        if (data.length > 0 && !groupBy) {
+          setGroupBy(data[0].tagTypeId);
+        }
       } catch (error) {
         console.error("Error fetching tag types:", error);
       }
     };
     fetchTagTypes();
-  }, [storyId]);
-
-  const sortedTagTypes = [...tagTypes].sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
-  const groupedTags = {};
-  tags.forEach((tag) => {
-    if (!groupedTags[tag.tagTypeId]) groupedTags[tag.tagTypeId] = [];
-    groupedTags[tag.tagTypeId].push(tag);
-  });
-  Object.keys(groupedTags).forEach((key) => {
-    groupedTags[key].sort((a, b) => a.tagName.localeCompare(b.tagName));
-  });
+  }, [storyId, groupBy]);
 
   const toggleTagType = (tagTypeId) => {
     setOpenTagTypes((prev) => ({
@@ -116,13 +109,25 @@ const StoryPage = () => {
     );
   };
 
-  const handleFilterChange = ({ filterMode, checkedIds }) => {
+  const handleFilterChange = ({
+    filterMode,
+    checkedIds,
+    groupBy: newGroupBy,
+    sortBy: newSortBy,
+  }) => {
+    setGroupBy(newGroupBy);
+    setSortBy(newSortBy);
     const filtered = plotEvents.filter((event) => {
       const eventTagIds = event.tags.map((t) => t.tagId);
+      const eventGroupTags = event.tags.filter(
+        (t) => t.tagTypeId === Number(newGroupBy)
+      );
       if (filterMode === "or") {
-        return checkedIds.some((id) => eventTagIds.includes(id));
+        return eventGroupTags.some((t) => checkedIds.includes(t.tagId));
       } else {
-        return checkedIds.every((id) => eventTagIds.includes(id));
+        return checkedIds.every((id) =>
+          eventGroupTags.map((t) => t.tagId).includes(id)
+        );
       }
     });
     setFilteredEvents(filtered);
@@ -145,20 +150,24 @@ const StoryPage = () => {
             </div>
             {tagsSectionOpen && (
               <div className="tags-group">
-                {sortedTagTypes.map((tt) => (
-                  <TagTypeRow
-                    key={tt.tagTypeId}
-                    tagType={tt}
-                    tags={groupedTags[tt.tagTypeId] || []}
-                    isOpen={!!openTagTypes[tt.tagTypeId]}
-                    onToggle={() => toggleTagType(tt.tagTypeId)}
-                    storyId={storyId}
-                    onTagUpdated={updateTag}
-                    onTagDeleted={deleteTag}
-                    onTagTypeUpdated={updateTagType}
-                    onTagTypeDeleted={deleteTagType}
-                  />
-                ))}
+                {tagTypes
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((tt) => (
+                    <TagTypeRow
+                      key={tt.tagTypeId}
+                      tagType={tt}
+                      tags={
+                        tags.filter((t) => t.tagTypeId === tt.tagTypeId) || []
+                      }
+                      isOpen={!!openTagTypes[tt.tagTypeId]}
+                      onToggle={() => toggleTagType(tt.tagTypeId)}
+                      storyId={storyId}
+                      onTagUpdated={updateTag}
+                      onTagDeleted={deleteTag}
+                      onTagTypeUpdated={updateTagType}
+                      onTagTypeDeleted={deleteTagType}
+                    />
+                  ))}
               </div>
             )}
           </div>
@@ -167,7 +176,10 @@ const StoryPage = () => {
           <div className="visualization-settings-container">
             <VisualizationSettings
               availableTags={tags}
+              tagTypes={tagTypes}
               onFilterChange={handleFilterChange}
+              onGroupByChange={(groupBy) => setGroupBy(groupBy)}
+              onSortByChange={(sort) => setSortBy(sort)}
             />
           </div>
           <div className="plotline-container">
@@ -176,6 +188,15 @@ const StoryPage = () => {
               width={1200}
               height={800}
               storyId={storyId}
+              onEventUpdated={(updatedEvent) => {
+                setPlotEvents((prev) =>
+                  prev.map((e) =>
+                    e.eventId === updatedEvent.eventId ? updatedEvent : e
+                  )
+                );
+              }}
+              groupBy={groupBy}
+              sortBy={sortBy}
             />
           </div>
         </div>
