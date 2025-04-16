@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.Set;
 
 public class PlotEventRequestDto {
+
     @NotBlank(message = "Event type is required")
     @JsonProperty("eventType")
     private String eventType;
@@ -13,19 +14,26 @@ public class PlotEventRequestDto {
     @NotBlank(message = "Title is required")
     @JsonProperty("title")
     private String title;
+
     @JsonProperty("date")
     private String date;
+
     @JsonProperty("description")
     private String description;
+
     @JsonProperty("content")
     private String content;
+
     @JsonProperty("memoryRefId")
-    private Long memoryRefId;  // optional
+    private Long memoryRefId;
+
     @JsonProperty("nextEventId")
-    private Long nextEventId;  // optional
+    private Long nextEventId;
 
     @JsonProperty("tags")
     private Set<Long> tags;
+
+    // Getters and setters
 
     public String getEventType() {
         return eventType;
@@ -82,6 +90,7 @@ public class PlotEventRequestDto {
     public void setNextEventId(Long nextEventId) {
         this.nextEventId = nextEventId;
     }
+
     public Set<Long> getTags() {
         return tags;
     }

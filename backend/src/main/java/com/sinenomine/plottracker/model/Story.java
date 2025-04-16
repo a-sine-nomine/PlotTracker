@@ -6,6 +6,7 @@ import java.util.Objects;
 
 @Entity
 public class Story {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "story_id")
@@ -15,20 +16,10 @@ public class Story {
     private String title;
 
     private String description;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
-
-//    @OneToMany(mappedBy = "story", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<PlotEvent> plotEvents = new ArrayList<>();
-
-    public Story() {
-    }
-
-    public Story(Users user, String title) {
-        this.user = user;
-        this.title = title;
-    }
 
     public Long getStoryId() {
         return storyId;
@@ -36,14 +27,6 @@ public class Story {
 
     public void setStoryId(Long storyId) {
         this.storyId = storyId;
-    }
-
-    public Users getUser() {
-        return user;
-    }
-
-    public void setUser(Users user) {
-        this.user = user;
     }
 
     public String getTitle() {
@@ -62,20 +45,20 @@ public class Story {
         this.description = description;
     }
 
-//    public List<PlotEvent> getPlotEvents() {
-//        return plotEvents;
-//    }
-//
-//    public void setPlotEvents(List<PlotEvent> plotEvents) {
-//        this.plotEvents = plotEvents;
-//    }
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Story that = (Story) o;
-        return storyId.equals(that.storyId) && user.equals(that.user);
+        if (!(o instanceof Story)) return false;
+        Story story = (Story) o;
+        return storyId.equals(story.storyId) && user.equals(story.user);
     }
 
     @Override
