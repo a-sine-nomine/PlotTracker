@@ -4,6 +4,9 @@ services:
     build:
       context: frontend
       dockerfile: Dockerfile
+    depends_on:
+      backend:
+        condition: service_started
     volumes:
       - /etc/letsencrypt/ssl/fullchain.pem:/etc/nginx/ssl/fullchain.pem
       - /etc/letsencrypt/ssl/privkey.pem:/etc/nginx/ssl/privkey.pem
@@ -15,6 +18,7 @@ services:
     configs:
       - source: default.conf
         target: /etc/nginx/conf.d/default.conf
+    restart: on-failure
 
   backend:
     image: asinenomine/asinenomine:plottracker-backend
@@ -27,11 +31,13 @@ services:
     environment:
       DB_DATABASE: plottracker
       DB_USER: root
-      DB_PASSWORD: password123
       LOG_LEVEL: DEBUG
+    secrets: 
+      - db_password
     networks:
       - frontend-net
       - backend-net
+    restart: on-failure
   
   database:
     image: mysql:8.4.5
@@ -39,12 +45,13 @@ services:
       - db_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: plottracker
-      MYSQL_ROOT_PASSWORD: password123
-      # MYSQL_USER: plottracker
-      # MYSQL_PASSWORD: password123
-      # MYSQL_RANDOM_ROOT_PASSWORD: true
+    secrets: 
+      - mysql_root_password
+    ports: 
+      - "3036:3036"
     networks:
       - backend-net
+    restart: on-failure
 
 volumes:
   db_data:
@@ -56,3 +63,9 @@ networks:
 configs:
   default.conf:
     file: nginx.conf
+
+secrets:
+  db_password:
+    environment: DB_PASSWORD
+  mysql_root_password:
+    environment: MYSQL_ROOT_PASSWORD
