@@ -30,10 +30,9 @@ services:
         condition: service_started
     environment:
       DB_DATABASE: plottracker
+      DB_PASSWORD: ${DB_PASSWORD:-password123}
       DB_USER: root
       LOG_LEVEL: DEBUG
-    secrets: 
-      - db_password
     networks:
       - frontend-net
       - backend-net
@@ -45,8 +44,7 @@ services:
       - db_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: plottracker
-    secrets: 
-      - mysql_root_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password123}
     ports: 
       - "3036:3036"
     networks:
@@ -63,9 +61,3 @@ networks:
 configs:
   default.conf:
     file: nginx.conf
-
-secrets:
-  db_password:
-    environment: DB_PASSWORD
-  mysql_root_password:
-    environment: MYSQL_ROOT_PASSWORD
