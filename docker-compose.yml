@@ -55,27 +55,4 @@ networks:
 
 configs:
   default.conf:
-    content: |
-      server {
-          listen       443 ssl;
-          server_name  plot-tracker.ru www.plot-tracker.ru;
-          ssl_certificate /etc/nginx/ssl/fullchain.pem;
-          ssl_certificate_key /etc/nginx/ssl/privkey.pem;
-          error_page   500 502 503 504  /50x.html;
-          location = /50x.html {
-              root   /usr/share/nginx/html;
-          }
-          location / {
-              root   /usr/share/nginx/html;
-              index  index.html index.htm;
-          }
-          location /api/ {
-              proxy_pass http://backend:8080;
-          }
-      }
-      server {
-          listen       80;
-          location / {
-              return 301 https://$host$request_uri;
-          }
-      }
+    file: nginx.conf
