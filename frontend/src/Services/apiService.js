@@ -68,6 +68,16 @@ const apiService = {
     ),
   deleteTagType: (storyId, tagTypeId) =>
     ajax(`${API_BASE}/stories/${storyId}/tagtypes/${tagTypeId}`, "DELETE"),
+
+  // ----- Character -----
+  getCharacter: (storyId, tagId) =>
+    ajax(`${API_BASE}/stories/${storyId}/tags/character/${tagId}`, "GET"),
+  updateCharacter: (storyId, tagId, characterDto) =>
+    ajax(
+      `${API_BASE}/stories/${storyId}/tags/character/${tagId}`,
+      "PUT",
+      characterDto
+    ),
 };
 
 export default apiService;

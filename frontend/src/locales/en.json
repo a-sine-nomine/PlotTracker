@@ -1,4 +1,6 @@
 {
+  "cancel": "Cancel",
+  "save": "Save",
   "register": {
     "title": "PlotTracker",
     "description": "Create a new account to start tracking your stories.",
@@ -64,8 +66,7 @@
     "nextEventIdLabel": "Next Event",
     "noneOption": "None",
     "cancel": "Cancel",
-    "save": "Save",
-    "tagsLabel": "Tags"
+    "save": "Save"
   },
   "newTagModal": {
     "title": "New Tag",
@@ -129,5 +130,16 @@
     "selectFilterMode": "Select filter mode",
     "checkAll": "Check All",
     "apply": "Apply"
+  },
+  "tagTypeRow": {
+    "Character": "Character",
+    "Location": "Location",
+    "Plot line": "Plot line"
+  },
+  "character": {
+    "details": "Details",
+    "name": "Name",
+    "shortDescription": "Short description",
+    "description": "Description"
   }
 }

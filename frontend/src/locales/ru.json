@@ -1,4 +1,6 @@
 {
+  "cancel": "Отмена",
+  "save": "Сохранить",
   "register": {
     "title": "PlotTracker",
     "description": "Создайте новый аккаунт, чтобы начать отслеживать ваши истории.",
@@ -128,5 +130,16 @@
     "selectFilterMode": "Выберите режим фильтра",
     "checkAll": "Отметить все",
     "apply": "Применить"
+  },
+  "tagTypeRow": {
+    "Character": "Персонаж",
+    "Location": "Локация",
+    "Plot line": "Сюжетная линия"
+  },
+  "character": {
+    "details": "Детали",
+    "name": "Имя",
+    "shortDescription": "Короткое описание",
+    "description": "Описание"
   }
 }
