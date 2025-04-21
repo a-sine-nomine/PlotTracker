@@ -1,9 +1,6 @@
 package com.sinenomine.plottracker.controller;
 
-import com.sinenomine.plottracker.dto.TagRequestDto;
-import com.sinenomine.plottracker.dto.TagResponseDto;
-import com.sinenomine.plottracker.dto.TagTypeRequestDto;
-import com.sinenomine.plottracker.dto.TagTypeResponseDto;
+import com.sinenomine.plottracker.dto.*;
 import com.sinenomine.plottracker.model.Tag;
 import com.sinenomine.plottracker.model.TagType;
 import com.sinenomine.plottracker.service.TagService;
@@ -174,5 +171,32 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         tagService.deleteTagType(storyId, tagTypeId, userDetails.getUsername());
         return ResponseEntity.ok("TagType deleted successfully");
+    }
+
+    // GET a specific character tag
+    @GetMapping("/tags/character/{tagId}")
+    public ResponseEntity<?> getCharacterTag(@AuthenticationPrincipal UserDetails userDetails,
+                                             @PathVariable Long storyId,
+                                             @PathVariable Long tagId) {
+        if (userDetails == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        CharacterResponseDto responseDto = tagService.getCharacterTag(storyId, tagId, userDetails.getUsername());
+        return ResponseEntity.ok(responseDto);
+    }
+
+    // PUT update a character tag
+    @PutMapping("/tags/character/{tagId}")
+    public ResponseEntity<?> updateCharacterTag(@AuthenticationPrincipal UserDetails userDetails,
+                                       @PathVariable Long storyId,
+                                       @PathVariable Long tagId,
+                                       @Valid @RequestBody CharacterRequestDto characterRequestDto,
+                                       BindingResult bindingResult) {
+        if (userDetails == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        if (bindingResult.hasErrors())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+
+        CharacterResponseDto responseDto = tagService.updateCharacterTag(storyId, tagId, characterRequestDto, userDetails.getUsername());
+        return ResponseEntity.ok(responseDto);
     }
 }

@@ -10,10 +10,12 @@ import com.sinenomine.plottracker.model.Story;
 import com.sinenomine.plottracker.model.Users;
 import com.sinenomine.plottracker.repo.PlotEventRepo;
 import com.sinenomine.plottracker.repo.StoryRepo;
+import com.sinenomine.plottracker.repo.TagTypeRepo;
 import com.sinenomine.plottracker.repo.UserRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,12 +29,14 @@ public class StoryService {
     private final StoryRepo storyRepo;
     private final UserRepo userRepo;
     private final PlotEventRepo plotEventRepo;
+    private final TagTypeRepo tagTypeRepo;
     private final PlotEventService plotEventService;
 
-    public StoryService(StoryRepo storyRepo, UserRepo userRepo, PlotEventRepo plotEventRepo, PlotEventService plotEventService) {
+    public StoryService(StoryRepo storyRepo, UserRepo userRepo, PlotEventRepo plotEventRepo, TagTypeRepo tagTypeRepo, PlotEventService plotEventService) {
         this.storyRepo = storyRepo;
         this.userRepo = userRepo;
         this.plotEventRepo = plotEventRepo;
+        this.tagTypeRepo = tagTypeRepo;
         this.plotEventService = plotEventService;
     }
 
@@ -68,8 +72,10 @@ public class StoryService {
     }
 
     // Delete a story
+    @Transactional
     public void deleteStory(String username, Long storyId) {
         Story story = getStoryByIdAndUser(storyId, username);
+        tagTypeRepo.deleteByStory_StoryId(storyId);
         storyRepo.delete(story);
     }
 

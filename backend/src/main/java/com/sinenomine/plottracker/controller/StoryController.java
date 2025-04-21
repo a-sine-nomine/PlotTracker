@@ -1,14 +1,12 @@
 package com.sinenomine.plottracker.controller;
 
-import com.sinenomine.plottracker.dto.PlotEventRequestDto;
-import com.sinenomine.plottracker.dto.PlotEventResponseDto;
-import com.sinenomine.plottracker.dto.StoryRequestDto;
-import com.sinenomine.plottracker.dto.StoryResponseDto;
+import com.sinenomine.plottracker.dto.*;
 import com.sinenomine.plottracker.enums.EventType;
 import com.sinenomine.plottracker.model.PlotEvent;
 import com.sinenomine.plottracker.model.Story;
 import com.sinenomine.plottracker.service.PlotEventService;
 import com.sinenomine.plottracker.service.StoryService;
+import com.sinenomine.plottracker.service.TagService;
 import org.springframework.http.HttpHeaders;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -32,10 +30,12 @@ public class StoryController {
 
     private final StoryService storyService;
     private final PlotEventService plotEventService;
+    private final TagService tagService;
 
-    public StoryController(StoryService storyService, PlotEventService plotEventService) {
+    public StoryController(StoryService storyService, PlotEventService plotEventService, TagService tagService) {
         this.storyService = storyService;
         this.plotEventService = plotEventService;
+        this.tagService = tagService;
     }
 
     // GET all user's stories
@@ -60,6 +60,15 @@ public class StoryController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
 
         Story createdStory = storyService.createStory(userDetails.getUsername(), storyRequestDto);
+
+        TagTypeRequestDto tagTypeRequestDto = new TagTypeRequestDto();
+        tagTypeRequestDto.setName("Character");
+        tagService.createTagType(createdStory.getStoryId(), tagTypeRequestDto, userDetails.getUsername());
+        tagTypeRequestDto.setName("Plot line");
+        tagService.createTagType(createdStory.getStoryId(), tagTypeRequestDto, userDetails.getUsername());
+        tagTypeRequestDto.setName("Location");
+        tagService.createTagType(createdStory.getStoryId(), tagTypeRequestDto, userDetails.getUsername());
+
         createdStory.setUser(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdStory);
     }
