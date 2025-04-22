@@ -3,7 +3,12 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import apiService from "../Services/apiService";
 
-export default function NewEventModal({ show, onHide, storyId }) {
+export default function NewEventModal({
+  show,
+  onHide,
+  storyId,
+  onEventCreated,
+}) {
   const { t } = useTranslation();
 
   const [eventType, setEventType] = useState("dated");
@@ -43,7 +48,8 @@ export default function NewEventModal({ show, onHide, storyId }) {
         tags: [],
       };
       const resp = await apiService.addPlotEvent(storyId, eventDto);
-      await resp.json();
+      const newEvent = await resp.json();
+      onEventCreated && onEventCreated(newEvent);
       // reset
       setEventType("dated");
       setEventTitle("");

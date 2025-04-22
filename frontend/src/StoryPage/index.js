@@ -135,7 +135,15 @@ const StoryPage = () => {
 
   return (
     <div className="storypage-wrapper">
-      <Toolbar />
+      <Toolbar
+        onNewTagTypeCreated={(newTagType) =>
+          setTagTypes((prev) => [...prev, newTagType])
+        }
+        onNewTagCreated={(newTag) => setTags((prev) => [...prev, newTag])}
+        onNewEventCreated={(newEvent) =>
+          setPlotEvents((prev) => [...prev, newEvent])
+        }
+      />
       <div className="storypage-container">
         <div className="left-panel">
           <h4 className="panel-header">

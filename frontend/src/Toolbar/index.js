@@ -14,7 +14,12 @@ import NewTagTypeModal from "./NewTagTypeModal";
 
 import "./Toolbar.css";
 
-const Toolbar = ({ onNewStoryCreated }) => {
+const Toolbar = ({
+  onNewStoryCreated,
+  onNewTagTypeCreated,
+  onNewTagCreated,
+  onNewEventCreated,
+}) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { storyId } = useParams();
@@ -183,7 +188,6 @@ const Toolbar = ({ onNewStoryCreated }) => {
           </Button>
         </Nav>
       </Navbar>
-
       {}
       <ChangePasswordModal
         show={showChangePasswordModal}
@@ -198,13 +202,12 @@ const Toolbar = ({ onNewStoryCreated }) => {
         onHide={() => setShowNewStoryModal(false)}
         onNewStoryCreated={onNewStoryCreated}
       />
-      {storyId && (
-        <NewEventModal
-          show={showNewEventModal}
-          onHide={() => setShowNewEventModal(false)}
-          storyId={storyId}
-        />
-      )}
+      <NewEventModal
+        show={showNewEventModal}
+        onHide={() => setShowNewEventModal(false)}
+        storyId={storyId}
+        onEventCreated={onNewEventCreated}
+      />
       <AboutModal
         show={showAboutModal}
         onHide={() => setShowAboutModal(false)}
@@ -212,10 +215,12 @@ const Toolbar = ({ onNewStoryCreated }) => {
       <NewTagModal
         show={showNewTagModal}
         onHide={() => setShowNewTagModal(false)}
+        onTagCreated={onNewTagCreated}
       />
       <NewTagTypeModal
         show={showNewTagTypeModal}
         onHide={() => setShowNewTagTypeModal(false)}
+        onTagTypeCreated={onNewTagTypeCreated}
       />
     </>
   );

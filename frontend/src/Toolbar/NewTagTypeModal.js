@@ -3,7 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import apiService from "../Services/apiService";
 
-export default function NewTagTypeModal({ show, onHide }) {
+export default function NewTagTypeModal({ show, onHide, onTagTypeCreated }) {
   const { t } = useTranslation();
 
   const [userStories, setUserStories] = useState([]);
@@ -27,7 +27,10 @@ export default function NewTagTypeModal({ show, onHide }) {
   const handleSave = async () => {
     try {
       const dto = { name: newTagTypeName };
-      await apiService.createTagType(selectedStoryId, dto);
+      const resp = await apiService.createTagType(selectedStoryId, dto);
+      const newTagType = await resp.json();
+      onTagTypeCreated && onTagTypeCreated(newTagType);
+
       setNewTagTypeName("");
       onHide();
     } catch (err) {

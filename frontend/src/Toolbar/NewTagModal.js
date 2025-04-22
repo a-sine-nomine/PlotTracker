@@ -3,7 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import apiService from "../Services/apiService";
 
-export default function NewTagModal({ show, onHide }) {
+export default function NewTagModal({ show, onHide, onTagCreated }) {
   const { t } = useTranslation();
 
   const [userStories, setUserStories] = useState([]);
@@ -49,7 +49,10 @@ export default function NewTagModal({ show, onHide }) {
         tagTypeId: selectedTagTypeId,
         color: newTagColor,
       };
-      await apiService.createTag(selectedStoryId, dto);
+      const resp = await apiService.createTag(selectedStoryId, dto);
+      const newTag = await resp.json();
+      onTagCreated && onTagCreated(newTag);
+
       setNewTagName("");
       setNewTagColor("#000000");
       onHide();
