@@ -8,10 +8,7 @@ import com.sinenomine.plottracker.exception.UnauthorizedException;
 import com.sinenomine.plottracker.model.PlotEvent;
 import com.sinenomine.plottracker.model.Story;
 import com.sinenomine.plottracker.model.Users;
-import com.sinenomine.plottracker.repo.PlotEventRepo;
-import com.sinenomine.plottracker.repo.StoryRepo;
-import com.sinenomine.plottracker.repo.TagTypeRepo;
-import com.sinenomine.plottracker.repo.UserRepo;
+import com.sinenomine.plottracker.repo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,13 +26,15 @@ public class StoryService {
     private final StoryRepo storyRepo;
     private final UserRepo userRepo;
     private final PlotEventRepo plotEventRepo;
+    private final TagRepo tagRepo;
     private final TagTypeRepo tagTypeRepo;
     private final PlotEventService plotEventService;
 
-    public StoryService(StoryRepo storyRepo, UserRepo userRepo, PlotEventRepo plotEventRepo, TagTypeRepo tagTypeRepo, PlotEventService plotEventService) {
+    public StoryService(StoryRepo storyRepo, UserRepo userRepo, PlotEventRepo plotEventRepo, TagRepo tagRepo, TagTypeRepo tagTypeRepo, PlotEventService plotEventService) {
         this.storyRepo = storyRepo;
         this.userRepo = userRepo;
         this.plotEventRepo = plotEventRepo;
+        this.tagRepo = tagRepo;
         this.tagTypeRepo = tagTypeRepo;
         this.plotEventService = plotEventService;
     }
@@ -75,7 +74,10 @@ public class StoryService {
     @Transactional
     public void deleteStory(String username, Long storyId) {
         Story story = getStoryByIdAndUser(storyId, username);
+        plotEventRepo.deletePlotEventTagByStoryId(storyId);
+        tagRepo.deleteByStory_StoryId(storyId);
         tagTypeRepo.deleteByStory_StoryId(storyId);
+        plotEventRepo.deleteByStory_StoryId(storyId);
         storyRepo.delete(story);
     }
 

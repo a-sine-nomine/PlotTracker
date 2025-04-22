@@ -17,4 +17,6 @@ public interface TagRepo extends JpaRepository<Tag, Long> {
     @Query("SELECT new com.sinenomine.plottracker.dto.TagResponseDto(t.tagId, t.tagName, t.tagType.tagTypeId, t.tagType.name, t.color) " +
             "FROM Tag t WHERE t.story = :story")
     List<TagResponseDto> findByStoryResponses(Story story);
+
+    long deleteByStory_StoryId(Long storyId);
 }
