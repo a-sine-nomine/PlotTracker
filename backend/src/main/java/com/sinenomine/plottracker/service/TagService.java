@@ -7,10 +7,7 @@ import com.sinenomine.plottracker.model.Story;
 import com.sinenomine.plottracker.model.Tag;
 import com.sinenomine.plottracker.model.Character;
 import com.sinenomine.plottracker.model.TagType;
-import com.sinenomine.plottracker.repo.CharacterRepo;
-import com.sinenomine.plottracker.repo.StoryRepo;
-import com.sinenomine.plottracker.repo.TagRepo;
-import com.sinenomine.plottracker.repo.TagTypeRepo;
+import com.sinenomine.plottracker.repo.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +21,14 @@ public class TagService {
     private final TagRepo tagRepo;
     private final CharacterRepo characterRepo;
     private final TagTypeRepo tagTypeRepo;
+    private final PlotEventRepo plotEventRepo;
     private final StoryService storyService;
 
-    public TagService(StoryRepo storyRepo, TagRepo tagRepo, CharacterRepo characterRepo, TagTypeRepo tagTypeRepo, StoryService storyService) {
+    public TagService(StoryRepo storyRepo, TagRepo tagRepo, CharacterRepo characterRepo, TagTypeRepo tagTypeRepo, PlotEventRepo plotEventRepo, StoryService storyService) {
         this.storyRepo = storyRepo;
         this.tagRepo = tagRepo;
         this.tagTypeRepo = tagTypeRepo;
+        this.plotEventRepo = plotEventRepo;
         this.storyService = storyService;
         this.characterRepo = characterRepo;
     }
@@ -95,6 +94,7 @@ public class TagService {
         return tagRepo.save(tag);
     }
 
+    @Transactional
     public void deleteTag(Long storyId, Long tagId, String username) {
         Story story = storyService.getStoryByIdAndUser(storyId, username);
         Tag tag = tagRepo.findById(tagId)
@@ -102,7 +102,7 @@ public class TagService {
         if (!tag.getStory().getStoryId().equals(story.getStoryId())) {
             throw new UnauthorizedException("Unauthorized access to tag");
         }
-
+        plotEventRepo.deletePlotEventTagByTagId(tagId);
         if (tag.getTagType().getName().equals("Character")) {
             characterRepo.deleteByTag_TagId(tagId);
         }

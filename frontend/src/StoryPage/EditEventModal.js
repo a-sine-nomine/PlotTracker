@@ -178,10 +178,10 @@ const EditEventModal = ({
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
-          {t("newEventModal.cancel")}
+          {t("cancel")}
         </Button>
         <Button variant="primary" onClick={handleSave}>
-          {t("newEventModal.save")}
+          {t("save")}
         </Button>
       </Modal.Footer>
     </Modal>
