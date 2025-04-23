@@ -216,11 +216,13 @@ const Toolbar = ({
         show={showNewTagModal}
         onHide={() => setShowNewTagModal(false)}
         onTagCreated={onNewTagCreated}
+        storyId={storyId}
       />
       <NewTagTypeModal
         show={showNewTagTypeModal}
         onHide={() => setShowNewTagTypeModal(false)}
         onTagTypeCreated={onNewTagTypeCreated}
+        storyId={storyId}
       />
     </>
   );

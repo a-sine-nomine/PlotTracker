@@ -3,7 +3,12 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import apiService from "../Services/apiService";
 
-export default function NewTagTypeModal({ show, onHide, onTagTypeCreated }) {
+export default function NewTagTypeModal({
+  show,
+  onHide,
+  onTagTypeCreated,
+  storyId,
+}) {
   const { t } = useTranslation();
 
   const [userStories, setUserStories] = useState([]);
@@ -16,13 +21,18 @@ export default function NewTagTypeModal({ show, onHide, onTagTypeCreated }) {
         const resp = await apiService.getStories();
         const data = await resp.json();
         setUserStories(data);
-        if (data.length) setSelectedStoryId(data[0].storyId);
+        if (
+          storyId &&
+          data.some((s) => parseInt(s.storyId) === parseInt(storyId))
+        ) {
+          setSelectedStoryId(storyId);
+        } else if (data.length) setSelectedStoryId(data[0].storyId);
       } catch (err) {
         console.error("Error fetching user stories:", err);
       }
     };
-    fetchStories();
-  }, []);
+    if (show) fetchStories();
+  }, [show, storyId]);
 
   const handleSave = async () => {
     try {
