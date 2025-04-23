@@ -60,10 +60,10 @@ export default function NewStoryModal({ show, onHide, onNewStoryCreated }) {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          {t("newStoryModal.cancel")}
+          {t("cancel")}
         </Button>
         <Button variant="primary" onClick={handleSave}>
-          {t("newStoryModal.save")}
+          {t("save")}
         </Button>
       </Modal.Footer>
     </Modal>

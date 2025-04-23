@@ -88,10 +88,10 @@ export default function NewTagTypeModal({
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          {t("newTagTypeModal.cancel")}
+          {t("cancel")}
         </Button>
         <Button variant="primary" onClick={handleSave}>
-          {t("newTagTypeModal.save")}
+          {t("save")}
         </Button>
       </Modal.Footer>
     </Modal>

@@ -150,10 +150,10 @@ export default function NewTagModal({
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          {t("newTagModal.cancel")}
+          {t("cancel")}
         </Button>
         <Button variant="primary" onClick={handleSave}>
-          {t("newTagModal.save")}
+          {t("save")}
         </Button>
       </Modal.Footer>
     </Modal>

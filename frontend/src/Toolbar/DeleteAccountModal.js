@@ -58,7 +58,7 @@ export default function DeleteAccountModal({ show, onHide }) {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          {t("userOptions.cancel", "Cancel")}
+          {t("cancel", "Cancel")}
         </Button>
         <Button variant="danger" onClick={handleDeleteAccount}>
           {t("userOptions.delete", "Delete")}

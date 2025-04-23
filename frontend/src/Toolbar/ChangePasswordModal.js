@@ -99,7 +99,7 @@ export default function ChangePasswordModal({ show, onHide }) {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          {t("userOptions.cancel", "Cancel")}
+          {t("cancel", "Cancel")}
         </Button>
         <Button variant="primary" onClick={handleChangePassword}>
           {t("userOptions.change", "Change")}

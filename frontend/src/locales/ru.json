@@ -51,9 +51,7 @@
   "newStoryModal": {
     "title": "Новая история",
     "formTitle": "Название",
-    "formDescription": "Описание",
-    "cancel": "Отмена",
-    "save": "Сохранить"
+    "formDescription": "Описание"
   },
   "newEventModal": {
     "title": "Новое событие",
@@ -65,8 +63,6 @@
     "memoryRefIdLabel": "Воспоминание",
     "nextEventIdLabel": "Следующее событие",
     "noneOption": "Отсутствует",
-    "cancel": "Отмена",
-    "save": "Сохранить",
     "tagsLabel": "Тэги"
   },
   "newTagModal": {
@@ -74,9 +70,7 @@
     "storyLabel": "Выберите историю",
     "tagNameLabel": "Имя тега",
     "tagTypeLabel": "Тип тега",
-    "colorLabel": "Цвет",
-    "cancel": "Отмена",
-    "save": "Сохранить"
+    "colorLabel": "Цвет"
   },
   "editTagModal": {
     "title": "Редактировать тег",
@@ -87,9 +81,7 @@
   "newTagTypeModal": {
     "title": "Новый тип тега",
     "storyLabel": "Выберите историю",
-    "tagTypeNameLabel": "Имя",
-    "cancel": "Отмена",
-    "save": "Сохранить"
+    "tagTypeNameLabel": "Имя"
   },
   "userOptions": {
     "changePassword": "Изменить пароль",
@@ -98,8 +90,6 @@
     "oldPassword": "Старый пароль",
     "newPassword": "Новый пароль",
     "repeatNewPassword": "Повторите новый пароль",
-    "cancel": "Отмена",
-    "change": "Изменить",
     "passwordMismatch": "Новые пароли не совпадают",
     "passwordChanged": "Пароль изменен успешно",
     "passwordIncorrect": "Неправильный старый пароль",
@@ -121,7 +111,6 @@
       "title": "Удалить тип тега",
       "body": "Вы уверены, что хотите удалить этот тип тегов? Это приведет к удалению всех тегов под ним."
     },
-    "cancel": "Отмена",
     "confirm": "Удалить"
   },
   "storyPage": {

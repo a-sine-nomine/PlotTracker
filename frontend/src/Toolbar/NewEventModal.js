@@ -168,10 +168,10 @@ export default function NewEventModal({
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          {t("newEventModal.cancel")}
+          {t("cancel")}
         </Button>
         <Button variant="primary" onClick={handleSave}>
-          {t("newEventModal.save")}
+          {t("save")}
         </Button>
       </Modal.Footer>
     </Modal>

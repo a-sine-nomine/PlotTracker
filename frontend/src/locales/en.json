@@ -51,9 +51,7 @@
   "newStoryModal": {
     "title": "New Story",
     "formTitle": "Title",
-    "formDescription": "Description",
-    "cancel": "Cancel",
-    "save": "Save"
+    "formDescription": "Description"
   },
   "newEventModal": {
     "title": "New Event",
@@ -64,18 +62,14 @@
     "contentLabel": "Content",
     "memoryRefIdLabel": "Memory Reference",
     "nextEventIdLabel": "Next Event",
-    "noneOption": "None",
-    "cancel": "Cancel",
-    "save": "Save"
+    "noneOption": "None"
   },
   "newTagModal": {
     "title": "New Tag",
     "storyLabel": "Select Story",
     "tagNameLabel": "Tag Name",
     "tagTypeLabel": "Tag Type",
-    "colorLabel": "Color",
-    "cancel": "Cancel",
-    "save": "Save"
+    "colorLabel": "Color"
   },
   "editTagModal": {
     "title": "Edit Tag",
@@ -86,9 +80,7 @@
   "newTagTypeModal": {
     "title": "New Tag Type",
     "storyLabel": "Select Story",
-    "tagTypeNameLabel": "Tag Type Name",
-    "cancel": "Cancel",
-    "save": "Save"
+    "tagTypeNameLabel": "Tag Type Name"
   },
   "userOptions": {
     "changePassword": "Change password",
@@ -97,7 +89,6 @@
     "oldPassword": "Old password",
     "newPassword": "New password",
     "repeatNewPassword": "Repeat new password",
-    "cancel": "Cancel",
     "change": "Change",
     "passwordMismatch": "New passwords do not match",
     "passwordChanged": "Password changed successfully",
@@ -120,7 +111,6 @@
       "title": "Delete Tag Type",
       "body": "Are you sure you want to delete this tag type? This will remove all tags under it."
     },
-    "cancel": "Cancel",
     "confirm": "Delete"
   },
   "storyPage": {

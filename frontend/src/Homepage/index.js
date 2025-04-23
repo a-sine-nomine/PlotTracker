@@ -134,7 +134,7 @@ const Homepage = () => {
               variant="secondary"
               onClick={() => setShowDeleteModal(false)}
             >
-              {t("deleteConfirmation.cancel")}
+              {t("cancel")}
             </Button>
             <Button variant="danger" onClick={handleDeleteConfirm}>
               {t("deleteConfirmation.confirm")}
