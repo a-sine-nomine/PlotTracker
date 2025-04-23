@@ -3,34 +3,20 @@ import { Modal, Button } from "react-bootstrap";
 import apiService from "../Services/apiService";
 import { useTranslation } from "react-i18next";
 import CharacterModal from "./CharacterModal";
+import EditTagModal from "./EditTagModal";
 import "./StoryPage.css";
 
 const TagRow = ({ tag, tagTypeName, storyId, onTagUpdated, onTagDeleted }) => {
   const { t } = useTranslation();
-  const [editing, setEditing] = useState(false);
-  const [newTagName, setNewTagName] = useState(tag.tagName);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const isCharacter = tagTypeName === "Character";
 
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCharacterModal, setShowCharacterModal] = useState(false);
   const [characterData, setCharacterData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleRenameSubmit = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    try {
-      const response = await apiService.updateTag(storyId, tag.tagId, {
-        tagName: newTagName,
-        tagTypeId: tag.tagTypeId,
-      });
-      onTagUpdated(response);
-    } catch (err) {
-      console.error(err);
-    }
-    setEditing(false);
-  };
+  const isCharacter = tagTypeName === "Character";
 
   const handleDelete = async () => {
     try {
@@ -40,10 +26,6 @@ const TagRow = ({ tag, tagTypeName, storyId, onTagUpdated, onTagDeleted }) => {
       console.error("Error deleting tag:", error);
     }
     setShowDeleteModal(false);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleRenameSubmit(e);
   };
 
   const openCharacterModal = async () => {
@@ -83,57 +65,44 @@ const TagRow = ({ tag, tagTypeName, storyId, onTagUpdated, onTagDeleted }) => {
 
   return (
     <div className="item-row" onClick={(e) => e.stopPropagation()}>
-      {editing ? (
-        <form onSubmit={handleRenameSubmit} className="item-rename-form">
-          <input
-            type="text"
-            value={newTagName}
-            onChange={(e) => setNewTagName(e.target.value)}
-            onKeyDown={handleKeyDown}
-            autoFocus
-          />
-          <button type="submit">{t("save")}</button>
-        </form>
-      ) : (
+      {}
+      <span
+        className="item-text"
+        onClick={() => isCharacter && openCharacterModal()}
+        style={
+          isCharacter ? { cursor: "pointer", textDecoration: "underline" } : {}
+        }
+      >
         <span
-          className="item-text"
-          onClick={() => isCharacter && openCharacterModal()}
-          style={
-            isCharacter
-              ? { cursor: "pointer", textDecoration: "underline" }
-              : {}
-          }
-        >
-          <span
-            className="tag-color-indicator"
-            style={{ backgroundColor: tag.color }}
-          />
-          {tag.tagName}
-        </span>
-      )}
+          className="tag-color-indicator"
+          style={{ backgroundColor: tag.color }}
+        />
+        {tag.tagName}
+      </span>
 
-      {!editing && (
-        <>
-          <span
-            className="icon item-edit-icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              setEditing(true);
-            }}
-          >
-            ✎
-          </span>
-          <span
-            className="icon item-delete-icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowDeleteModal(true);
-            }}
-          >
-            🗑
-          </span>
-        </>
-      )}
+      {}
+      <span
+        className="icon item-edit-icon"
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowEditModal(true);
+        }}
+      >
+        ✎
+      </span>
+
+      {}
+      <span
+        className="icon item-delete-icon"
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowDeleteModal(true);
+        }}
+      >
+        🗑
+      </span>
+
+      {}
       <Modal
         show={showDeleteModal}
         onHide={() => setShowDeleteModal(false)}
@@ -162,6 +131,15 @@ const TagRow = ({ tag, tagTypeName, storyId, onTagUpdated, onTagDeleted }) => {
         error={error}
         onChangeField={handleFieldChange}
         onSave={handleSaveCharacter}
+      />
+
+      {}
+      <EditTagModal
+        show={showEditModal}
+        onHide={() => setShowEditModal(false)}
+        storyId={storyId}
+        tag={tag}
+        onTagUpdated={onTagUpdated}
       />
     </div>
   );

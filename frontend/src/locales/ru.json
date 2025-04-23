@@ -78,6 +78,12 @@
     "cancel": "Отмена",
     "save": "Сохранить"
   },
+  "editTagModal": {
+    "title": "Редактировать тег",
+    "nameLabel": "Имя тега",
+    "typeLabel": "Тип тега",
+    "colorLabel": "Цвет"
+  },
   "newTagTypeModal": {
     "title": "Новый тип тега",
     "storyLabel": "Выберите историю",

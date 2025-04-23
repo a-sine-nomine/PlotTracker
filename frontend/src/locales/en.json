@@ -77,6 +77,12 @@
     "cancel": "Cancel",
     "save": "Save"
   },
+  "editTagModal": {
+    "title": "Edit Tag",
+    "nameLabel": "Name",
+    "typeLabel": "Type",
+    "colorLabel": "Color"
+  },
   "newTagTypeModal": {
     "title": "New Tag Type",
     "storyLabel": "Select Story",
