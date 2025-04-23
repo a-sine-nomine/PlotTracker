@@ -19,4 +19,6 @@ public interface TagRepo extends JpaRepository<Tag, Long> {
     List<TagResponseDto> findByStoryResponses(Story story);
 
     long deleteByStory_StoryId(Long storyId);
+
+    long deleteByTagType_TagTypeId(Long tagTypeId);
 }

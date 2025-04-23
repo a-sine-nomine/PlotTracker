@@ -12,6 +12,7 @@ import com.sinenomine.plottracker.repo.StoryRepo;
 import com.sinenomine.plottracker.repo.TagRepo;
 import com.sinenomine.plottracker.repo.TagTypeRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -142,7 +143,7 @@ public class TagService {
         tagType.setName(tagTypeRequestDto.getName());
         return tagTypeRepo.save(tagType);
     }
-
+    @Transactional
     public void deleteTagType(Long storyId, Long tagTypeId, String username) {
         Story story = storyService.getStoryByIdAndUser(storyId, username);
         TagType tagType = tagTypeRepo.findById(tagTypeId)
@@ -150,6 +151,7 @@ public class TagService {
         if (!tagType.getStory().getStoryId().equals(story.getStoryId())) {
             throw new UnauthorizedException("Unauthorized access to tag type");
         }
+        tagRepo.deleteByTagType_TagTypeId(tagTypeId);
         tagTypeRepo.delete(tagType);
     }
 
