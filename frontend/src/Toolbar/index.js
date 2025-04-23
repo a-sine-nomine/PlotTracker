@@ -9,7 +9,7 @@ import DeleteAccountModal from "./DeleteAccountModal";
 import NewStoryModal from "./NewStoryModal";
 import NewEventModal from "./NewEventModal";
 import AboutModal from "./AboutModal";
-import NewTagModal from "./NewTagModal";
+import NewTagModal from "../Modals/NewTagModal";
 import NewTagTypeModal from "./NewTagTypeModal";
 
 import "./Toolbar.css";

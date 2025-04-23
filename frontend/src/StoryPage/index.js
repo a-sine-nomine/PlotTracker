@@ -170,6 +170,9 @@ const StoryPage = () => {
                       isOpen={!!openTagTypes[tt.tagTypeId]}
                       onToggle={() => toggleTagType(tt.tagTypeId)}
                       storyId={storyId}
+                      onTagCreated={(newTag) =>
+                        setTags((prev) => [...prev, newTag])
+                      }
                       onTagUpdated={updateTag}
                       onTagDeleted={deleteTag}
                       onTagTypeUpdated={updateTagType}

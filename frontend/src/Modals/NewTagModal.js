@@ -5,7 +5,13 @@ import apiService from "../Services/apiService";
 
 const NON_EDITABLE = ["Character", "Location", "Plot line"];
 
-export default function NewTagModal({ show, onHide, onTagCreated, storyId }) {
+export default function NewTagModal({
+  show,
+  onHide,
+  onTagCreated,
+  storyId,
+  tagTypeId,
+}) {
   const { t } = useTranslation();
 
   const [userStories, setUserStories] = useState([]);
@@ -41,7 +47,12 @@ export default function NewTagModal({ show, onHide, onTagCreated, storyId }) {
         const resp = await apiService.getTagTypes(selectedStoryId);
         const data = await resp.json();
         setTagTypes(data);
-        if (data.length) setSelectedTagTypeId(data[0].tagTypeId);
+        if (
+          tagTypeId &&
+          data.some((t) => String(t.tagTypeId) === String(tagTypeId))
+        ) {
+          setSelectedTagTypeId(tagTypeId);
+        } else if (data.length) setSelectedTagTypeId(data[0].tagTypeId);
       } catch (err) {
         console.error("Error fetching tag types:", err);
       }

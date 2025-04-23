@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import CreateTagModal from "./CreateTagModal";
+import NewTagModal from "../Modals/NewTagModal";
 import TagRow from "./TagRow";
 import apiService from "../Services/apiService";
 import "./StoryPage.css";
@@ -16,6 +16,7 @@ const TagTypeRow = ({
   storyId,
   onTagTypeUpdated,
   onTagTypeDeleted,
+  onTagCreated,
   onTagUpdated,
   onTagDeleted,
 }) => {
@@ -23,7 +24,7 @@ const TagTypeRow = ({
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState(tagType.name);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showCreateTagModal, setShowCreateTagModal] = useState(false);
+  const [showNewTagModal, setShowNewTagModal] = useState(false);
 
   const isNonEditable = NON_EDITABLE.includes(tagType.name);
   const displayName = isNonEditable
@@ -57,7 +58,6 @@ const TagTypeRow = ({
     setShowDeleteModal(false);
   };
 
-  const handleTagCreated = (newTag) => onTagUpdated(newTag);
   const handleKeyDown = (e) => e.key === "Enter" && handleRenameSubmit(e);
 
   return (
@@ -81,10 +81,9 @@ const TagTypeRow = ({
           <>
             <span
               className="icon item-plus-icon"
-              style={{ opacity: 0 }} //todo change
               onClick={(e) => {
-                //e.stopPropagation();
-                //setShowCreateTagModal(true);
+                e.stopPropagation();
+                setShowNewTagModal(true);
               }}
             >
               ＋
@@ -156,13 +155,13 @@ const TagTypeRow = ({
         </Modal>
       )}
 
-      {showCreateTagModal && (
-        <CreateTagModal
-          show={showCreateTagModal}
-          onHide={() => setShowCreateTagModal(false)}
-          defaultTagTypeId={tagType.tagTypeId}
+      {showNewTagModal && (
+        <NewTagModal
+          show={showNewTagModal}
+          onHide={() => setShowNewTagModal(false)}
+          onTagCreated={onTagCreated}
           storyId={storyId}
-          onTagCreated={handleTagCreated}
+          tagTypeId={tagType.tagTypeId}
         />
       )}
     </div>
