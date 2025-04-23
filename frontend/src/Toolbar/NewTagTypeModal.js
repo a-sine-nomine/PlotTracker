@@ -23,7 +23,7 @@ export default function NewTagTypeModal({
         setUserStories(data);
         if (
           storyId &&
-          data.some((s) => parseInt(s.storyId) === parseInt(storyId))
+          data.some((s) => String(s.storyId) === String(storyId))
         ) {
           setSelectedStoryId(storyId);
         } else if (data.length) setSelectedStoryId(data[0].storyId);

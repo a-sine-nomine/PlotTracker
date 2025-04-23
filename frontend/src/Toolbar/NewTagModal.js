@@ -3,6 +3,8 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import apiService from "../Services/apiService";
 
+const NON_EDITABLE = ["Character", "Location", "Plot line"];
+
 export default function NewTagModal({ show, onHide, onTagCreated, storyId }) {
   const { t } = useTranslation();
 
@@ -21,7 +23,7 @@ export default function NewTagModal({ show, onHide, onTagCreated, storyId }) {
         setUserStories(data);
         if (
           storyId &&
-          data.some((s) => parseInt(s.storyId) === parseInt(storyId))
+          data.some((s) => String(s.storyId) === String(storyId))
         ) {
           setSelectedStoryId(storyId);
         } else if (data.length) setSelectedStoryId(data[0].storyId);
@@ -111,11 +113,17 @@ export default function NewTagModal({ show, onHide, onTagCreated, storyId }) {
               value={selectedTagTypeId}
               onChange={(e) => setSelectedTagTypeId(e.target.value)}
             >
-              {tagTypes.map((tt) => (
-                <option key={tt.tagTypeId} value={tt.tagTypeId}>
-                  {tt.name}
-                </option>
-              ))}
+              {tagTypes.map((tt) => {
+                const isNonEditable = NON_EDITABLE.includes(tt.name);
+                const displayName = isNonEditable
+                  ? t(`tagTypeRow.${tt.name}`)
+                  : tt.name;
+                return (
+                  <option key={tt.tagTypeId} value={tt.tagTypeId}>
+                    {displayName}
+                  </option>
+                );
+              })}
             </Form.Control>
           </Form.Group>
 
