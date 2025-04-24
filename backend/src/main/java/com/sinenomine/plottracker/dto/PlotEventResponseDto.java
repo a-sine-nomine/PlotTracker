@@ -27,8 +27,8 @@ public class PlotEventResponseDto {
     @JsonProperty("memoryRefId")
     private Long memoryRefId;
 
-    @JsonProperty("nextEventId")
-    private Long nextEventId;
+    @JsonProperty("prevEventId")
+    private Long prevEventId;
 
     @JsonProperty("tags")
     private List<TagResponseDto> tags;
@@ -37,7 +37,7 @@ public class PlotEventResponseDto {
     }
 
     public PlotEventResponseDto(String eventType, Long eventId, String title, String date, String description,
-                                String content, Long memoryRefId, Long nextEventId, List<TagResponseDto> tags) {
+                                String content, Long memoryRefId, Long prevEventId, List<TagResponseDto> tags) {
         this.eventType = eventType;
         this.eventId = eventId;
         this.title = title;
@@ -45,7 +45,7 @@ public class PlotEventResponseDto {
         this.description = description;
         this.content = content;
         this.memoryRefId = memoryRefId;
-        this.nextEventId = nextEventId;
+        this.prevEventId = prevEventId;
         this.tags = tags;
     }
 
@@ -105,12 +105,12 @@ public class PlotEventResponseDto {
         this.memoryRefId = memoryRefId;
     }
 
-    public Long getNextEventId() {
-        return nextEventId;
+    public Long getPrevEventIdd() {
+        return prevEventId;
     }
 
-    public void setNextEventId(Long nextEventId) {
-        this.nextEventId = nextEventId;
+    public void setPrevEventId(Long prevEventId) {
+        this.prevEventId = prevEventId;
     }
 
     public List<TagResponseDto> getTags() {

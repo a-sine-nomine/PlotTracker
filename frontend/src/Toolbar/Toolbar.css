@@ -51,3 +51,14 @@
 .user-options-delete-account {
   color: red;
 }
+
+.tags-suggestion-dropdown {
+  position: absolute;
+  z-index: 1000;
+  width: 96%;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 0.1px solid #8a929b;
+  background-color: #fff;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}

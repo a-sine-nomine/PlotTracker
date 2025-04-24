@@ -27,8 +27,8 @@ public class PlotEventRequestDto {
     @JsonProperty("memoryRefId")
     private Long memoryRefId;
 
-    @JsonProperty("nextEventId")
-    private Long nextEventId;
+    @JsonProperty("prevEventId")
+    private Long prevEventId;
 
     @JsonProperty("tags")
     private Set<Long> tags;
@@ -83,12 +83,12 @@ public class PlotEventRequestDto {
         this.memoryRefId = memoryRefId;
     }
 
-    public Long getNextEventId() {
-        return nextEventId;
+    public Long getPrevEventId() {
+        return prevEventId;
     }
 
-    public void setNextEventId(Long nextEventId) {
-        this.nextEventId = nextEventId;
+    public void setPrevEventId(Long prevEventId) {
+        this.prevEventId = prevEventId;
     }
 
     public Set<Long> getTags() {

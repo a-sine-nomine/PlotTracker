@@ -61,9 +61,10 @@
     "descriptionLabel": "Описание",
     "contentLabel": "Содержание",
     "memoryRefIdLabel": "Воспоминание",
-    "nextEventIdLabel": "Следующее событие",
+    "prevEventIdLabel": "Предыдущее событие",
     "noneOption": "Отсутствует",
-    "tagsLabel": "Тэги"
+    "tagsLabel": "Тэги",
+    "searchPlaceholder": "Выберите тэги..."
   },
   "newTagModal": {
     "title": "Новый тэг",

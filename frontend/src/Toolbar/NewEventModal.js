@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Modal,
+  Button,
+  Form,
+  Badge,
+  InputGroup,
+  ListGroup,
+} from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import apiService from "../Services/apiService";
 
@@ -17,22 +24,81 @@ export default function NewEventModal({
   const [eventDescription, setEventDescription] = useState("");
   const [eventContent, setEventContent] = useState("");
   const [eventMemoryRefId, setEventMemoryRefId] = useState("");
-  const [eventNextEventId, setEventNextEventId] = useState("");
+  const [eventPrevEventId, setEventPrevEventId] = useState("");
   const [storyEvents, setStoryEvents] = useState([]);
+
+  const [tagTypes, setTagTypes] = useState([]);
+  const [tags, setTags] = useState([]);
+
+  const [selectedTagIds, setSelectedTagIds] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const inputRef = useRef();
 
   useEffect(() => {
     if (!storyId) return;
-    const fetchEvents = async () => {
-      try {
-        const resp = await apiService.getPlotEvents(storyId);
-        const data = await resp.json();
-        setStoryEvents(data);
-      } catch (err) {
-        console.error("Error fetching story events:", err);
-      }
-    };
-    fetchEvents();
+    apiService
+      .getPlotEvents(storyId)
+      .then((r) => r.json())
+      .then(setStoryEvents)
+      .catch(console.error);
   }, [storyId]);
+
+  useEffect(() => {
+    if (!show || !storyId) return;
+    apiService
+      .getTagTypes(storyId)
+      .then((r) => r.json())
+      .then(setTagTypes);
+    apiService
+      .getTags(storyId)
+      .then((r) => r.json())
+      .then(setTags);
+  }, [show, storyId]);
+
+  const resetAll = () => {
+    setEventType("dated");
+    setEventTitle("");
+    setEventDate("");
+    setEventDescription("");
+    setEventContent("");
+    setEventMemoryRefId("");
+    setEventPrevEventId("");
+    setSelectedTagIds([]);
+    setSearchTerm("");
+  };
+  const handleClose = () => {
+    resetAll();
+    onHide();
+  };
+
+  const addTag = (tagId) => {
+    setSelectedTagIds((prev) =>
+      prev.includes(tagId) ? prev : [...prev, tagId]
+    );
+    setSearchTerm("");
+    setShowSuggestions(false);
+    inputRef.current.focus();
+  };
+  const removeTag = (tagId) => {
+    setSelectedTagIds((prev) => prev.filter((id) => id !== tagId));
+  };
+
+  const suggestions = tagTypes
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((tt) => {
+      const items = tags
+        .filter(
+          (tag) =>
+            tag.tagTypeId === tt.tagTypeId &&
+            !selectedTagIds.includes(tag.tagId) &&
+            (searchTerm === "" ||
+              tag.tagName.toLowerCase().includes(searchTerm.toLowerCase()))
+        )
+        .sort((a, b) => a.tagName.localeCompare(b.tagName));
+      return items.length ? { tagType: tt, items } : null;
+    })
+    .filter(Boolean);
 
   const handleSave = async () => {
     if (!storyId) return;
@@ -44,35 +110,16 @@ export default function NewEventModal({
         description: eventDescription,
         content: eventContent,
         memoryRefId: eventMemoryRefId || null,
-        nextEventId: eventNextEventId || null,
-        tags: [],
+        prevEventId: eventPrevEventId || null,
+        tags: selectedTagIds,
       };
       const resp = await apiService.addPlotEvent(storyId, eventDto);
       const newEvent = await resp.json();
       onEventCreated && onEventCreated(newEvent);
-      // reset
-      setEventType("dated");
-      setEventTitle("");
-      setEventDate("");
-      setEventDescription("");
-      setEventContent("");
-      setEventMemoryRefId("");
-      setEventNextEventId("");
-      onHide();
+      handleClose();
     } catch (err) {
       console.error("Error creating new event:", err);
     }
-  };
-
-  const handleClose = () => {
-    setEventType("dated");
-    setEventTitle("");
-    setEventDate("");
-    setEventDescription("");
-    setEventContent("");
-    setEventMemoryRefId("");
-    setEventNextEventId("");
-    onHide();
   };
 
   return (
@@ -80,8 +127,10 @@ export default function NewEventModal({
       <Modal.Header closeButton>
         <Modal.Title>{t("newEventModal.title")}</Modal.Title>
       </Modal.Header>
+
       <Modal.Body>
         <Form>
+          {}
           <Form.Group controlId="formEventType" className="mb-3">
             <Form.Label>{t("newEventModal.eventTypeLabel")}</Form.Label>
             <Form.Control
@@ -95,6 +144,7 @@ export default function NewEventModal({
             </Form.Control>
           </Form.Group>
 
+          {}
           <Form.Group controlId="formEventTitle" className="mb-3">
             <Form.Label>{t("newEventModal.titleLabel")}</Form.Label>
             <Form.Control
@@ -104,15 +154,18 @@ export default function NewEventModal({
             />
           </Form.Group>
 
+          {}
           <Form.Group controlId="formEventDate" className="mb-3">
             <Form.Label>{t("newEventModal.dateLabel")}</Form.Label>
             <Form.Control
               type="text"
+              placeholder={t("1500.01.01")}
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
             />
           </Form.Group>
 
+          {}
           <Form.Group controlId="formEventDescription" className="mb-3">
             <Form.Label>{t("newEventModal.descriptionLabel")}</Form.Label>
             <Form.Control
@@ -123,6 +176,7 @@ export default function NewEventModal({
             />
           </Form.Group>
 
+          {}
           <Form.Group controlId="formEventContent" className="mb-3">
             <Form.Label>{t("newEventModal.contentLabel")}</Form.Label>
             <Form.Control
@@ -133,6 +187,77 @@ export default function NewEventModal({
             />
           </Form.Group>
 
+          {}
+          <Form.Group controlId="formEventTags" className="mb-3">
+            <Form.Label>{t("newEventModal.tagsLabel", "Tags")}</Form.Label>
+
+            {}
+            <div className="mb-2">
+              {selectedTagIds.map((id) => {
+                const tag = tags.find((t) => t.tagId === id);
+                return (
+                  <Badge
+                    key={id}
+                    pill
+                    bg="secondary"
+                    className="me-1"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => removeTag(id)}
+                  >
+                    {tag?.tagName} &times;
+                  </Badge>
+                );
+              })}
+            </div>
+
+            {}
+            <InputGroup>
+              <Form.Control
+                placeholder={t(
+                  "newEventModal.searchPlaceholder",
+                  "Search tags..."
+                )}
+                value={searchTerm}
+                ref={inputRef}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => {
+                  setTimeout(() => setShowSuggestions(false), 150);
+                }}
+              />
+            </InputGroup>
+
+            {}
+            {showSuggestions && suggestions.length > 0 && (
+              <ListGroup className="tags-suggestion-dropdown">
+                {suggestions.map(({ tagType, items }) => (
+                  <React.Fragment key={tagType.tagTypeId}>
+                    <ListGroup.Item
+                      variant="light"
+                      className="fw-bold"
+                      style={{ cursor: "default" }}
+                    >
+                      {tagType.name}
+                    </ListGroup.Item>
+                    {items.map((tag) => (
+                      <ListGroup.Item
+                        key={tag.tagId}
+                        action
+                        onMouseDown={() => addTag(tag.tagId)}
+                      >
+                        {tag.tagName}
+                      </ListGroup.Item>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </ListGroup>
+            )}
+          </Form.Group>
+
+          {}
           <Form.Group controlId="formEventMemoryRefId" className="mb-3">
             <Form.Label>{t("newEventModal.memoryRefIdLabel")}</Form.Label>
             <Form.Control
@@ -149,12 +274,13 @@ export default function NewEventModal({
             </Form.Control>
           </Form.Group>
 
-          <Form.Group controlId="formEventNextEventId" className="mb-3">
-            <Form.Label>{t("newEventModal.nextEventIdLabel")}</Form.Label>
+          {}
+          <Form.Group controlId="formEventPrevEventId" className="mb-3">
+            <Form.Label>{t("newEventModal.prevEventIdLabel")}</Form.Label>
             <Form.Control
               as="select"
-              value={eventNextEventId}
-              onChange={(e) => setEventNextEventId(e.target.value)}
+              value={eventPrevEventId}
+              onChange={(e) => setEventPrevEventId(e.target.value)}
             >
               <option value="">{t("newEventModal.noneOption")}</option>
               {storyEvents.map((ev) => (
@@ -166,6 +292,7 @@ export default function NewEventModal({
           </Form.Group>
         </Form>
       </Modal.Body>
+
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
           {t("cancel")}

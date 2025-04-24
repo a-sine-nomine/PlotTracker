@@ -174,7 +174,7 @@ public class StoryController {
                 id,
                 plotEvent,
                 plotEventRequestDto.getMemoryRefId(),
-                plotEventRequestDto.getNextEventId(),
+                plotEventRequestDto.getPrevEventId(),
                 plotEventRequestDto.getTags()
         );
         PlotEventResponseDto responseDto = plotEventService.convertToDto(createdPlotEvent);

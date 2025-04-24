@@ -92,7 +92,7 @@ public class StoryService {
     }
 
     // Add a new plot event to a given story; if provided, resolve memoryRef and nextEvent
-    public PlotEvent addPlotEventToStory(String username, Long storyId, PlotEvent plotEvent, Long memoryRefId, Long nextEventId, Set<Long> tags) {
+    public PlotEvent addPlotEventToStory(String username, Long storyId, PlotEvent plotEvent, Long memoryRefId, Long prevEventId, Set<Long> tags) {
         Story story = getStoryByIdAndUser(storyId, username);
         plotEvent.setStory(story);
         if (memoryRefId != null) {
@@ -100,8 +100,8 @@ public class StoryService {
                     .orElseThrow(() -> new ResourceNotFoundException("Memory reference plot event not found"));
             plotEvent.setMemoryRef(memoryRef);
         }
-        if (nextEventId != null) {
-            PlotEvent nextEvent = plotEventRepo.findById(nextEventId)
+        if (prevEventId != null) {
+            PlotEvent nextEvent = plotEventRepo.findById(prevEventId)
                     .orElseThrow(() -> new ResourceNotFoundException("Next event not found"));
             plotEvent.setNextEvent(nextEvent);
         }

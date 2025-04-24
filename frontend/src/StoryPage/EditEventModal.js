@@ -17,7 +17,7 @@ const EditEventModal = ({
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
   const [memoryRefId, setMemoryRefId] = useState("");
-  const [nextEventId, setNextEventId] = useState("");
+  const [prevEventId, setPrevEventId] = useState("");
   const [tagsInput, setTagsInput] = useState("");
 
   const [availableTags, setAvailableTags] = useState([]);
@@ -30,7 +30,7 @@ const EditEventModal = ({
       setDescription(eventData.description || "");
       setContent(eventData.content || "");
       setMemoryRefId(eventData.memoryRefId || "");
-      setNextEventId(eventData.nextEventId || "");
+      setPrevEventId(eventData.prevEventId || "");
       if (eventData.tags && eventData.tags.length > 0) {
         setTagsInput(eventData.tags.map((t) => t.tagName).join(", "));
       } else {
@@ -75,7 +75,7 @@ const EditEventModal = ({
       description,
       content,
       memoryRefId: memoryRefId || null,
-      nextEventId: nextEventId || null,
+      prevEventId: prevEventId || null,
       tags: tagIds,
     };
 
@@ -156,12 +156,12 @@ const EditEventModal = ({
               placeholder="Optional"
             />
           </Form.Group>
-          <Form.Group controlId="editEventNextEventId" className="mb-3">
-            <Form.Label>{t("newEventModal.nextEventIdLabel")}</Form.Label>
+          <Form.Group controlId="editEventPrevEventId" className="mb-3">
+            <Form.Label>{t("newEventModal.PrevEventIdLabel")}</Form.Label>
             <Form.Control
               type="text"
-              value={nextEventId}
-              onChange={(e) => setNextEventId(e.target.value)}
+              value={prevEventId}
+              onChange={(e) => setPrevEventId(e.target.value)}
               placeholder="Optional"
             />
           </Form.Group>

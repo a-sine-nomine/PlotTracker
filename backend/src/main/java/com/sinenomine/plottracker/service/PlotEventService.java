@@ -53,8 +53,8 @@ public class PlotEventService {
                     .orElseThrow(() -> new ResourceNotFoundException("Memory reference plot event not found"));
             event.setMemoryRef(memoryRef);
         }
-        if (dto.getNextEventId() != null) {
-            PlotEvent nextEvent = plotEventRepo.findById(dto.getNextEventId())
+        if (dto.getPrevEventId() != null) {
+            PlotEvent nextEvent = plotEventRepo.findById(dto.getPrevEventId())
                     .orElseThrow(() -> new ResourceNotFoundException("Next event not found"));
             event.setNextEvent(nextEvent);
         }
