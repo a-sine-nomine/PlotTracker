@@ -135,6 +135,9 @@
     "details": "Детали",
     "name": "Имя",
     "shortDescription": "Короткое описание",
-    "description": "Описание"
+    "description": "Описание",
+    "noImage": "Нет изображения",
+    "uploading": "Загружается...",
+    "uploadImage": "Загрузить изображение"
   }
 }

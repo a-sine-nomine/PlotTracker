@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Spinner, Alert } from "react-bootstrap";
+import { Modal, Button, Spinner, Alert, Row, Col, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import apiService from "../Services/apiService";
 import "./StoryPage.css";
@@ -23,20 +23,14 @@ const EditCharacterModal = ({
   const [uploadError, setUploadError] = useState(null);
 
   useEffect(() => {
-    if (!show) return setImageURL(null);
+    if (!show) {
+      setImageURL(null);
+      return;
+    }
     (async () => {
       try {
         const resp = await apiService.getCharacterImage(storyId, tagId);
-        if (!resp.ok) {
-          setImageURL(null);
-          return;
-        }
-        const contentType = resp.headers.get("content-type");
-
-        if (!contentType || contentType === "application/json") {
-          setImageURL(null);
-          return;
-        }
+        if (!resp.ok) return;
         const blob = await resp.blob();
         setImageURL(URL.createObjectURL(blob));
       } catch (err) {
@@ -76,68 +70,86 @@ const EditCharacterModal = ({
         {error && <Alert variant="danger">{error}</Alert>}
 
         {characterData && (
-          <>
-            <div className="form-group">
-              <label>{t("character.name")}</label>
-              <input
-                className="form-control"
-                value={characterData.name}
-                onChange={(e) => onChangeField("name", e.target.value)}
-              />
-            </div>
+          <Form>
+            <Row>
+              {}
+              <Col md={8}>
+                <Form.Group controlId="formCharacterName" className="mb-3">
+                  <Form.Label>{t("character.name")}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={characterData.name}
+                    onChange={(e) => onChangeField("name", e.target.value)}
+                  />
+                </Form.Group>
 
-            <div className="form-group">
-              <label>{t("character.shortDescription")}</label>
-              <textarea
-                className="form-control"
-                rows={3}
-                value={characterData.short_description}
-                onChange={(e) =>
-                  onChangeField("short_description", e.target.value)
-                }
-              />
-            </div>
+                <Form.Group
+                  controlId="formCharacterShortDescription"
+                  className="mb-3"
+                >
+                  <Form.Label>{t("character.shortDescription")}</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={5}
+                    value={characterData.short_description}
+                    onChange={(e) =>
+                      onChangeField("short_description", e.target.value)
+                    }
+                  />
+                </Form.Group>
+              </Col>
 
-            <div className="form-group">
-              <label>{t("character.description")}</label>
-              <textarea
-                className="form-control"
-                rows={5}
-                value={characterData.description}
-                onChange={(e) => onChangeField("description", e.target.value)}
-              />
-            </div>
-
-            {}
-            <div className="form-group mt-4">
-              <label>{t("character.image")}</label>
-              {imageURL && (
-                <div className="mb-2">
+              {}
+              <Col md={4} className="d-flex flex-column align-items-center">
+                {imageURL ? (
                   <img
                     src={imageURL}
                     alt="Character"
-                    style={{ maxWidth: "100%", height: "auto" }}
+                    className="character-image-preview"
                   />
-                </div>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                className="form-control mb-2"
-                onChange={handleFileChange}
+                ) : (
+                  <div className="character-image-placeholder">
+                    {t("character.noImage", "No Image")}
+                  </div>
+                )}
+
+                <Form.Group controlId="formCharacterImage" className="w-100">
+                  <Form.Label>{}</Form.Label>
+                  <Form.Control
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                </Form.Group>
+                {uploadError && (
+                  <Alert variant="danger" className="w-100 mt-2">
+                    {uploadError}
+                  </Alert>
+                )}
+                <Button
+                  variant="outline-primary"
+                  onClick={handleUpload}
+                  disabled={uploading || !selectedFile}
+                  className="mt-2 w-100"
+                >
+                  {uploading
+                    ? t("character.uploading", "Uploading…")
+                    : t("character.uploadImage", "Upload Image")}
+                </Button>
+              </Col>
+            </Row>
+
+            {}
+            <Form.Group controlId="formCharacterDescription" className="mt-4">
+              <Form.Label>{t("character.description")}</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={7}
+                value={characterData.description}
+                onChange={(e) => onChangeField("description", e.target.value)}
               />
-              {uploadError && <Alert variant="danger">{uploadError}</Alert>}
-              <Button
-                variant="outline-primary"
-                onClick={handleUpload}
-                disabled={uploading || !selectedFile}
-              >
-                {uploading
-                  ? t("character.uploading", "Uploading…")
-                  : t("character.uploadImage", "Upload Image")}
-              </Button>
-            </div>
-          </>
+            </Form.Group>
+          </Form>
         )}
       </Modal.Body>
       <Modal.Footer>

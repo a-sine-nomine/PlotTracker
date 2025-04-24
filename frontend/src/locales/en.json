@@ -136,6 +136,9 @@
     "details": "Details",
     "name": "Name",
     "shortDescription": "Short description",
-    "description": "Description"
+    "description": "Description",
+    "noImage": "No Image",
+    "uploading": "Uploading…",
+    "uploadImage": "Upload Image"
   }
 }
