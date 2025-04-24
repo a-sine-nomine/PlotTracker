@@ -180,9 +180,9 @@ export default function NewEventModal({
               value={eventType}
               onChange={(e) => setEventType(e.target.value)}
             >
-              <option value="dated">{t("newEventModal.dated")}</option>
-              <option value="memory">{t("newEventModal.memory")}</option>
-              <option value="undated">{t("newEventModal.undated")}</option>
+              <option value="dated">{t("eventTypes.dated")}</option>
+              <option value="memory">{t("eventTypes.memory")}</option>
+              <option value="undated">{t("eventTypes.undated")}</option>
             </Form.Control>
           </Form.Group>
 

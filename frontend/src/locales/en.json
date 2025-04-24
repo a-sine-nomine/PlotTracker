@@ -1,6 +1,11 @@
 {
   "cancel": "Cancel",
   "save": "Save",
+  "eventTypes": {
+    "dated": "Dated",
+    "memory": "Memory",
+    "undated": "Undated"
+  },
   "register": {
     "title": "PlotTracker",
     "description": "Create a new account to start tracking your stories.",
@@ -64,9 +69,6 @@
     "prevEventIdLabel": "Previous Event",
     "noneOption": "None",
     "searchPlaceholder": "Search tags...",
-    "dated": "Dated",
-    "memory": "Memory",
-    "undated": "Undated",
     "isInPlotLabel": "Include in the plot"
   },
   "newTagModal": {
@@ -123,7 +125,12 @@
     "tagTypes": "Tag Types",
     "noEvents": "No plot events available for this story.",
     "noTags": "No tags.",
-    "noTagTypes": "No tag types."
+    "noTagTypes": "No tag types.",
+    "events": "Events",
+    "allTypes": "All types",
+    "allTags": "All",
+    "haveTags": "Have tags",
+    "withoutTags": "No tags"
   },
   "visualSettings": {
     "filterOr": "Filter with 'or'",

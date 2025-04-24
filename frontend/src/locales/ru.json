@@ -1,6 +1,11 @@
 {
   "cancel": "Отмена",
   "save": "Сохранить",
+  "eventTypes": {
+    "dated": "Датированное",
+    "memory": "Воспоминание",
+    "undated": "Не датированное"
+  },
   "register": {
     "title": "PlotTracker",
     "description": "Создайте новый аккаунт, чтобы начать отслеживать ваши истории.",
@@ -65,9 +70,6 @@
     "noneOption": "Отсутствует",
     "tagsLabel": "Тэги",
     "searchPlaceholder": "Выберите тэги...",
-    "dated": "Датированное",
-    "memory": "Воспоминание",
-    "undated": "Не датированное",
     "isInPlotLabel": "Включен в итоговое произведение"
   },
   "newTagModal": {
@@ -122,7 +124,12 @@
     "tags": "Тэги",
     "noEvents": "Для этой истории нет сюжетных событий.",
     "noTags": "Нет тегов.",
-    "noTagTypes": "Нет типов тегов."
+    "noTagTypes": "Нет типов тегов.",
+    "events": "События",
+    "allTypes": "Все типы",
+    "allTags": "Все",
+    "haveTags": "Имеют теги",
+    "withoutTags": "Без тегов"
   },
   "visualSettings": {
     "filterOr": "Фильтр по принципу 'или'",
