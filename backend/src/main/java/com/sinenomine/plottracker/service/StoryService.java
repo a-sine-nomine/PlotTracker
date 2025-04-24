@@ -11,12 +11,14 @@ import com.sinenomine.plottracker.model.Users;
 import com.sinenomine.plottracker.repo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -93,6 +95,10 @@ public class StoryService {
 
     // Add a new plot event to a given story; if provided, resolve memoryRef and nextEvent
     public PlotEvent addPlotEventToStory(String username, Long storyId, PlotEvent plotEvent, Long memoryRefId, Long prevEventId, Set<Long> tags) {
+        PlotEvent savedPlotEvent = new PlotEvent();
+        PlotEvent prevEvent = new PlotEvent();
+        PlotEvent nextEvent = new PlotEvent();
+
         Story story = getStoryByIdAndUser(storyId, username);
         plotEvent.setStory(story);
         if (memoryRefId != null) {
@@ -101,11 +107,38 @@ public class StoryService {
             plotEvent.setMemoryRef(memoryRef);
         }
         if (prevEventId != null) {
-            PlotEvent nextEvent = plotEventRepo.findById(prevEventId)
+            prevEvent = plotEventRepo.findById(prevEventId)
                     .orElseThrow(() -> new ResourceNotFoundException("Next event not found"));
-            plotEvent.setNextEvent(nextEvent);
+            plotEvent.setPrevEvent(prevEvent);
         }
-        PlotEvent savedPlotEvent = plotEventRepo.save(plotEvent);
+
+        if (plotEvent.getInPlot()) {
+            if (plotEvent.getPrevEvent() == null) {
+                Set<PlotEvent> eventSet = getPlotEvents(username, storyId);
+                List<PlotEvent> events = new java.util.ArrayList<>(eventSet);
+                Optional<PlotEvent> firstEvent = events.stream()
+                        .filter(e -> (e.getPrevEvent() == null && e.getInPlot()))
+                        .findFirst();
+
+                if (firstEvent.isEmpty()) {
+                    savedPlotEvent = plotEventRepo.save(plotEvent);
+                } else {
+                    plotEvent.setNextEvent(firstEvent.get());
+                    savedPlotEvent = plotEventRepo.save(plotEvent);
+                    firstEvent.get().setPrevEvent(savedPlotEvent);
+                    plotEventRepo.save(firstEvent.get());
+                }
+            } else {
+                nextEvent = prevEvent.getNextEvent();
+                plotEvent.setNextEvent(nextEvent);
+                savedPlotEvent = plotEventRepo.save(plotEvent);
+                prevEvent.setNextEvent(savedPlotEvent);
+                plotEventRepo.save(prevEvent);
+                nextEvent.setPrevEvent(savedPlotEvent);
+                plotEventRepo.save(nextEvent);
+            }
+        }
+
         for (Long tagId : tags) {
             plotEventService.addTagToPlotEvent(savedPlotEvent.getEventId(), tagId, username);
         }
@@ -127,7 +160,7 @@ public class StoryService {
         Set<PlotEvent> eventSet = getPlotEvents(username, storyId);
         List<PlotEvent> events = new java.util.ArrayList<>(eventSet);
         PlotEvent firstEvent = events.stream()
-                .filter(e -> e.getPrevEvent() == null)
+                .filter(e -> e.getPrevEvent() == null && e.getInPlot())
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("No starting event found"));
         List<PlotEvent> orderedEvents = new java.util.ArrayList<>();
