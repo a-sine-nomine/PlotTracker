@@ -64,7 +64,10 @@
     "prevEventIdLabel": "Предыдущее событие",
     "noneOption": "Отсутствует",
     "tagsLabel": "Тэги",
-    "searchPlaceholder": "Выберите тэги..."
+    "searchPlaceholder": "Выберите тэги...",
+    "dated": "Датированное",
+    "memory": "Воспоминание",
+    "undated": "Не датированное"
   },
   "newTagModal": {
     "title": "Новый тэг",

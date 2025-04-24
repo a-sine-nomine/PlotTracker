@@ -63,7 +63,10 @@
     "memoryRefIdLabel": "Memory Reference",
     "prevEventIdLabel": "Previous Event",
     "noneOption": "None",
-    "searchPlaceholder": "Search tags..."
+    "searchPlaceholder": "Search tags...",
+    "dated": "Dated",
+    "memory": "Memory",
+    "undated": "Undated"
   },
   "newTagModal": {
     "title": "New Tag",

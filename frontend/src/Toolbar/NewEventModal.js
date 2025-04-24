@@ -49,12 +49,24 @@ export default function NewEventModal({
     apiService
       .getTagTypes(storyId)
       .then((r) => r.json())
-      .then(setTagTypes);
+      .then(setTagTypes)
+      .catch(console.error);
     apiService
       .getTags(storyId)
       .then((r) => r.json())
-      .then(setTags);
+      .then(setTags)
+      .catch(console.error);
   }, [show, storyId]);
+
+  useEffect(() => {
+    if (eventType === "dated") {
+      setEventMemoryRefId("");
+    }
+    if (eventType === "undated") {
+      setEventMemoryRefId("");
+      setEventDate("");
+    }
+  }, [eventType]);
 
   const resetAll = () => {
     setEventType("dated");
@@ -106,10 +118,13 @@ export default function NewEventModal({
       const eventDto = {
         eventType,
         title: eventTitle,
-        date: eventDate,
+        date: eventType === "undated" ? null : eventDate,
         description: eventDescription,
         content: eventContent,
-        memoryRefId: eventMemoryRefId || null,
+        memoryRefId:
+          eventType === "dated" || eventType === "undated"
+            ? null
+            : eventMemoryRefId,
         prevEventId: eventPrevEventId || null,
         tags: selectedTagIds,
       };
@@ -138,9 +153,9 @@ export default function NewEventModal({
               value={eventType}
               onChange={(e) => setEventType(e.target.value)}
             >
-              <option value="dated">dated</option>
-              <option value="memory">memory</option>
-              <option value="undated">undated</option>
+              <option value="dated">{t("newEventModal.dated")}</option>
+              <option value="memory">{t("newEventModal.memory")}</option>
+              <option value="undated">{t("newEventModal.undated")}</option>
             </Form.Control>
           </Form.Group>
 
@@ -159,9 +174,10 @@ export default function NewEventModal({
             <Form.Label>{t("newEventModal.dateLabel")}</Form.Label>
             <Form.Control
               type="text"
-              placeholder={t("1500.01.01")}
+              placeholder="1500.01.01"
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
+              disabled={eventType === "undated"}
             />
           </Form.Group>
 
@@ -188,10 +204,12 @@ export default function NewEventModal({
           </Form.Group>
 
           {}
-          <Form.Group controlId="formEventTags" className="mb-3">
+          <Form.Group
+            controlId="formEventTags"
+            className="mb-3"
+            style={{ position: "relative" }}
+          >
             <Form.Label>{t("newEventModal.tagsLabel", "Tags")}</Form.Label>
-
-            {}
             <div className="mb-2">
               {selectedTagIds.map((id) => {
                 const tag = tags.find((t) => t.tagId === id);
@@ -210,7 +228,6 @@ export default function NewEventModal({
               })}
             </div>
 
-            {}
             <InputGroup>
               <Form.Control
                 placeholder={t(
@@ -230,7 +247,6 @@ export default function NewEventModal({
               />
             </InputGroup>
 
-            {}
             {showSuggestions && suggestions.length > 0 && (
               <ListGroup className="tags-suggestion-dropdown">
                 {suggestions.map(({ tagType, items }) => (
@@ -264,6 +280,7 @@ export default function NewEventModal({
               as="select"
               value={eventMemoryRefId}
               onChange={(e) => setEventMemoryRefId(e.target.value)}
+              disabled={eventType === "dated" || eventType === "undated"}
             >
               <option value="">{t("newEventModal.noneOption")}</option>
               {storyEvents.map((ev) => (
