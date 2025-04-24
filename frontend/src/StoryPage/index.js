@@ -140,9 +140,10 @@ const StoryPage = () => {
           setTagTypes((prev) => [...prev, newTagType])
         }
         onNewTagCreated={(newTag) => setTags((prev) => [...prev, newTag])}
-        onNewEventCreated={(newEvent) =>
-          setPlotEvents((prev) => [...prev, newEvent])
-        }
+        onNewEventCreated={(newEvent) => {
+          setPlotEvents((prev) => [...prev, newEvent]);
+          setFilteredEvents((prev) => [...prev, newEvent]);
+        }}
       />
       <div className="storypage-container">
         <div className="left-panel">
@@ -201,6 +202,11 @@ const StoryPage = () => {
               storyId={storyId}
               onEventUpdated={(updatedEvent) => {
                 setPlotEvents((prev) =>
+                  prev.map((e) =>
+                    e.eventId === updatedEvent.eventId ? updatedEvent : e
+                  )
+                );
+                setFilteredEvents((prev) =>
                   prev.map((e) =>
                     e.eventId === updatedEvent.eventId ? updatedEvent : e
                   )

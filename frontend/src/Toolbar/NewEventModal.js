@@ -36,27 +36,22 @@ export default function NewEventModal({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef();
 
-  useEffect(() => {
-    if (!storyId) return;
-    apiService
-      .getPlotEvents(storyId)
-      .then((r) => r.json())
-      .then(setStoryEvents)
-      .catch(console.error);
-  }, [storyId]);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (!show || !storyId) return;
     apiService
       .getTagTypes(storyId)
       .then((r) => r.json())
-      .then(setTagTypes)
-      .catch(console.error);
+      .then(setTagTypes);
     apiService
       .getTags(storyId)
       .then((r) => r.json())
-      .then(setTags)
-      .catch(console.error);
+      .then(setTags);
+    apiService
+      .getPlotEvents(storyId)
+      .then((r) => r.json())
+      .then(setStoryEvents);
   }, [show, storyId]);
 
   useEffect(() => {
@@ -66,6 +61,7 @@ export default function NewEventModal({
     if (eventType === "undated") {
       setEventDate("");
     }
+    setErrors({});
   }, [eventType]);
 
   useEffect(() => {
@@ -85,10 +81,32 @@ export default function NewEventModal({
     setIsInPlot(true);
     setSelectedTagIds([]);
     setSearchTerm("");
+    setErrors({});
   };
   const handleClose = () => {
     resetAll();
     onHide();
+  };
+
+  const validate = () => {
+    const errs = {};
+    if (!eventTitle.trim()) {
+      errs.title = t("errors.titleRequired", "Title is required");
+    }
+    if (
+      (eventType === "dated" || eventType === "memory") &&
+      !eventDate.trim()
+    ) {
+      errs.date = t("errors.dateRequired", "Date is required");
+    }
+    if (eventType === "memory" && !eventMemoryRefId) {
+      errs.memoryRef = t(
+        "errors.memoryRefRequired",
+        "Memory reference is required"
+      );
+    }
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const addTag = (tagId) => {
@@ -99,9 +117,8 @@ export default function NewEventModal({
     setShowSuggestions(false);
     inputRef.current.focus();
   };
-  const removeTag = (tagId) => {
+  const removeTag = (tagId) =>
     setSelectedTagIds((prev) => prev.filter((id) => id !== tagId));
-  };
 
   const suggestions = tagTypes
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -121,24 +138,26 @@ export default function NewEventModal({
 
   const handleSave = async () => {
     if (!storyId) return;
+    if (!validate()) return;
+
+    const eventDto = {
+      eventType,
+      title: eventTitle,
+      date: eventType === "undated" ? null : eventDate,
+      description: eventDescription,
+      content: eventContent,
+      memoryRefId:
+        eventType === "dated" || eventType === "undated"
+          ? null
+          : eventMemoryRefId,
+      prevEventId: isInPlot ? eventPrevEventId || null : null,
+      isInPlot,
+      tags: selectedTagIds,
+    };
     try {
-      const eventDto = {
-        eventType,
-        title: eventTitle,
-        date: eventType === "undated" ? null : eventDate,
-        description: eventDescription,
-        content: eventContent,
-        memoryRefId:
-          eventType === "dated" || eventType === "undated"
-            ? null
-            : eventMemoryRefId,
-        prevEventId: isInPlot ? eventPrevEventId || null : null,
-        isInPlot,
-        tags: selectedTagIds,
-      };
       const resp = await apiService.addPlotEvent(storyId, eventDto);
       const newEvent = await resp.json();
-      onEventCreated && onEventCreated(newEvent);
+      onEventCreated?.(newEvent);
       handleClose();
     } catch (err) {
       console.error("Error creating new event:", err);
@@ -173,8 +192,15 @@ export default function NewEventModal({
             <Form.Control
               type="text"
               value={eventTitle}
-              onChange={(e) => setEventTitle(e.target.value)}
+              isInvalid={!!errors.title}
+              onChange={(e) => {
+                setEventTitle(e.target.value);
+                setErrors((prev) => ({ ...prev, title: null }));
+              }}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.title}
+            </Form.Control.Feedback>
           </Form.Group>
 
           {}
@@ -184,9 +210,16 @@ export default function NewEventModal({
               type="text"
               placeholder="1500.01.01"
               value={eventDate}
-              onChange={(e) => setEventDate(e.target.value)}
+              isInvalid={!!errors.date}
               disabled={eventType === "undated"}
+              onChange={(e) => {
+                setEventDate(e.target.value);
+                setErrors((prev) => ({ ...prev, date: null }));
+              }}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.date}
+            </Form.Control.Feedback>
           </Form.Group>
 
           {}
@@ -249,9 +282,7 @@ export default function NewEventModal({
                   setShowSuggestions(true);
                 }}
                 onFocus={() => setShowSuggestions(true)}
-                onBlur={() => {
-                  setTimeout(() => setShowSuggestions(false), 150);
-                }}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               />
             </InputGroup>
 
@@ -287,8 +318,12 @@ export default function NewEventModal({
             <Form.Control
               as="select"
               value={eventMemoryRefId}
-              onChange={(e) => setEventMemoryRefId(e.target.value)}
+              isInvalid={!!errors.memoryRef}
               disabled={eventType === "dated" || eventType === "undated"}
+              onChange={(e) => {
+                setEventMemoryRefId(e.target.value);
+                setErrors((prev) => ({ ...prev, memoryRef: null }));
+              }}
             >
               <option value="">{t("newEventModal.noneOption")}</option>
               {storyEvents.map((ev) => (
@@ -297,6 +332,9 @@ export default function NewEventModal({
                 </option>
               ))}
             </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              {errors.memoryRef}
+            </Form.Control.Feedback>
           </Form.Group>
 
           {}

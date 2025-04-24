@@ -145,5 +145,10 @@
     "noImage": "No Image",
     "uploading": "Uploading…",
     "uploadImage": "Upload Image"
+  },
+  "errors": {
+    "titleRequired": "Title is required",
+    "dateRequired": "Date is required",
+    "memoryRefRequired": "Memory reference is required"
   }
 }

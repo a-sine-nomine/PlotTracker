@@ -22,12 +22,10 @@ public class PlotEventService {
 
     private final PlotEventRepo plotEventRepo;
     private final TagRepo tagRepo;
-    private final StoryService storyService;
 
-    public PlotEventService(PlotEventRepo plotEventRepo, TagRepo tagRepo, StoryService storyService) {
+    public PlotEventService(PlotEventRepo plotEventRepo, TagRepo tagRepo) {
         this.plotEventRepo = plotEventRepo;
         this.tagRepo = tagRepo;
-        this.storyService = storyService;
     }
 
     public PlotEvent getPlotEventById(String username, Long eventId) {
@@ -70,7 +68,7 @@ public class PlotEventService {
 
         if (event.getInPlot()) {
             if (event.getPrevEvent() == null) {
-                Set<PlotEvent> eventSet = storyService.getPlotEvents(username, event.getStory().getStoryId());
+                Set<PlotEvent> eventSet = plotEventRepo.findByStory(event.getStory().getStoryId());
                 List<PlotEvent> events = new java.util.ArrayList<>(eventSet);
                 Optional<PlotEvent> firstEvent = events.stream()
                         .filter(e -> (e.getPrevEvent() == null && e.getInPlot()))

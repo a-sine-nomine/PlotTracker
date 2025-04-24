@@ -29,14 +29,16 @@ public class StoryService {
     private final UserRepo userRepo;
     private final PlotEventRepo plotEventRepo;
     private final TagRepo tagRepo;
+    private final CharacterRepo characterRepo;
     private final TagTypeRepo tagTypeRepo;
     private final PlotEventService plotEventService;
 
-    public StoryService(StoryRepo storyRepo, UserRepo userRepo, PlotEventRepo plotEventRepo, TagRepo tagRepo, TagTypeRepo tagTypeRepo, PlotEventService plotEventService) {
+    public StoryService(StoryRepo storyRepo, UserRepo userRepo, PlotEventRepo plotEventRepo, TagRepo tagRepo, CharacterRepo characterRepo, TagTypeRepo tagTypeRepo, PlotEventService plotEventService) {
         this.storyRepo = storyRepo;
         this.userRepo = userRepo;
         this.plotEventRepo = plotEventRepo;
         this.tagRepo = tagRepo;
+        this.characterRepo = characterRepo;
         this.tagTypeRepo = tagTypeRepo;
         this.plotEventService = plotEventService;
     }
@@ -77,6 +79,7 @@ public class StoryService {
     public void deleteStory(String username, Long storyId) {
         Story story = getStoryByIdAndUser(storyId, username);
         plotEventRepo.deletePlotEventTagByStoryId(storyId);
+        characterRepo.deleteByStoryId(storyId);
         tagRepo.deleteByStory_StoryId(storyId);
         tagTypeRepo.deleteByStory_StoryId(storyId);
         plotEventRepo.deleteByStory_StoryId(storyId);
