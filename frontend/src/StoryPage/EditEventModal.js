@@ -1,96 +1,171 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import apiService from "../Services/apiService";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Modal,
+  Button,
+  Form,
+  Badge,
+  InputGroup,
+  ListGroup,
+} from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import apiService from "../Services/apiService";
 
-const EditEventModal = ({
+export default function EditEventModal({
   show,
   onHide,
-  eventData,
   storyId,
+  eventData,
   onEventUpdated,
-}) => {
+}) {
   const { t } = useTranslation();
-  const [eventType, setEventType] = useState("");
-  const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
-  const [description, setDescription] = useState("");
-  const [content, setContent] = useState("");
-  const [memoryRefId, setMemoryRefId] = useState("");
-  const [prevEventId, setPrevEventId] = useState("");
-  const [tagsInput, setTagsInput] = useState("");
 
-  const [availableTags, setAvailableTags] = useState([]);
+  const [eventType, setEventType] = useState("dated");
+  const [eventTitle, setEventTitle] = useState("");
+  const [eventDate, setEventDate] = useState("");
+  const [eventDescription, setEventDescription] = useState("");
+  const [eventContent, setEventContent] = useState("");
+  const [eventMemoryRefId, setEventMemoryRefId] = useState("");
+  const [eventPrevEventId, setEventPrevEventId] = useState("");
+  const [isInPlot, setIsInPlot] = useState(true);
+
+  const [storyEvents, setStoryEvents] = useState([]);
+  const [tagTypes, setTagTypes] = useState([]);
+  const [tags, setTags] = useState([]);
+
+  const [selectedTagIds, setSelectedTagIds] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const inputRef = useRef();
+
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
+    if (!show || !storyId) return;
+
+    apiService
+      .getPlotEvents(storyId)
+      .then((r) => r.json())
+      .then(setStoryEvents)
+      .catch(console.error);
+
+    apiService
+      .getTagTypes(storyId)
+      .then((r) => r.json())
+      .then(setTagTypes)
+      .catch(console.error);
+
+    apiService
+      .getTags(storyId)
+      .then((r) => r.json())
+      .then(setTags)
+      .catch(console.error);
+
     if (eventData) {
-      setEventType(eventData.eventType);
-      setTitle(eventData.title);
-      setDate(eventData.date);
-      setDescription(eventData.description || "");
-      setContent(eventData.content || "");
-      setMemoryRefId(eventData.memoryRefId || "");
-      setPrevEventId(eventData.prevEventId || "");
-      if (eventData.tags && eventData.tags.length > 0) {
-        setTagsInput(eventData.tags.map((t) => t.tagName).join(", "));
-      } else {
-        setTagsInput("");
-      }
+      setEventType(eventData.eventType || "dated");
+      setEventTitle(eventData.title || "");
+      setEventDate(eventData.date || "");
+      setEventDescription(eventData.description || "");
+      setEventContent(eventData.content || "");
+      setEventMemoryRefId(eventData.memoryRefId || "");
+      setEventPrevEventId(eventData.prevEventId || "");
+      setIsInPlot(eventData.isInPlot ?? true);
+      setSelectedTagIds((eventData.tags || []).map((t) => t.tagId));
     }
-  }, [eventData]);
+
+    setErrors({});
+  }, [show, storyId, eventData]);
 
   useEffect(() => {
-    if (storyId) {
-      apiService
-        .getTags(storyId)
-        .then((response) => response.json())
-        .then((data) => setAvailableTags(data))
-        .catch((error) =>
-          console.error("Error fetching available tags:", error)
-        );
+    if (eventType === "dated" || eventType === "undated") {
+      setEventMemoryRefId("");
     }
-  }, [storyId]);
+    if (eventType === "undated") {
+      setEventDate("");
+    }
+    setErrors((errs) => ({ ...errs, date: null, memoryRef: null }));
+  }, [eventType]);
 
-  const convertTagsToIds = () => {
-    if (!availableTags || availableTags.length === 0) return [];
-    return tagsInput
-      .split(",")
-      .map((s) => s.trim())
-      .filter((s) => s !== "")
-      .map((tagName) => {
-        const found = availableTags.find(
-          (t) => t.tagName.toLowerCase() === tagName.toLowerCase()
-        );
-        return found ? found.tagId : null;
-      })
-      .filter((id) => id !== null);
+  useEffect(() => {
+    if (!isInPlot) {
+      setEventPrevEventId("");
+    }
+  }, [isInPlot]);
+
+  const validate = () => {
+    const errs = {};
+    if (!eventTitle.trim()) {
+      errs.title = t("errors.titleRequired", "Title is required");
+    }
+    if (
+      (eventType === "dated" || eventType === "memory") &&
+      !eventDate.trim()
+    ) {
+      errs.date = t("errors.dateRequired", "Date is required");
+    }
+    if (eventType === "memory" && !eventMemoryRefId) {
+      errs.memoryRef = t(
+        "errors.memoryRefRequired",
+        "Memory reference is required"
+      );
+    }
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
+  const addTag = (tagId) => {
+    setSelectedTagIds((prev) =>
+      prev.includes(tagId) ? prev : [...prev, tagId]
+    );
+    setSearchTerm("");
+    setShowSuggestions(false);
+    inputRef.current?.focus();
+  };
+  const removeTag = (tagId) => {
+    setSelectedTagIds((prev) => prev.filter((id) => id !== tagId));
+  };
+
+  const suggestions = tagTypes
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((tt) => {
+      const items = tags
+        .filter(
+          (tag) =>
+            tag.tagTypeId === tt.tagTypeId &&
+            !selectedTagIds.includes(tag.tagId) &&
+            (searchTerm === "" ||
+              tag.tagName.toLowerCase().includes(searchTerm.toLowerCase()))
+        )
+        .sort((a, b) => a.tagName.localeCompare(b.tagName));
+      return items.length ? { tagType: tt, items } : null;
+    })
+    .filter(Boolean);
+
   const handleSave = async () => {
-    const tagIds = convertTagsToIds();
-    const plotEventDto = {
+    if (!storyId || !eventData) return;
+    if (!validate()) return;
+
+    const dto = {
       eventType,
-      title,
-      date,
-      description,
-      content,
-      memoryRefId: memoryRefId || null,
-      prevEventId: prevEventId || null,
-      tags: tagIds,
+      title: eventTitle,
+      date: eventType === "undated" ? null : eventDate,
+      description: eventDescription,
+      content: eventContent,
+      memoryRefId:
+        eventType === "dated" || eventType === "undated"
+          ? null
+          : eventMemoryRefId,
+      prevEventId: isInPlot ? eventPrevEventId || null : null,
+      isInPlot,
+      tags: selectedTagIds,
     };
 
     try {
-      const response = await apiService.updatePlotEvent(
-        eventData.eventId,
-        plotEventDto
-      );
-      const updatedEvent = await response.json();
-      if (onEventUpdated) {
-        onEventUpdated(updatedEvent);
-      }
+      const resp = await apiService.updatePlotEvent(eventData.eventId, dto);
+      const updated = await resp.json();
+      onEventUpdated?.(updated);
       onHide();
-    } catch (error) {
-      console.error("Error updating event:", error);
+    } catch (err) {
+      console.error("Error updating event:", err);
     }
   };
 
@@ -99,83 +174,202 @@ const EditEventModal = ({
       <Modal.Header closeButton>
         <Modal.Title>{t("editEventModal.title", "Edit Event")}</Modal.Title>
       </Modal.Header>
+
       <Modal.Body>
         <Form>
-          <Form.Group controlId="editEventType" className="mb-3">
+          {/* Event Type */}
+          <Form.Group controlId="formEventType" className="mb-3">
             <Form.Label>{t("newEventModal.eventTypeLabel")}</Form.Label>
             <Form.Control
               as="select"
               value={eventType}
               onChange={(e) => setEventType(e.target.value)}
             >
-              <option value="dated">dated</option>
-              <option value="memory">memory</option>
-              <option value="undated">undated</option>
+              <option value="dated">{t("eventTypes.dated")}</option>
+              <option value="memory">{t("eventTypes.memory")}</option>
+              <option value="undated">{t("eventTypes.undated")}</option>
             </Form.Control>
           </Form.Group>
-          <Form.Group controlId="editEventTitle" className="mb-3">
+
+          {}
+          <Form.Group controlId="formEventTitle" className="mb-3">
             <Form.Label>{t("newEventModal.titleLabel")}</Form.Label>
             <Form.Control
               type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={eventTitle}
+              isInvalid={!!errors.title}
+              onChange={(e) => {
+                setEventTitle(e.target.value);
+                setErrors((prev) => ({ ...prev, title: null }));
+              }}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.title}
+            </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group controlId="editEventDate" className="mb-3">
+
+          {}
+          <Form.Group controlId="formEventDate" className="mb-3">
             <Form.Label>{t("newEventModal.dateLabel")}</Form.Label>
             <Form.Control
               type="text"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+              placeholder="1500.01.01"
+              value={eventDate}
+              disabled={eventType === "undated"}
+              isInvalid={!!errors.date}
+              onChange={(e) => {
+                setEventDate(e.target.value);
+                setErrors((prev) => ({ ...prev, date: null }));
+              }}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.date}
+            </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group controlId="editEventDescription" className="mb-3">
+
+          {}
+          <Form.Group controlId="formEventDescription" className="mb-3">
             <Form.Label>{t("newEventModal.descriptionLabel")}</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={eventDescription}
+              onChange={(e) => setEventDescription(e.target.value)}
             />
           </Form.Group>
-          <Form.Group controlId="editEventContent" className="mb-3">
+
+          {}
+          <Form.Group controlId="formEventContent" className="mb-3">
             <Form.Label>{t("newEventModal.contentLabel")}</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
+              value={eventContent}
+              onChange={(e) => setEventContent(e.target.value)}
             />
           </Form.Group>
-          <Form.Group controlId="editEventMemoryRefId" className="mb-3">
+
+          {}
+          <Form.Group
+            controlId="formEventTags"
+            className="mb-3"
+            style={{ position: "relative" }}
+          >
+            <Form.Label>{t("newEventModal.tagsLabel", "Tags")}</Form.Label>
+            <div className="mb-2">
+              {selectedTagIds.map((id) => {
+                const tag = tags.find((t) => t.tagId === id);
+                return (
+                  <Badge
+                    key={id}
+                    pill
+                    bg="secondary"
+                    className="me-1"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => removeTag(id)}
+                  >
+                    {tag?.tagName} &times;
+                  </Badge>
+                );
+              })}
+            </div>
+            <InputGroup>
+              <Form.Control
+                placeholder={t(
+                  "newEventModal.searchPlaceholder",
+                  "Search tags..."
+                )}
+                value={searchTerm}
+                ref={inputRef}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+              />
+            </InputGroup>
+            {showSuggestions && suggestions.length > 0 && (
+              <ListGroup className="tags-suggestion-dropdown">
+                {suggestions.map(({ tagType, items }) => (
+                  <React.Fragment key={tagType.tagTypeId}>
+                    <ListGroup.Item
+                      variant="light"
+                      className="fw-bold"
+                      style={{ cursor: "default" }}
+                    >
+                      {tagType.name}
+                    </ListGroup.Item>
+                    {items.map((tag) => (
+                      <ListGroup.Item
+                        key={tag.tagId}
+                        action
+                        onMouseDown={() => addTag(tag.tagId)}
+                      >
+                        {tag.tagName}
+                      </ListGroup.Item>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </ListGroup>
+            )}
+          </Form.Group>
+
+          {}
+          <Form.Group controlId="formEventMemoryRefId" className="mb-3">
             <Form.Label>{t("newEventModal.memoryRefIdLabel")}</Form.Label>
             <Form.Control
-              type="text"
-              value={memoryRefId}
-              onChange={(e) => setMemoryRefId(e.target.value)}
-              placeholder="Optional"
-            />
+              as="select"
+              value={eventMemoryRefId}
+              disabled={eventType === "dated" || eventType === "undated"}
+              isInvalid={!!errors.memoryRef}
+              onChange={(e) => {
+                setEventMemoryRefId(e.target.value);
+                setErrors((prev) => ({ ...prev, memoryRef: null }));
+              }}
+            >
+              <option value="">{t("newEventModal.noneOption")}</option>
+              {storyEvents.map((ev) => (
+                <option key={ev.eventId} value={ev.eventId}>
+                  {ev.title}
+                </option>
+              ))}
+            </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              {errors.memoryRef}
+            </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group controlId="editEventPrevEventId" className="mb-3">
-            <Form.Label>{t("newEventModal.PrevEventIdLabel")}</Form.Label>
+
+          {}
+          <Form.Group controlId="formEventPrevEventId" className="mb-3">
+            <Form.Label>{t("newEventModal.prevEventIdLabel")}</Form.Label>
             <Form.Control
-              type="text"
-              value={prevEventId}
-              onChange={(e) => setPrevEventId(e.target.value)}
-              placeholder="Optional"
-            />
+              as="select"
+              value={eventPrevEventId}
+              disabled={!isInPlot}
+              onChange={(e) => setEventPrevEventId(e.target.value)}
+            >
+              <option value="">{t("newEventModal.noneOption")}</option>
+              {storyEvents.map((ev) => (
+                <option key={ev.eventId} value={ev.eventId}>
+                  {ev.title}
+                </option>
+              ))}
+            </Form.Control>
           </Form.Group>
-          <Form.Group controlId="editEventTags" className="mb-3">
-            <Form.Label>{t("newEventModal.tagsLabel")}</Form.Label>
-            <Form.Control
-              type="text"
-              value={tagsInput}
-              onChange={(e) => setTagsInput(e.target.value)}
-              placeholder={t("newEventModal.tagsPlaceholder")}
+
+          {}
+          <Form.Group controlId="formEventIsInPlot" className="mb-3">
+            <Form.Check
+              type="checkbox"
+              label={t("newEventModal.isInPlotLabel", "Include in the plot")}
+              checked={isInPlot}
+              onChange={(e) => setIsInPlot(e.target.checked)}
             />
           </Form.Group>
         </Form>
       </Modal.Body>
+
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
           {t("cancel")}
@@ -186,6 +380,4 @@ const EditEventModal = ({
       </Modal.Footer>
     </Modal>
   );
-};
-
-export default EditEventModal;
+}
