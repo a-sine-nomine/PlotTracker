@@ -78,6 +78,18 @@ const apiService = {
       "PUT",
       characterDto
     ),
+  getCharacterImage: (storyId, tagId) =>
+    ajax(`${API_BASE}/stories/${storyId}/tags/character/${tagId}/image`, "GET"),
+  uploadCharacterImage: (storyId, tagId, file) => {
+    const url = `${API_BASE}/stories/${storyId}/tags/character/${tagId}/image`;
+    const formData = new FormData();
+    formData.append("file", file);
+    return fetch(url, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+  },
 };
 
 export default apiService;

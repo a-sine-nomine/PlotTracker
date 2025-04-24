@@ -8,9 +8,14 @@ import com.sinenomine.plottracker.model.Tag;
 import com.sinenomine.plottracker.model.Character;
 import com.sinenomine.plottracker.model.TagType;
 import com.sinenomine.plottracker.repo.*;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -143,6 +148,7 @@ public class TagService {
         tagType.setName(tagTypeRequestDto.getName());
         return tagTypeRepo.save(tagType);
     }
+
     @Transactional
     public void deleteTagType(Long storyId, Long tagTypeId, String username) {
         Story story = storyService.getStoryByIdAndUser(storyId, username);
@@ -182,5 +188,34 @@ public class TagService {
         characterRepo.save(character);
 
         return new CharacterResponseDto(character.getCharacterId(), tag.getTagName(), character.getShortDescription(), character.getDescription());
+    }
+
+    @Transactional
+    public void loadCharacterImage(Long storyId, Long tagId, MultipartFile file, String username) throws IOException {
+        Story story = storyService.getStoryByIdAndUser(storyId, username);
+        Tag tag = tagRepo.findById(tagId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
+        if (!tag.getStory().getStoryId().equals(story.getStoryId())) {
+            throw new UnauthorizedException("Unauthorized access to tag");
+        }
+        Character character = characterRepo.findByTag_TagId(tagId);
+        character.setImage(file.getBytes());
+        character.setImageContentType(file.getContentType());
+        characterRepo.save(character);
+    }
+
+    @Transactional
+    public Pair<MediaType, byte[]> getCharacterImage(Long storyId, Long tagId, String username) {
+        Story story = storyService.getStoryByIdAndUser(storyId, username);
+        Tag tag = tagRepo.findById(tagId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
+        if (!tag.getStory().getStoryId().equals(story.getStoryId())) {
+            throw new UnauthorizedException("Unauthorized access to tag");
+        }
+        Character character = characterRepo.findByTag_TagId(tagId);
+        if(character.getImageContentType() == null)
+                throw new ResourceNotFoundException("Image not found");
+        MediaType mediaType = MediaType.parseMediaType(character.getImageContentType());
+        return new ImmutablePair<>(mediaType, character.getImage());
     }
 }

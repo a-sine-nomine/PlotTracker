@@ -21,6 +21,13 @@ public class Character {
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
 
+    @Lob
+    @Column(name = "image", columnDefinition = "LONGBLOB")
+    private byte[] image;
+
+    @Column(name = "image_content_type", length = 100)
+    private String imageContentType;
+
 
     public Long getCharacterId() {
         return characterId;
@@ -52,5 +59,21 @@ public class Character {
 
     public void setTag(Tag tag) {
         this.tag = tag;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public String getImageContentType() {
+        return imageContentType;
+    }
+
+    public void setImageContentType(String imageContentType) {
+        this.imageContentType = imageContentType;
     }
 }

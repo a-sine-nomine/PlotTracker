@@ -128,6 +128,8 @@ const TagRow = ({ tag, tagTypeName, storyId, onTagUpdated, onTagDeleted }) => {
       <EditCharacterModal
         show={showEditCharacterModal}
         onHide={() => setShowEditCharacterModal(false)}
+        storyId={storyId}
+        tagId={tag.tagId}
         characterData={characterData}
         loading={loading}
         error={error}
