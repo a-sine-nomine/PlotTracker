@@ -24,6 +24,9 @@ public class PlotEventRequestDto {
     @JsonProperty("content")
     private String content;
 
+    @JsonProperty("isInPlot")
+    private Boolean isInPlot;
+
     @JsonProperty("memoryRefId")
     private Long memoryRefId;
 
@@ -73,6 +76,14 @@ public class PlotEventRequestDto {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Boolean getInPlot() {
+        return isInPlot;
+    }
+
+    public void setInPlot(Boolean inPlot) {
+        isInPlot = inPlot;
     }
 
     public Long getMemoryRefId() {

@@ -168,6 +168,7 @@ public class StoryController {
         plotEvent.setDate(plotEventRequestDto.getDate());
         plotEvent.setDescription(plotEventRequestDto.getDescription());
         plotEvent.setContent(plotEventRequestDto.getContent());
+        plotEvent.setInPlot(plotEventRequestDto.getInPlot());
 
         PlotEvent createdPlotEvent = storyService.addPlotEventToStory(
                 userDetails.getUsername(),

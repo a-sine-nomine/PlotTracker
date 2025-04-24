@@ -25,6 +25,7 @@ export default function NewEventModal({
   const [eventContent, setEventContent] = useState("");
   const [eventMemoryRefId, setEventMemoryRefId] = useState("");
   const [eventPrevEventId, setEventPrevEventId] = useState("");
+  const [isInPlot, setIsInPlot] = useState(true);
   const [storyEvents, setStoryEvents] = useState([]);
 
   const [tagTypes, setTagTypes] = useState([]);
@@ -59,14 +60,19 @@ export default function NewEventModal({
   }, [show, storyId]);
 
   useEffect(() => {
-    if (eventType === "dated") {
+    if (eventType === "dated" || eventType === "undated") {
       setEventMemoryRefId("");
     }
     if (eventType === "undated") {
-      setEventMemoryRefId("");
       setEventDate("");
     }
   }, [eventType]);
+
+  useEffect(() => {
+    if (!isInPlot) {
+      setEventPrevEventId("");
+    }
+  }, [isInPlot]);
 
   const resetAll = () => {
     setEventType("dated");
@@ -76,6 +82,7 @@ export default function NewEventModal({
     setEventContent("");
     setEventMemoryRefId("");
     setEventPrevEventId("");
+    setIsInPlot(true);
     setSelectedTagIds([]);
     setSearchTerm("");
   };
@@ -125,7 +132,8 @@ export default function NewEventModal({
           eventType === "dated" || eventType === "undated"
             ? null
             : eventMemoryRefId,
-        prevEventId: eventPrevEventId || null,
+        prevEventId: isInPlot ? eventPrevEventId || null : null,
+        isInPlot,
         tags: selectedTagIds,
       };
       const resp = await apiService.addPlotEvent(storyId, eventDto);
@@ -298,6 +306,7 @@ export default function NewEventModal({
               as="select"
               value={eventPrevEventId}
               onChange={(e) => setEventPrevEventId(e.target.value)}
+              disabled={!isInPlot}
             >
               <option value="">{t("newEventModal.noneOption")}</option>
               {storyEvents.map((ev) => (
@@ -306,6 +315,15 @@ export default function NewEventModal({
                 </option>
               ))}
             </Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="formEventIsInPlot" className="mb-3">
+            <Form.Check
+              type="checkbox"
+              label={t("newEventModal.isInPlotLabel", "Include in the plot")}
+              checked={isInPlot}
+              onChange={(e) => setIsInPlot(e.target.checked)}
+            />
           </Form.Group>
         </Form>
       </Modal.Body>

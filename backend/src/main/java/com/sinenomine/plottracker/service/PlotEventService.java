@@ -42,6 +42,7 @@ public class PlotEventService {
         event.setTitle(dto.getTitle());
         event.setDate(dto.getDate());
         event.setDescription(dto.getDescription());
+        event.setInPlot(dto.getInPlot());
         event.setContent(dto.getContent());
         Set<Tag> tags = dto.getTags().stream()
                 .map(tagId -> tagRepo.findById(tagId)
@@ -104,6 +105,7 @@ public class PlotEventService {
                 event.getDate(),
                 event.getDescription(),
                 event.getContent(),
+                event.getInPlot(),
                 event.getMemoryRef() == null ? null : event.getMemoryRef().getEventId(),
                 event.getNextEvent() == null ? null : event.getNextEvent().getEventId(),
                 tagDtos);

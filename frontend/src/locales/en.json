@@ -66,7 +66,8 @@
     "searchPlaceholder": "Search tags...",
     "dated": "Dated",
     "memory": "Memory",
-    "undated": "Undated"
+    "undated": "Undated",
+    "isInPlotLabel": "Include in the plot"
   },
   "newTagModal": {
     "title": "New Tag",

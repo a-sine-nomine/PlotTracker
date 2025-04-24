@@ -24,6 +24,9 @@ public class PlotEventResponseDto {
     @JsonProperty("content")
     private String content;
 
+    @JsonProperty("isInPlot")
+    private Boolean isInPlot;
+
     @JsonProperty("memoryRefId")
     private Long memoryRefId;
 
@@ -37,13 +40,14 @@ public class PlotEventResponseDto {
     }
 
     public PlotEventResponseDto(String eventType, Long eventId, String title, String date, String description,
-                                String content, Long memoryRefId, Long prevEventId, List<TagResponseDto> tags) {
+                                String content, Boolean isInPlot, Long memoryRefId, Long prevEventId, List<TagResponseDto> tags) {
         this.eventType = eventType;
         this.eventId = eventId;
         this.title = title;
         this.date = date;
         this.description = description;
         this.content = content;
+        this.isInPlot = isInPlot;
         this.memoryRefId = memoryRefId;
         this.prevEventId = prevEventId;
         this.tags = tags;
@@ -95,6 +99,14 @@ public class PlotEventResponseDto {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Boolean getInPlot() {
+        return isInPlot;
+    }
+
+    public void setInPlot(Boolean inPlot) {
+        isInPlot = inPlot;
     }
 
     public Long getMemoryRefId() {
