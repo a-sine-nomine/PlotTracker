@@ -2,7 +2,6 @@ package com.sinenomine.plottracker.service;
 
 import com.sinenomine.plottracker.dto.StoryRequestDto;
 import com.sinenomine.plottracker.dto.StoryResponseDto;
-import com.sinenomine.plottracker.exception.DocumentGenerationException;
 import com.sinenomine.plottracker.exception.ResourceNotFoundException;
 import com.sinenomine.plottracker.exception.UnauthorizedException;
 import com.sinenomine.plottracker.model.PlotEvent;
@@ -11,7 +10,6 @@ import com.sinenomine.plottracker.model.Users;
 import com.sinenomine.plottracker.repo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,6 +99,7 @@ public class StoryService {
         PlotEvent savedPlotEvent = new PlotEvent();
         PlotEvent prevEvent = new PlotEvent();
         PlotEvent nextEvent = new PlotEvent();
+        System.out.println("Prev event" + prevEventId);
 
         Story story = getStoryByIdAndUser(storyId, username);
         plotEvent.setStory(story);
@@ -109,36 +108,45 @@ public class StoryService {
                     .orElseThrow(() -> new ResourceNotFoundException("Memory reference plot event not found"));
             plotEvent.setMemoryRef(memoryRef);
         }
-        if (prevEventId != null) {
-            prevEvent = plotEventRepo.findById(prevEventId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Next event not found"));
-            plotEvent.setPrevEvent(prevEvent);
-        }
+
+        Set<PlotEvent> eventSet = getPlotEvents(username, storyId);
+        List<PlotEvent> events = new java.util.ArrayList<>(eventSet);
+        Optional<PlotEvent> firstEvent = events.stream()
+                .filter(e -> (e.getPrevEvent() == null && e.getInPlot()))
+                .findFirst();
 
         if (plotEvent.getInPlot()) {
-            if (plotEvent.getPrevEvent() == null) {
-                Set<PlotEvent> eventSet = getPlotEvents(username, storyId);
-                List<PlotEvent> events = new java.util.ArrayList<>(eventSet);
-                Optional<PlotEvent> firstEvent = events.stream()
-                        .filter(e -> (e.getPrevEvent() == null && e.getInPlot()))
-                        .findFirst();
-
-                if (firstEvent.isEmpty()) {
-                    savedPlotEvent = plotEventRepo.save(plotEvent);
-                } else {
-                    plotEvent.setNextEvent(firstEvent.get());
-                    savedPlotEvent = plotEventRepo.save(plotEvent);
-                    firstEvent.get().setPrevEvent(savedPlotEvent);
-                    plotEventRepo.save(firstEvent.get());
-                }
-            } else {
-                nextEvent = prevEvent.getNextEvent();
-                plotEvent.setNextEvent(nextEvent);
+            if (prevEventId == null && firstEvent.isEmpty()) {
                 savedPlotEvent = plotEventRepo.save(plotEvent);
-                prevEvent.setNextEvent(savedPlotEvent);
-                plotEventRepo.save(prevEvent);
-                nextEvent.setPrevEvent(savedPlotEvent);
-                plotEventRepo.save(nextEvent);
+            } else if (prevEventId == null) {
+                plotEvent.setNextEvent(firstEvent.get());
+                savedPlotEvent = plotEventRepo.save(plotEvent);
+                firstEvent.get().setPrevEvent(savedPlotEvent);
+                plotEventRepo.save(firstEvent.get());
+            } else {
+                prevEvent = plotEventRepo.findById(prevEventId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Next event not found"));
+                plotEvent.setPrevEvent(prevEvent);
+
+                if (prevEvent.getNextEvent() == null) {
+                    savedPlotEvent = plotEventRepo.save(plotEvent);
+                    prevEvent.setNextEvent(savedPlotEvent);
+                    plotEventRepo.save(prevEvent);
+                } else {
+                    nextEvent = prevEvent.getNextEvent();
+                    nextEvent.setPrevEvent(null);
+                    PlotEvent updatedNextEvent = plotEventRepo.save(nextEvent);
+
+                    savedPlotEvent = plotEventRepo.save(plotEvent);
+                    prevEvent.setNextEvent(savedPlotEvent);
+                    plotEventRepo.save(prevEvent);
+
+                    nextEvent.setPrevEvent(savedPlotEvent);
+                    plotEventRepo.save(nextEvent);
+
+                    plotEvent.setNextEvent(nextEvent);
+                    savedPlotEvent = plotEventRepo.save(plotEvent);
+                }
             }
         }
 

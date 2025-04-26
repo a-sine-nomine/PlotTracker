@@ -117,7 +117,7 @@ public class PlotEventResponseDto {
         this.memoryRefId = memoryRefId;
     }
 
-    public Long getPrevEventIdd() {
+    public Long getPrevEventId() {
         return prevEventId;
     }
 

@@ -145,7 +145,7 @@ public class PlotEventService {
                 event.getContent(),
                 event.getInPlot(),
                 event.getMemoryRef() == null ? null : event.getMemoryRef().getEventId(),
-                event.getNextEvent() == null ? null : event.getNextEvent().getEventId(),
+                event.getPrevEvent() == null ? null : event.getPrevEvent().getEventId(),
                 tagDtos);
     }
 }
