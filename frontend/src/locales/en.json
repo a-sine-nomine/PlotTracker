@@ -140,7 +140,11 @@
     "filterAnd": "Filter with 'and'",
     "selectFilterMode": "Select filter mode",
     "checkAll": "Check All",
-    "apply": "Apply"
+    "apply": "Apply",
+    "endDate": "End date",
+    "startDate": "Start date",
+    "sortBy": "Sort by",
+    "groupBy": "Group by"
   },
   "tagTypeRow": {
     "Character": "Character",

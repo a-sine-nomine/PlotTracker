@@ -32,6 +32,8 @@ const StoryPage = () => {
   const [showEditEventModal, setShowEditEventModal] = useState(false);
   const [currentEditEvent, setCurrentEditEvent] = useState(null);
 
+  const parseDateStr = (str) => new Date(str.replace(/\./g, "-")).getTime();
+
   useEffect(() => {
     const fetchPlotEvents = async () => {
       try {
@@ -137,6 +139,8 @@ const StoryPage = () => {
     checkedIds,
     groupBy: newGroupBy,
     sortBy: newSortBy,
+    startDate,
+    endDate,
   }) => {
     setGroupBy(newGroupBy);
     setSortBy(newSortBy);
@@ -153,7 +157,22 @@ const StoryPage = () => {
         );
       }
     });
-    setFilteredEvents(filtered);
+
+    const datedEvents = plotEvents.filter((e) => e.date);
+    const allTimestamps = datedEvents.map((e) => parseDateStr(e.date));
+    const globalMin = Math.min(...allTimestamps);
+    const globalMax = Math.max(...allTimestamps);
+
+    const lower = startDate ? parseDateStr(startDate) : globalMin;
+    const upper = endDate ? parseDateStr(endDate) : globalMax;
+
+    var newFilterd = filtered.filter((e) => {
+      if (!e.date) return false;
+      const ts = parseDateStr(e.date);
+      return ts >= lower && ts <= upper;
+    });
+
+    setFilteredEvents(newFilterd);
   };
 
   const openEdit = (evt) => {
@@ -282,8 +301,8 @@ const StoryPage = () => {
               availableTags={tags}
               tagTypes={tagTypes}
               onFilterChange={handleFilterChange}
-              onGroupByChange={(newGroupBy) => setGroupBy(newGroupBy)}
-              onSortByChange={(newSortBy) => setSortBy(newSortBy)}
+              onGroupByChange={(groupBy) => setGroupBy(groupBy)}
+              onSortByChange={(sort) => setSortBy(sort)}
             />
           </div>
           <div className="plotline-container">

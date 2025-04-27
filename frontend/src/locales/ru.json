@@ -139,7 +139,11 @@
     "filterAnd": "Фильтр по принципу 'и'",
     "selectFilterMode": "Выберите режим фильтра",
     "checkAll": "Отметить все",
-    "apply": "Применить"
+    "apply": "Применить",
+    "endDate": "До",
+    "startDate": "От",
+    "sortBy": "Сортировать по",
+    "groupBy": "Групировать по"
   },
   "tagTypeRow": {
     "Character": "Персонаж",
