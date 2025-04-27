@@ -126,7 +126,7 @@ public class StoryController {
 
         if ("story".equalsIgnoreCase(sortBy)) {
             PlotEvent firstEvent = events.stream()
-                    .filter(e -> e.getPrevEvent() == null)
+                    .filter(e -> e.getInPlot() && e.getPrevEvent() == null)
                     .findFirst()
                     .orElse(null);
             List<PlotEvent> orderedEvents = new ArrayList<>();
@@ -139,9 +139,15 @@ public class StoryController {
                     .collect(Collectors.toList());
         } else if ("date".equalsIgnoreCase(sortBy)) {
             plotEventResponseDtos = events.stream()
+                    .filter(e -> e.getDate() == null)
+                    .map(plotEventService::convertToDto)
+                    .collect(Collectors.toList());
+
+            plotEventResponseDtos.addAll(events.stream()
+                    .filter(e -> e.getDate() != null)
                     .map(plotEventService::convertToDto)
                     .sorted(Comparator.comparing(PlotEventResponseDto::getDate))
-                    .collect(Collectors.toList());
+                    .toList());
         } else {
             plotEventResponseDtos = events.stream()
                     .map(plotEventService::convertToDto)

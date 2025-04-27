@@ -71,6 +71,9 @@
     "searchPlaceholder": "Search tags...",
     "isInPlotLabel": "Include in the plot"
   },
+  "editEventModal": {
+    "title": "Edit Event"
+  },
   "newTagModal": {
     "title": "New Tag",
     "storyLabel": "Select Story",

@@ -72,6 +72,9 @@
     "searchPlaceholder": "Выберите тэги...",
     "isInPlotLabel": "Включен в итоговое произведение"
   },
+  "editEventModal": {
+    "title": "Редактировать событие"
+  },
   "newTagModal": {
     "title": "Новый тэг",
     "storyLabel": "Выберите историю",

@@ -99,7 +99,6 @@ public class StoryService {
         PlotEvent savedPlotEvent = new PlotEvent();
         PlotEvent prevEvent = new PlotEvent();
         PlotEvent nextEvent = new PlotEvent();
-        System.out.println("Prev event" + prevEventId);
 
         Story story = getStoryByIdAndUser(storyId, username);
         plotEvent.setStory(story);
@@ -141,10 +140,10 @@ public class StoryService {
                     prevEvent.setNextEvent(savedPlotEvent);
                     plotEventRepo.save(prevEvent);
 
-                    nextEvent.setPrevEvent(savedPlotEvent);
-                    plotEventRepo.save(nextEvent);
+                    updatedNextEvent.setPrevEvent(savedPlotEvent);
+                    updatedNextEvent = plotEventRepo.save(updatedNextEvent);
 
-                    plotEvent.setNextEvent(nextEvent);
+                    plotEvent.setNextEvent(updatedNextEvent);
                     savedPlotEvent = plotEventRepo.save(plotEvent);
                 }
             }

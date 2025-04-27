@@ -350,11 +350,13 @@ export default function EditEventModal({
               onChange={(e) => setEventPrevEventId(e.target.value)}
             >
               <option value="">{t("newEventModal.noneOption")}</option>
-              {storyEvents.map((ev) => (
-                <option key={ev.eventId} value={ev.eventId}>
-                  {ev.title}
-                </option>
-              ))}
+              {storyEvents
+                .filter((ev) => ev.eventId !== eventData.eventId)
+                .map((ev) => (
+                  <option key={ev.eventId} value={ev.eventId}>
+                    {ev.title}
+                  </option>
+                ))}
             </Form.Control>
           </Form.Group>
 
