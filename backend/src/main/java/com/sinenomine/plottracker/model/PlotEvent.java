@@ -41,11 +41,11 @@ public class PlotEvent {
     @JoinColumn(name = "memory_ref_id", foreignKey = @ForeignKey(name = "FK_memory_ref"))
     private PlotEvent memoryRef;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "prev_event_id", foreignKey = @ForeignKey(name = "FK_prev_event"))
     private PlotEvent prevEvent;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "next_event_id", foreignKey = @ForeignKey(name = "FK_next_event"))
     private PlotEvent nextEvent;
 

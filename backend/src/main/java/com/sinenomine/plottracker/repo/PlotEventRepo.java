@@ -26,6 +26,13 @@ public interface PlotEventRepo extends JpaRepository<PlotEvent, Long> {
 
     @Modifying
     @Query(
+            value  = "DELETE p FROM plot_event_tag p WHERE p.event_id = :eventId",
+            nativeQuery = true
+    )
+    int deletePlotEventTagByEventId(@Param("eventId") Long eventId);
+
+    @Modifying
+    @Query(
             value  = "DELETE p FROM plot_event_tag p WHERE p.tag_id = :tagId",
             nativeQuery = true
     )
