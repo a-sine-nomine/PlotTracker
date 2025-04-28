@@ -10,12 +10,11 @@ import {
 import { useTranslation } from "react-i18next";
 import apiService from "../Services/apiService";
 
-export default function EditEventModal({
+export default function NewEventModal({
   show,
   onHide,
   storyId,
-  eventData,
-  onEventUpdated,
+  onEventCreated,
 }) {
   const { t } = useTranslation();
 
@@ -27,8 +26,8 @@ export default function EditEventModal({
   const [eventMemoryRefId, setEventMemoryRefId] = useState("");
   const [eventPrevEventId, setEventPrevEventId] = useState("");
   const [isInPlot, setIsInPlot] = useState(true);
-
   const [storyEvents, setStoryEvents] = useState([]);
+
   const [tagTypes, setTagTypes] = useState([]);
   const [tags, setTags] = useState([]);
 
@@ -41,39 +40,19 @@ export default function EditEventModal({
 
   useEffect(() => {
     if (!show || !storyId) return;
-
-    apiService
-      .getPlotEvents(storyId)
-      .then((r) => r.json())
-      .then(setStoryEvents)
-      .catch(console.error);
-
     apiService
       .getTagTypes(storyId)
       .then((r) => r.json())
-      .then(setTagTypes)
-      .catch(console.error);
-
+      .then(setTagTypes);
     apiService
       .getTags(storyId)
       .then((r) => r.json())
-      .then(setTags)
-      .catch(console.error);
-
-    if (eventData) {
-      setEventType(eventData.eventType || "dated");
-      setEventTitle(eventData.title || "");
-      setEventDate(eventData.date || "");
-      setEventDescription(eventData.description || "");
-      setEventContent(eventData.content || "");
-      setEventMemoryRefId(eventData.memoryRefId || "");
-      setEventPrevEventId(eventData.prevEventId || "");
-      setIsInPlot(eventData.isInPlot ?? true);
-      setSelectedTagIds((eventData.tags || []).map((t) => t.tagId));
-    }
-
-    setErrors({});
-  }, [show, storyId, eventData]);
+      .then(setTags);
+    apiService
+      .getPlotEvents(storyId)
+      .then((r) => r.json())
+      .then(setStoryEvents);
+  }, [show, storyId]);
 
   useEffect(() => {
     if (eventType === "dated" || eventType === "undated") {
@@ -82,7 +61,7 @@ export default function EditEventModal({
     if (eventType === "undated") {
       setEventDate("");
     }
-    setErrors((errs) => ({ ...errs, date: null, memoryRef: null }));
+    setErrors({});
   }, [eventType]);
 
   useEffect(() => {
@@ -90,6 +69,24 @@ export default function EditEventModal({
       setEventPrevEventId("");
     }
   }, [isInPlot]);
+
+  const resetAll = () => {
+    setEventType("dated");
+    setEventTitle("");
+    setEventDate("");
+    setEventDescription("");
+    setEventContent("");
+    setEventMemoryRefId("");
+    setEventPrevEventId("");
+    setIsInPlot(true);
+    setSelectedTagIds([]);
+    setSearchTerm("");
+    setErrors({});
+  };
+  const handleClose = () => {
+    resetAll();
+    onHide();
+  };
 
   const validate = () => {
     const errs = {};
@@ -118,11 +115,10 @@ export default function EditEventModal({
     );
     setSearchTerm("");
     setShowSuggestions(false);
-    inputRef.current?.focus();
+    inputRef.current.focus();
   };
-  const removeTag = (tagId) => {
+  const removeTag = (tagId) =>
     setSelectedTagIds((prev) => prev.filter((id) => id !== tagId));
-  };
 
   const suggestions = tagTypes
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -141,10 +137,10 @@ export default function EditEventModal({
     .filter(Boolean);
 
   const handleSave = async () => {
-    if (!storyId || !eventData) return;
+    if (!storyId) return;
     if (!validate()) return;
 
-    const dto = {
+    const eventDto = {
       eventType,
       title: eventTitle,
       date: eventType === "undated" ? null : eventDate,
@@ -158,26 +154,25 @@ export default function EditEventModal({
       isInPlot,
       tags: selectedTagIds,
     };
-
     try {
-      const resp = await apiService.updatePlotEvent(eventData.eventId, dto);
-      const updated = await resp.json();
-      onEventUpdated?.(updated);
-      onHide();
+      const resp = await apiService.addPlotEvent(storyId, eventDto);
+      const newEvent = await resp.json();
+      onEventCreated?.(newEvent);
+      handleClose();
     } catch (err) {
-      console.error("Error updating event:", err);
+      console.error("Error creating new event:", err);
     }
   };
 
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
+    <Modal show={show} onHide={handleClose} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>{t("editEventModal.title", "Edit Event")}</Modal.Title>
+        <Modal.Title>{t("newEventModal.title")}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <Form>
-          {/* Event Type */}
+          {}
           <Form.Group controlId="formEventType" className="mb-3">
             <Form.Label>{t("newEventModal.eventTypeLabel")}</Form.Label>
             <Form.Control
@@ -215,8 +210,8 @@ export default function EditEventModal({
               type="text"
               placeholder="1500.01.01"
               value={eventDate}
-              disabled={eventType === "undated"}
               isInvalid={!!errors.date}
+              disabled={eventType === "undated"}
               onChange={(e) => {
                 setEventDate(e.target.value);
                 setErrors((prev) => ({ ...prev, date: null }));
@@ -273,6 +268,7 @@ export default function EditEventModal({
                 );
               })}
             </div>
+
             <InputGroup>
               <Form.Control
                 placeholder={t(
@@ -289,6 +285,7 @@ export default function EditEventModal({
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               />
             </InputGroup>
+
             {showSuggestions && suggestions.length > 0 && (
               <ListGroup className="tags-suggestion-dropdown">
                 {suggestions.map(({ tagType, items }) => (
@@ -321,8 +318,8 @@ export default function EditEventModal({
             <Form.Control
               as="select"
               value={eventMemoryRefId}
-              disabled={eventType === "dated" || eventType === "undated"}
               isInvalid={!!errors.memoryRef}
+              disabled={eventType === "dated" || eventType === "undated"}
               onChange={(e) => {
                 setEventMemoryRefId(e.target.value);
                 setErrors((prev) => ({ ...prev, memoryRef: null }));
@@ -346,21 +343,18 @@ export default function EditEventModal({
             <Form.Control
               as="select"
               value={eventPrevEventId}
-              disabled={!isInPlot}
               onChange={(e) => setEventPrevEventId(e.target.value)}
+              disabled={!isInPlot}
             >
               <option value="">{t("newEventModal.noneOption")}</option>
-              {storyEvents
-                .filter((ev) => ev.eventId !== eventData.eventId)
-                .map((ev) => (
-                  <option key={ev.eventId} value={ev.eventId}>
-                    {ev.title}
-                  </option>
-                ))}
+              {storyEvents.map((ev) => (
+                <option key={ev.eventId} value={ev.eventId}>
+                  {ev.title}
+                </option>
+              ))}
             </Form.Control>
           </Form.Group>
 
-          {}
           <Form.Group controlId="formEventIsInPlot" className="mb-3">
             <Form.Check
               type="checkbox"
@@ -373,7 +367,7 @@ export default function EditEventModal({
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
+        <Button variant="secondary" onClick={handleClose}>
           {t("cancel")}
         </Button>
         <Button variant="primary" onClick={handleSave}>

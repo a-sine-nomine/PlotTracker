@@ -18,6 +18,8 @@ const VisualizationSettings = ({
 
   const [groupBy, setGroupBy] = useState("");
   const [sortBy, setSortBy] = useState("date");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     const newChecked = {};
@@ -53,7 +55,7 @@ const VisualizationSettings = ({
   const groupedTags = {};
   availableTags.forEach((tag) => {
     const group = tag.tagTypeName || "Other";
-    if (!groupedTags[group]) groupedTags[group] = [];
+    groupedTags[group] = groupedTags[group] || [];
     groupedTags[group].push(tag);
   });
   const sortedGroups = Object.keys(groupedTags)
@@ -66,10 +68,17 @@ const VisualizationSettings = ({
     }));
 
   const handleApply = () => {
-    const checkedIds = Object.keys(checkedTags)
-      .filter((tagId) => checkedTags[tagId])
-      .map((id) => Number(id));
-    onFilterChange({ filterMode, checkedIds, groupBy, sortBy });
+    const checkedIds = Object.entries(checkedTags)
+      .filter(([_, v]) => v)
+      .map(([id]) => Number(id));
+    onFilterChange?.({
+      filterMode,
+      checkedIds,
+      groupBy,
+      sortBy,
+      startDate,
+      endDate,
+    });
     setShowModeDropdown(false);
   };
 
@@ -112,9 +121,7 @@ const VisualizationSettings = ({
           <Form.Control
             as="select"
             value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-            }}
+            onChange={(e) => setSortBy(e.target.value)}
           >
             <option value="date">
               {t("visualSettings.sortByDate", "Sort by date")}
@@ -124,7 +131,38 @@ const VisualizationSettings = ({
             </option>
           </Form.Control>
         </Form.Group>
+
+        {/* Start/end date text fields */}
+        <Form.Group controlId="startDate" className="vs-datebound">
+          <Form.Label>{t("visualSettings.startDate", "Start date")}</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="YYYY-MM-DD"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+        </Form.Group>
+
+        <Form.Group controlId="endDate" className="vs-datebound">
+          <Form.Label>{t("visualSettings.endDate", "End date")}</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="YYYY-MM-DD"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+        </Form.Group>
+
+        {/* Apply button */}
+        <Button
+          variant="primary"
+          className="vs-apply-main"
+          onClick={handleApply}
+        >
+          {t("visualSettings.apply", "Apply")}
+        </Button>
       </div>
+
       {showModeDropdown && (
         <div className="vs-dropdown">
           <Dropdown>
@@ -140,6 +178,7 @@ const VisualizationSettings = ({
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+
           <div className="vs-controls">
             <Button
               variant="outline-secondary"
@@ -148,14 +187,8 @@ const VisualizationSettings = ({
             >
               {t("visualSettings.checkAll", "Check All")}
             </Button>
-            <Button
-              variant="primary"
-              className="vs-apply"
-              onClick={handleApply}
-            >
-              {t("visualSettings.apply", "Apply")}
-            </Button>
           </div>
+
           <div className="vs-checkboxes">
             {sortedGroups.map((group) => (
               <div key={group.groupName} className="vs-group">

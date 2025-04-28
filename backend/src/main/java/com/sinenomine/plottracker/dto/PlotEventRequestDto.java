@@ -24,11 +24,14 @@ public class PlotEventRequestDto {
     @JsonProperty("content")
     private String content;
 
+    @JsonProperty("isInPlot")
+    private Boolean isInPlot;
+
     @JsonProperty("memoryRefId")
     private Long memoryRefId;
 
-    @JsonProperty("nextEventId")
-    private Long nextEventId;
+    @JsonProperty("prevEventId")
+    private Long prevEventId;
 
     @JsonProperty("tags")
     private Set<Long> tags;
@@ -75,6 +78,14 @@ public class PlotEventRequestDto {
         this.content = content;
     }
 
+    public Boolean getInPlot() {
+        return isInPlot;
+    }
+
+    public void setInPlot(Boolean inPlot) {
+        isInPlot = inPlot;
+    }
+
     public Long getMemoryRefId() {
         return memoryRefId;
     }
@@ -83,12 +94,12 @@ public class PlotEventRequestDto {
         this.memoryRefId = memoryRefId;
     }
 
-    public Long getNextEventId() {
-        return nextEventId;
+    public Long getPrevEventId() {
+        return prevEventId;
     }
 
-    public void setNextEventId(Long nextEventId) {
-        this.nextEventId = nextEventId;
+    public void setPrevEventId(Long prevEventId) {
+        this.prevEventId = prevEventId;
     }
 
     public Set<Long> getTags() {

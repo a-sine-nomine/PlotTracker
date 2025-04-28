@@ -1,20 +1,21 @@
 package com.sinenomine.plottracker.controller;
 
-import com.sinenomine.plottracker.dto.TagRequestDto;
-import com.sinenomine.plottracker.dto.TagResponseDto;
-import com.sinenomine.plottracker.dto.TagTypeRequestDto;
-import com.sinenomine.plottracker.dto.TagTypeResponseDto;
+import com.sinenomine.plottracker.dto.*;
 import com.sinenomine.plottracker.model.Tag;
 import com.sinenomine.plottracker.model.TagType;
 import com.sinenomine.plottracker.service.TagService;
 import jakarta.validation.Valid;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -174,5 +175,57 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         tagService.deleteTagType(storyId, tagTypeId, userDetails.getUsername());
         return ResponseEntity.ok("TagType deleted successfully");
+    }
+
+    // GET a specific character tag
+    @GetMapping("/tags/character/{tagId}")
+    public ResponseEntity<?> getCharacterTag(@AuthenticationPrincipal UserDetails userDetails,
+                                             @PathVariable Long storyId,
+                                             @PathVariable Long tagId) {
+        if (userDetails == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        CharacterResponseDto responseDto = tagService.getCharacterTag(storyId, tagId, userDetails.getUsername());
+        return ResponseEntity.ok(responseDto);
+    }
+
+    // PUT update a character tag
+    @PutMapping("/tags/character/{tagId}")
+    public ResponseEntity<?> updateCharacterTag(@AuthenticationPrincipal UserDetails userDetails,
+                                                @PathVariable Long storyId,
+                                                @PathVariable Long tagId,
+                                                @Valid @RequestBody CharacterRequestDto characterRequestDto,
+                                                BindingResult bindingResult) {
+        if (userDetails == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        if (bindingResult.hasErrors())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+
+        CharacterResponseDto responseDto = tagService.updateCharacterTag(storyId, tagId, characterRequestDto, userDetails.getUsername());
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping("/tags/character/{tagId}/image")
+    public ResponseEntity<?> uploadImage(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long storyId,
+            @PathVariable Long tagId,
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        if (userDetails == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+
+        tagService.loadCharacterImage(storyId, tagId, file, userDetails.getUsername());
+        return ResponseEntity.ok("Picture uploaded successfully");
+    }
+
+    @GetMapping("/tags/character/{tagId}/image")
+    public ResponseEntity<byte[]> getCharacterImage(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long storyId,
+            @PathVariable Long tagId) {
+        ImmutablePair<MediaType, byte[]> image = (ImmutablePair<MediaType, byte[]>)tagService.getCharacterImage(storyId, tagId, userDetails.getUsername());
+        return ResponseEntity.ok()
+                .contentType(image.left)
+                .body(image.right);
     }
 }

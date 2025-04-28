@@ -1,14 +1,12 @@
 package com.sinenomine.plottracker.controller;
 
-import com.sinenomine.plottracker.dto.PlotEventRequestDto;
-import com.sinenomine.plottracker.dto.PlotEventResponseDto;
-import com.sinenomine.plottracker.dto.StoryRequestDto;
-import com.sinenomine.plottracker.dto.StoryResponseDto;
+import com.sinenomine.plottracker.dto.*;
 import com.sinenomine.plottracker.enums.EventType;
 import com.sinenomine.plottracker.model.PlotEvent;
 import com.sinenomine.plottracker.model.Story;
 import com.sinenomine.plottracker.service.PlotEventService;
 import com.sinenomine.plottracker.service.StoryService;
+import com.sinenomine.plottracker.service.TagService;
 import org.springframework.http.HttpHeaders;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -32,10 +30,12 @@ public class StoryController {
 
     private final StoryService storyService;
     private final PlotEventService plotEventService;
+    private final TagService tagService;
 
-    public StoryController(StoryService storyService, PlotEventService plotEventService) {
+    public StoryController(StoryService storyService, PlotEventService plotEventService, TagService tagService) {
         this.storyService = storyService;
         this.plotEventService = plotEventService;
+        this.tagService = tagService;
     }
 
     // GET all user's stories
@@ -60,6 +60,15 @@ public class StoryController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
 
         Story createdStory = storyService.createStory(userDetails.getUsername(), storyRequestDto);
+
+        TagTypeRequestDto tagTypeRequestDto = new TagTypeRequestDto();
+        tagTypeRequestDto.setName("Character");
+        tagService.createTagType(createdStory.getStoryId(), tagTypeRequestDto, userDetails.getUsername());
+        tagTypeRequestDto.setName("Plot line");
+        tagService.createTagType(createdStory.getStoryId(), tagTypeRequestDto, userDetails.getUsername());
+        tagTypeRequestDto.setName("Location");
+        tagService.createTagType(createdStory.getStoryId(), tagTypeRequestDto, userDetails.getUsername());
+
         createdStory.setUser(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdStory);
     }
@@ -117,7 +126,7 @@ public class StoryController {
 
         if ("story".equalsIgnoreCase(sortBy)) {
             PlotEvent firstEvent = events.stream()
-                    .filter(e -> e.getPrevEvent() == null)
+                    .filter(e -> e.getInPlot() && e.getPrevEvent() == null)
                     .findFirst()
                     .orElse(null);
             List<PlotEvent> orderedEvents = new ArrayList<>();
@@ -130,9 +139,15 @@ public class StoryController {
                     .collect(Collectors.toList());
         } else if ("date".equalsIgnoreCase(sortBy)) {
             plotEventResponseDtos = events.stream()
+                    .filter(e -> e.getDate() == null)
+                    .map(plotEventService::convertToDto)
+                    .collect(Collectors.toList());
+
+            plotEventResponseDtos.addAll(events.stream()
+                    .filter(e -> e.getDate() != null)
                     .map(plotEventService::convertToDto)
                     .sorted(Comparator.comparing(PlotEventResponseDto::getDate))
-                    .collect(Collectors.toList());
+                    .toList());
         } else {
             plotEventResponseDtos = events.stream()
                     .map(plotEventService::convertToDto)
@@ -159,13 +174,14 @@ public class StoryController {
         plotEvent.setDate(plotEventRequestDto.getDate());
         plotEvent.setDescription(plotEventRequestDto.getDescription());
         plotEvent.setContent(plotEventRequestDto.getContent());
+        plotEvent.setInPlot(plotEventRequestDto.getInPlot());
 
         PlotEvent createdPlotEvent = storyService.addPlotEventToStory(
                 userDetails.getUsername(),
                 id,
                 plotEvent,
                 plotEventRequestDto.getMemoryRefId(),
-                plotEventRequestDto.getNextEventId(),
+                plotEventRequestDto.getPrevEventId(),
                 plotEventRequestDto.getTags()
         );
         PlotEventResponseDto responseDto = plotEventService.convertToDto(createdPlotEvent);

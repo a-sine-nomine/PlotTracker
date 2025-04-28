@@ -1,4 +1,11 @@
 {
+  "cancel": "Отмена",
+  "save": "Сохранить",
+  "eventTypes": {
+    "dated": "Датированное",
+    "memory": "Воспоминание",
+    "undated": "Не датированное"
+  },
   "register": {
     "title": "PlotTracker",
     "description": "Создайте новый аккаунт, чтобы начать отслеживать ваши истории.",
@@ -49,9 +56,7 @@
   "newStoryModal": {
     "title": "Новая история",
     "formTitle": "Название",
-    "formDescription": "Описание",
-    "cancel": "Отмена",
-    "save": "Сохранить"
+    "formDescription": "Описание"
   },
   "newEventModal": {
     "title": "Новое событие",
@@ -61,27 +66,32 @@
     "descriptionLabel": "Описание",
     "contentLabel": "Содержание",
     "memoryRefIdLabel": "Воспоминание",
-    "nextEventIdLabel": "Следующее событие",
+    "prevEventIdLabel": "Предыдущее событие",
     "noneOption": "Отсутствует",
-    "cancel": "Отмена",
-    "save": "Сохранить",
-    "tagsLabel": "Тэги"
+    "tagsLabel": "Тэги",
+    "searchPlaceholder": "Выберите тэги...",
+    "isInPlotLabel": "Включен в итоговое произведение"
+  },
+  "editEventModal": {
+    "title": "Редактировать событие"
   },
   "newTagModal": {
     "title": "Новый тэг",
     "storyLabel": "Выберите историю",
     "tagNameLabel": "Имя тега",
     "tagTypeLabel": "Тип тега",
-    "colorLabel": "Цвет",
-    "cancel": "Отмена",
-    "save": "Сохранить"
+    "colorLabel": "Цвет"
+  },
+  "editTagModal": {
+    "title": "Редактировать тег",
+    "nameLabel": "Имя тега",
+    "typeLabel": "Тип тега",
+    "colorLabel": "Цвет"
   },
   "newTagTypeModal": {
     "title": "Новый тип тега",
     "storyLabel": "Выберите историю",
-    "tagTypeNameLabel": "Имя",
-    "cancel": "Отмена",
-    "save": "Сохранить"
+    "tagTypeNameLabel": "Имя"
   },
   "userOptions": {
     "changePassword": "Изменить пароль",
@@ -90,8 +100,6 @@
     "oldPassword": "Старый пароль",
     "newPassword": "Новый пароль",
     "repeatNewPassword": "Повторите новый пароль",
-    "cancel": "Отмена",
-    "change": "Изменить",
     "passwordMismatch": "Новые пароли не совпадают",
     "passwordChanged": "Пароль изменен успешно",
     "passwordIncorrect": "Неправильный старый пароль",
@@ -113,20 +121,47 @@
       "title": "Удалить тип тега",
       "body": "Вы уверены, что хотите удалить этот тип тегов? Это приведет к удалению всех тегов под ним."
     },
-    "cancel": "Отмена",
     "confirm": "Удалить"
   },
   "storyPage": {
     "tags": "Тэги",
     "noEvents": "Для этой истории нет сюжетных событий.",
     "noTags": "Нет тегов.",
-    "noTagTypes": "Нет типов тегов."
+    "noTagTypes": "Нет типов тегов.",
+    "events": "События",
+    "allTypes": "Все типы",
+    "allTags": "Все",
+    "haveTags": "Имеют теги",
+    "withoutTags": "Без тегов"
   },
   "visualSettings": {
     "filterOr": "Фильтр по принципу 'или'",
     "filterAnd": "Фильтр по принципу 'и'",
     "selectFilterMode": "Выберите режим фильтра",
     "checkAll": "Отметить все",
-    "apply": "Применить"
+    "apply": "Применить",
+    "endDate": "До",
+    "startDate": "От",
+    "sortBy": "Сортировать по",
+    "groupBy": "Групировать по"
+  },
+  "tagTypeRow": {
+    "Character": "Персонаж",
+    "Location": "Локация",
+    "Plot line": "Сюжетная линия"
+  },
+  "character": {
+    "details": "Детали",
+    "name": "Имя",
+    "shortDescription": "Короткое описание",
+    "description": "Описание",
+    "noImage": "Нет изображения",
+    "uploading": "Загружается...",
+    "uploadImage": "Загрузить изображение"
+  },
+  "errors": {
+    "titleRequired": "Название обязательно",
+    "dateRequired": "Дата обязательна",
+    "memoryRefRequired": "Ссылка на вспоминанемое событие обязательна"
   }
 }

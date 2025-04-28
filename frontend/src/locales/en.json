@@ -1,4 +1,11 @@
 {
+  "cancel": "Cancel",
+  "save": "Save",
+  "eventTypes": {
+    "dated": "Dated",
+    "memory": "Memory",
+    "undated": "Undated"
+  },
   "register": {
     "title": "PlotTracker",
     "description": "Create a new account to start tracking your stories.",
@@ -49,9 +56,7 @@
   "newStoryModal": {
     "title": "New Story",
     "formTitle": "Title",
-    "formDescription": "Description",
-    "cancel": "Cancel",
-    "save": "Save"
+    "formDescription": "Description"
   },
   "newEventModal": {
     "title": "New Event",
@@ -61,27 +66,31 @@
     "descriptionLabel": "Description",
     "contentLabel": "Content",
     "memoryRefIdLabel": "Memory Reference",
-    "nextEventIdLabel": "Next Event",
+    "prevEventIdLabel": "Previous Event",
     "noneOption": "None",
-    "cancel": "Cancel",
-    "save": "Save",
-    "tagsLabel": "Tags"
+    "searchPlaceholder": "Search tags...",
+    "isInPlotLabel": "Include in the plot"
+  },
+  "editEventModal": {
+    "title": "Edit Event"
   },
   "newTagModal": {
     "title": "New Tag",
     "storyLabel": "Select Story",
     "tagNameLabel": "Tag Name",
     "tagTypeLabel": "Tag Type",
-    "colorLabel": "Color",
-    "cancel": "Cancel",
-    "save": "Save"
+    "colorLabel": "Color"
+  },
+  "editTagModal": {
+    "title": "Edit Tag",
+    "nameLabel": "Name",
+    "typeLabel": "Type",
+    "colorLabel": "Color"
   },
   "newTagTypeModal": {
     "title": "New Tag Type",
     "storyLabel": "Select Story",
-    "tagTypeNameLabel": "Tag Type Name",
-    "cancel": "Cancel",
-    "save": "Save"
+    "tagTypeNameLabel": "Tag Type Name"
   },
   "userOptions": {
     "changePassword": "Change password",
@@ -90,7 +99,6 @@
     "oldPassword": "Old password",
     "newPassword": "New password",
     "repeatNewPassword": "Repeat new password",
-    "cancel": "Cancel",
     "change": "Change",
     "passwordMismatch": "New passwords do not match",
     "passwordChanged": "Password changed successfully",
@@ -113,7 +121,6 @@
       "title": "Delete Tag Type",
       "body": "Are you sure you want to delete this tag type? This will remove all tags under it."
     },
-    "cancel": "Cancel",
     "confirm": "Delete"
   },
   "storyPage": {
@@ -121,13 +128,41 @@
     "tagTypes": "Tag Types",
     "noEvents": "No plot events available for this story.",
     "noTags": "No tags.",
-    "noTagTypes": "No tag types."
+    "noTagTypes": "No tag types.",
+    "events": "Events",
+    "allTypes": "All types",
+    "allTags": "All",
+    "haveTags": "Have tags",
+    "withoutTags": "No tags"
   },
   "visualSettings": {
     "filterOr": "Filter with 'or'",
     "filterAnd": "Filter with 'and'",
     "selectFilterMode": "Select filter mode",
     "checkAll": "Check All",
-    "apply": "Apply"
+    "apply": "Apply",
+    "endDate": "End date",
+    "startDate": "Start date",
+    "sortBy": "Sort by",
+    "groupBy": "Group by"
+  },
+  "tagTypeRow": {
+    "Character": "Character",
+    "Location": "Location",
+    "Plot line": "Plot line"
+  },
+  "character": {
+    "details": "Details",
+    "name": "Name",
+    "shortDescription": "Short description",
+    "description": "Description",
+    "noImage": "No Image",
+    "uploading": "Uploading…",
+    "uploadImage": "Upload Image"
+  },
+  "errors": {
+    "titleRequired": "Title is required",
+    "dateRequired": "Date is required",
+    "memoryRefRequired": "Memory reference is required"
   }
 }
