@@ -17,7 +17,6 @@
   margin-bottom: 5px;
 }
 
-/* Group By select styling */
 .vs-groupby {
   margin: 0;
   padding: 3px 8px;
@@ -31,7 +30,6 @@
   font-size: 0.9rem;
 }
 
-/* Sort By select styling */
 .vs-sortby {
   margin: 0;
   padding: 3px 8px;
@@ -49,7 +47,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  width: 80%;
+  width: 40%;
   background: #f8f9fa;
   border: 1px solid #ddd;
   padding: 10px;

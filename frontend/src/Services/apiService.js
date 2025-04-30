@@ -25,7 +25,7 @@ const apiService = {
     ajax(`${API_BASE}/stories/${storyId}`, "PUT", storyDto),
   deleteStory: (storyId) => ajax(`${API_BASE}/stories/${storyId}`, "DELETE"),
   exportStory: (storyId, exportType) =>
-    ajax(`${API_BASE}/stories/${storyId}/export`, "GET"),
+    ajax(`${API_BASE}/stories/${storyId}/export?as=${exportType}`, "GET"),
 
   // ----- PlotEvent -----
   getPlotEvent: (eventId) => ajax(`${API_BASE}/plotEvents/${eventId}`, "GET"),

@@ -136,7 +136,7 @@ const Toolbar = ({
               <Dropdown.Item onClick={() => handleExport("script")}>
                 {t("toolbar.exportAsScript", "As script")}
               </Dropdown.Item>
-              <Dropdown.Item onClick={() => handleExport("novel")}>
+              <Dropdown.Item onClick={() => handleExport("novella")}>
                 {t("toolbar.exportAsNovel", "As novel")}
               </Dropdown.Item>
             </Dropdown.Menu>
