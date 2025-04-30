@@ -28,7 +28,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         
     - name: Build Docker images
-      run: docker-compose build --push
+      run: docker compose build --push
 
     - name: Cleanup secrets
       if: always()
@@ -59,7 +59,7 @@ jobs:
       run: scp -P 2222 docker-compose-secret.yml ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:/opt/PlotTracker/docker-compose.yml
 
     - name: Deploy
-      run: ssh -p 2222 ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} "cd /opt/PlotTracker && docker-compose pull && docker-compose up -d && exit"
+      run: ssh -p 2222 ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} "cd /opt/PlotTracker && docker compose pull && docker compose up -d && exit"
 
     - name: Cleanup secrets
       if: always()
