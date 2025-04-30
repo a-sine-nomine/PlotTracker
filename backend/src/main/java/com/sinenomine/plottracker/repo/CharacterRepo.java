@@ -7,12 +7,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface CharacterRepo extends JpaRepository<Character, Long> {
 
     Character findByCharacterId(Long characterId);
 
     Character findByTag_TagId(Long tagId);
+
+    List<Character> findByTag_Story_StoryId(Long StoryId);
 
     long deleteByTag_TagId(Long tagId);
 

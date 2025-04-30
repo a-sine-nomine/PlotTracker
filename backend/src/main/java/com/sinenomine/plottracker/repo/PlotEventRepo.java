@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -14,6 +15,8 @@ public interface PlotEventRepo extends JpaRepository<PlotEvent, Long> {
 
     @Query("select p from PlotEvent p where p.story.storyId = :storyId")
     Set<PlotEvent> findByStory(Long storyId);
+
+    List<PlotEvent> findByStory_StoryId(Long StoryId);
 
     long deleteByStory_StoryId(Long storyId);
 

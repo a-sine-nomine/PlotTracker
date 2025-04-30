@@ -14,6 +14,8 @@ import java.util.Set;
 public interface TagRepo extends JpaRepository<Tag, Long> {
     Set<Tag> findByStory(Story story);
 
+    List<Tag> findByStory_StoryId(Long StoryId);
+
     @Query("SELECT new com.sinenomine.plottracker.dto.TagResponseDto(t.tagId, t.tagName, t.tagType.tagTypeId, t.tagType.name, t.color) " +
             "FROM Tag t WHERE t.story = :story")
     List<TagResponseDto> findByStoryResponses(Story story);

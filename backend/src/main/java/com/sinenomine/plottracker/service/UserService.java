@@ -23,14 +23,18 @@ public class UserService {
     private final JWTService jwtService;
     private final AuthenticationManager authManager;
 
+    private final StoryService storyService;
+
     public UserService(UserRepo userRepo,
                        BCryptPasswordEncoder passwordEncoder,
                        JWTService jwtService,
-                       AuthenticationManager authManager) {
+                       AuthenticationManager authManager,
+                       StoryService storyService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authManager = authManager;
+        this.storyService = storyService;
     }
 
     public Users register(UserDto userDto) {
@@ -40,7 +44,11 @@ public class UserService {
         Users newUser = new Users();
         newUser.setUsername(userDto.getUsername());
         newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        return userRepo.save(newUser);
+        userRepo.save(newUser);
+
+        storyService.cloneDemoStoryForUser(newUser);
+
+        return newUser;
     }
 
     public String authenticate(Users user) {

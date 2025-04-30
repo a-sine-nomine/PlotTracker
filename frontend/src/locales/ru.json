@@ -68,15 +68,15 @@
     "memoryRefIdLabel": "Воспоминание",
     "prevEventIdLabel": "Предыдущее событие",
     "noneOption": "Отсутствует",
-    "tagsLabel": "Тэги",
-    "searchPlaceholder": "Выберите тэги...",
+    "tagsLabel": "Теги",
+    "searchPlaceholder": "Выберите теги...",
     "isInPlotLabel": "Включен в итоговое произведение"
   },
   "editEventModal": {
     "title": "Редактировать событие"
   },
   "newTagModal": {
-    "title": "Новый тэг",
+    "title": "Новый тег",
     "storyLabel": "Выберите историю",
     "tagNameLabel": "Имя тега",
     "tagTypeLabel": "Тип тега",
@@ -106,7 +106,8 @@
     "deleteAccountError": "Неверный пароль",
     "deleteAccountWarning": "Это действие является необратимым. Пожалуйста, введите свой пароль для подтверждения удаления учетной записи.",
     "password": "Пароль",
-    "delete": "Удалить"
+    "delete": "Удалить",
+    "change": "Изменить"
   },
   "deleteConfirmation": {
     "story": {
@@ -124,7 +125,7 @@
     "confirm": "Удалить"
   },
   "storyPage": {
-    "tags": "Тэги",
+    "tags": "Теги",
     "noEvents": "Для этой истории нет сюжетных событий.",
     "noTags": "Нет тегов.",
     "noTagTypes": "Нет типов тегов.",
@@ -143,6 +144,8 @@
     "endDate": "До",
     "startDate": "От",
     "sortBy": "Сортировать по",
+    "sortByDate": "Сортировать по дате",
+    "sortByPlot": "Сортировать по сюжету",
     "groupBy": "Групировать по"
   },
   "tagTypeRow": {
