@@ -4,9 +4,8 @@ import com.sinenomine.plottracker.dto.StoryRequestDto;
 import com.sinenomine.plottracker.dto.StoryResponseDto;
 import com.sinenomine.plottracker.exception.ResourceNotFoundException;
 import com.sinenomine.plottracker.exception.UnauthorizedException;
-import com.sinenomine.plottracker.model.PlotEvent;
-import com.sinenomine.plottracker.model.Story;
-import com.sinenomine.plottracker.model.Users;
+import com.sinenomine.plottracker.model.*;
+import com.sinenomine.plottracker.model.Character;
 import com.sinenomine.plottracker.repo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class StoryService {
+    private static final Long DEMO_TEMPLATE_ID = 1L;
 
     private final Logger log = LoggerFactory.getLogger(StoryService.class);
     private final StoryRepo storyRepo;
@@ -197,5 +195,79 @@ public class StoryService {
         } catch (IOException e) {
             throw new com.sinenomine.plottracker.exception.DocumentGenerationException("Error generating document: " + e.getMessage());
         }
+    }
+
+    @Transactional
+    public void cloneDemoStoryForUser(Users newUser) {
+        Story template = storyRepo.findById(DEMO_TEMPLATE_ID)
+                .orElseThrow(() -> new IllegalStateException("Demo template missing"));
+
+        Story clone = new Story();
+        clone.setTitle(template.getTitle());
+        clone.setDescription(template.getDescription());
+        clone.setUser(newUser);
+        storyRepo.save(clone);
+
+        Map<Long, TagType> typeMap = new HashMap<>();
+        tagTypeRepo.findByStory_StoryId(DEMO_TEMPLATE_ID)
+                .forEach(oldType -> {
+                    TagType t = new TagType();
+                    t.setName(oldType.getName());
+                    t.setStory(clone);
+                    tagTypeRepo.save(t);
+                    typeMap.put(oldType.getTagTypeId(), t);
+                });
+
+        // 4) clone Tags
+        Map<Long, Tag> tagMap = new HashMap<>();
+        tagRepo.findByStory_StoryId(DEMO_TEMPLATE_ID)
+                .forEach(oldTag -> {
+                    Tag t = new Tag();
+                    t.setTagName(oldTag.getTagName());
+                    t.setColor(oldTag.getColor());
+                    t.setTagType(typeMap.get(oldTag.getTagType().getTagTypeId()));
+                    t.setStory(clone);
+                    tagRepo.save(t);
+                    tagMap.put(oldTag.getTagId(), t);
+                });
+
+        characterRepo.findByTag_Story_StoryId(DEMO_TEMPLATE_ID)
+                .forEach(oldChar -> {
+                    Character c = new Character();
+                    c.setShortDescription(oldChar.getShortDescription());
+                    c.setDescription(oldChar.getDescription());
+                    c.setTag(tagMap.get(oldChar.getTag().getTagId()));
+                    c.setImage(oldChar.getImage());
+                    c.setImageContentType(oldChar.getImageContentType());
+                    characterRepo.save(c);
+                });
+
+        Map<Long, PlotEvent> eventMap = new HashMap<>();
+        plotEventRepo.findByStory_StoryId(DEMO_TEMPLATE_ID)
+                .forEach(oldE -> {
+                    PlotEvent e = new PlotEvent();
+                    e.setTitle(oldE.getTitle());
+                    e.setDate(oldE.getDate());
+                    e.setEventType(oldE.getEventType());
+                    e.setDescription(oldE.getDescription());
+                    e.setContent(oldE.getContent());
+                    e.setInPlot(oldE.getInPlot());
+                    e.setStory(clone);
+                    plotEventRepo.save(e);
+                    eventMap.put(oldE.getEventId(), e);
+                });
+
+        plotEventRepo.findByStory_StoryId(DEMO_TEMPLATE_ID)
+                .forEach(oldE -> {
+                    PlotEvent e = eventMap.get(oldE.getEventId());
+                    if (oldE.getPrevEvent() != null)
+                        e.setPrevEvent(eventMap.get(oldE.getPrevEvent().getEventId()));
+                    if (oldE.getNextEvent() != null)
+                        e.setNextEvent(eventMap.get(oldE.getNextEvent().getEventId()));
+                    oldE.getTags().forEach(oldTag ->
+                            e.getTags().add(tagMap.get(oldTag.getTagId()))
+                    );
+                    plotEventRepo.save(e);
+                });
     }
 }

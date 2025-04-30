@@ -46,7 +46,7 @@ services:
       MYSQL_DATABASE: plottracker
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password123}
     ports: 
-      - "3036:3036"
+      - "3306:3306"
     networks:
       - backend-net
     restart: on-failure
