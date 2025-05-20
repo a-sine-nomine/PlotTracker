@@ -118,7 +118,12 @@ const Toolbar = ({
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item
-                onClick={() => window.open("https://github.com/", "_blank")}
+                onClick={() =>
+                  window.open(
+                    "https://disk.yandex.com/i/uqHmx5ubgHDOAA",
+                    "_blank"
+                  )
+                }
               >
                 {t("toolbar.documentation")}
               </Dropdown.Item>
