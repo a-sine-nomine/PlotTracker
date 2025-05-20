@@ -4,6 +4,7 @@ import com.sinenomine.plottracker.dto.ChangePasswordRequestDto;
 import com.sinenomine.plottracker.dto.DeleteUserRequestDto;
 import com.sinenomine.plottracker.model.Users;
 import com.sinenomine.plottracker.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +23,7 @@ public class UserController {
     @PutMapping("/password")
     public ResponseEntity<?> changePassword(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody ChangePasswordRequestDto request) {
+            @Valid @RequestBody ChangePasswordRequestDto request) {
 
         if (userDetails == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");

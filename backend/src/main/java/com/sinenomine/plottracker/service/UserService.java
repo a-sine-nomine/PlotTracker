@@ -3,10 +3,7 @@ package com.sinenomine.plottracker.service;
 import com.sinenomine.plottracker.dto.ChangePasswordRequestDto;
 import com.sinenomine.plottracker.dto.DeleteUserRequestDto;
 import com.sinenomine.plottracker.dto.UserDto;
-import com.sinenomine.plottracker.exception.AuthException;
-import com.sinenomine.plottracker.exception.InvalidPasswordException;
-import com.sinenomine.plottracker.exception.RegistrationException;
-import com.sinenomine.plottracker.exception.UserNotFoundException;
+import com.sinenomine.plottracker.exception.*;
 import com.sinenomine.plottracker.model.Users;
 import com.sinenomine.plottracker.repo.UserRepo;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +36,7 @@ public class UserService {
 
     public Users register(UserDto userDto) {
         if (userRepo.findByUsername(userDto.getUsername()) != null) {
-            throw new RegistrationException("Username already exists");
+            throw new UsernameExistsException(userDto.getUsername());
         }
         Users newUser = new Users();
         newUser.setUsername(userDto.getUsername());

@@ -161,6 +161,15 @@
     "uploadImage": "Upload Image"
   },
   "errors": {
+    "errorFallback": "Something went wrong, please try again later.",
+    "username.required": "Username is required",
+    "username.max": "Username cannot exceed 50 characters",
+    "username.alreadyExists": "This username already exists",
+    "password.required": "Password is required",
+    "password.max": "Password cannot exceed 255 characters",
+
+    "auth.authenticationFailed": "Authentication is failed",
+
     "titleRequired": "Title is required",
     "dateRequired": "Date is required",
     "memoryRefRequired": "Memory reference is required"

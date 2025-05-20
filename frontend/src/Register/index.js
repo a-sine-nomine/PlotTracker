@@ -1,35 +1,49 @@
 import React, { useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../UserProvider";
 import apiService from "../Services/apiService";
 import { useTranslation } from "react-i18next";
 import "./Register.css";
 
 const Register = () => {
   const { t, i18n } = useTranslation();
-  const { setIsAuthenticated } = useUser();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState(null);
-  const [successMsg, setSuccessMsg] = useState(null);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const sendRegisterRequest = async () => {
     setErrorMsg("");
     setSuccessMsg("");
+    setFieldErrors({});
+
     try {
       const response = await apiService.register(username, password);
 
       if (response.status === 201) {
         setSuccessMsg(t("register.success"));
       } else {
-        setErrorMsg(t("register.errorFallback"));
+        setErrorMsg(t("errors.errorFallback"));
       }
     } catch (error) {
       console.error("Error during registration:", error);
-      setErrorMsg(error.message || t("register.errorDefault"));
+
+      const validationErrors = error.body || [];
+
+      const newFieldErrors = {};
+      validationErrors.forEach(({ field, code }) => {
+        newFieldErrors[field] = t(`${code}`);
+      });
+
+      if (validationErrors.length === 0) {
+        setErrorMsg(t("errors.errorFallback"));
+      }
+
+      setFieldErrors(newFieldErrors);
     }
   };
 
@@ -61,9 +75,16 @@ const Register = () => {
               type="text"
               placeholder={t("register.usernamePlaceholder")}
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setFieldErrors((prev) => ({ ...prev, username: undefined }));
+              }}
+              isInvalid={!!fieldErrors.username}
               autoComplete="off"
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.username}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="password">
@@ -72,9 +93,16 @@ const Register = () => {
               type="password"
               placeholder={t("register.passwordPlaceholder")}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setFieldErrors((prev) => ({ ...prev, password: undefined }));
+              }}
+              isInvalid={!!fieldErrors.password}
               autoComplete="off"
             />
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.password}
+            </Form.Control.Feedback>
           </Form.Group>
 
           {errorMsg && (

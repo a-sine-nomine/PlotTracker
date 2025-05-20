@@ -163,6 +163,15 @@
     "uploadImage": "Загрузить изображение"
   },
   "errors": {
+    "errorFallback": "Что-то пошло не так, попробуйте позже.",
+    "username.required": "Необходимо имя пользователя",
+    "username.max": "Длина имени пользователя не может превышать 50 символов",
+    "username.alreadyExists": "Это имя уже существует",
+    "password.required": "Необходим пароль",
+    "password.max": "Длина пароля не может превышать 255 символов",
+
+    "auth.authenticationFailed": "Неуспешный логин",
+
     "titleRequired": "Название обязательно",
     "dateRequired": "Дата обязательна",
     "memoryRefRequired": "Ссылка на вспоминанемое событие обязательна"
