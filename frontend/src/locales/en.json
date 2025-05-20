@@ -58,6 +58,11 @@
     "formTitle": "Title",
     "formDescription": "Description"
   },
+  "editStoryModal": {
+    "title": "Edit Story",
+    "formTitle": "Title",
+    "formDescription": "Description"
+  },
   "newEventModal": {
     "title": "New Event",
     "eventTypeLabel": "Event Type",

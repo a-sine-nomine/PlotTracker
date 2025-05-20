@@ -58,6 +58,11 @@
     "formTitle": "Название",
     "formDescription": "Описание"
   },
+  "editStoryModal": {
+    "title": "Редактировать историю",
+    "formTitle": "Название",
+    "formDescription": "Описание"
+  },
   "newEventModal": {
     "title": "Новое событие",
     "eventTypeLabel": "Тип события",
