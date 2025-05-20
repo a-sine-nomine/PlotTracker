@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 
 public class ChangePasswordRequestDto {
 
-    @NotBlank(message = "errors.currentPassword.required")
+    @NotBlank(message = "errors.password.required")
     private String currentPassword;
 
-    @NotBlank(message = "errors.newPassword.required")
+    @NotBlank(message = "errors.password.required")
     private String newPassword;
 
     public String getCurrentPassword() {

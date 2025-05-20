@@ -167,6 +167,7 @@
     "username.alreadyExists": "This username already exists",
     "password.required": "Password is required",
     "password.max": "Password cannot exceed 255 characters",
+    "password.wrong": "Current password is incorrect",
 
     "auth.authenticationFailed": "Authentication is failed",
 

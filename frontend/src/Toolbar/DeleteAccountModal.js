@@ -9,24 +9,38 @@ export default function DeleteAccountModal({ show, onHide }) {
   const navigate = useNavigate();
 
   const [deleteAccountPassword, setDeleteAccountPassword] = useState("");
-  const [deleteAccountError, setDeleteAccountError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [genericError, setGenericError] = useState("");
 
   const handleDeleteAccount = async () => {
-    setDeleteAccountError("");
+    setGenericError("");
+    setFieldErrors({});
+
     try {
       await apiService.deleteUser({ password: deleteAccountPassword });
       navigate("/register");
     } catch (err) {
-      setDeleteAccountError(
-        err.message ||
-          t("userOptions.deleteAccountError", "Password is incorrect")
-      );
+      const validationErrors = Array.isArray(err.body) ? err.body : [];
+
+      if (validationErrors.length > 0) {
+        const newFieldErrors = {};
+        validationErrors.forEach(({ field, code, rejectedValue }) => {
+          newFieldErrors[field] = t(code, rejectedValue);
+        });
+        setFieldErrors(newFieldErrors);
+      } else {
+        setGenericError(
+          err.message ||
+            t("userOptions.deleteAccountError", "Password is incorrect")
+        );
+      }
     }
   };
 
   const handleClose = () => {
     setDeleteAccountPassword("");
-    setDeleteAccountError("");
+    setGenericError("");
+    setFieldErrors({});
     onHide();
   };
 
@@ -44,16 +58,24 @@ export default function DeleteAccountModal({ show, onHide }) {
             "This action is permanent. Please enter your password to confirm account deletion."
           )}
         </p>
-        {deleteAccountError && (
-          <p className="error-message">{deleteAccountError}</p>
-        )}
+
+        {}
+        {genericError && <p className="text-danger fw-bold">{genericError}</p>}
+
         <Form.Group controlId="deleteAccountPassword" className="mb-3">
           <Form.Label>{t("userOptions.password", "Password")}</Form.Label>
           <Form.Control
             type="password"
             value={deleteAccountPassword}
-            onChange={(e) => setDeleteAccountPassword(e.target.value)}
+            onChange={(e) => {
+              setDeleteAccountPassword(e.target.value);
+              setFieldErrors((f) => ({ ...f, currentPassword: undefined }));
+            }}
+            isInvalid={!!fieldErrors.currentPassword}
           />
+          <Form.Control.Feedback type="invalid">
+            {fieldErrors.currentPassword}
+          </Form.Control.Feedback>
         </Form.Group>
       </Modal.Body>
       <Modal.Footer>

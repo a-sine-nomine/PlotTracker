@@ -169,6 +169,7 @@
     "username.alreadyExists": "Это имя уже существует",
     "password.required": "Необходим пароль",
     "password.max": "Длина пароля не может превышать 255 символов",
+    "password.wrong": "Текущий пароль неверный",
 
     "auth.authenticationFailed": "Неуспешный логин",
 

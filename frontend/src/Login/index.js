@@ -13,7 +13,7 @@ const Login = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const sendLoginRequest = async () => {
     setErrorMsg("");
@@ -23,7 +23,15 @@ const Login = () => {
       navigate("/homepage");
     } catch (error) {
       console.error("Error during login:", error);
-      setErrorMsg(error.message || t("login.errorMessage"));
+      setErrorMsg(error.message || t("errors.errorFallback"));
+      const validationErrors = error.body || [];
+      if (validationErrors.length > 0) {
+        const authErr = validationErrors.find((e) => e.field === "auth");
+        if (authErr) {
+          return setErrorMsg(t(authErr.code));
+        }
+      }
+      setErrorMsg(error.message || t("errors.errorFallback"));
     }
   };
 

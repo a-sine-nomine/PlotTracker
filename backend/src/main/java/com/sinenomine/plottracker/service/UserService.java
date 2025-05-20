@@ -6,6 +6,7 @@ import com.sinenomine.plottracker.dto.UserDto;
 import com.sinenomine.plottracker.exception.*;
 import com.sinenomine.plottracker.model.Users;
 import com.sinenomine.plottracker.repo.UserRepo;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -82,7 +83,9 @@ public class UserService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new InvalidPasswordException("Password is incorrect");
         }
-        userRepo.delete(user);
+        user.setUsername(RandomStringUtils.random(50, true, true));
+        userRepo.save(user);
+        //userRepo.delete(user);
     }
 
     public Users getUser(String username) {
