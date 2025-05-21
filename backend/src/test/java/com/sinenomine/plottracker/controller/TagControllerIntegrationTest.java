@@ -255,12 +255,4 @@ class TagControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("TagType deleted successfully"));
     }
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public BCryptPasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder(12);
-        }
-    }
 }

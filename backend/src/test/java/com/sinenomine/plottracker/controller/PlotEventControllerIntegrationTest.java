@@ -78,14 +78,16 @@ class PlotEventControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(json().isEqualTo("""
                         {
+                            "inPlot": null,
                             "eventType": "dated",
                             "eventId": 1,
                             "title": "TestTitle",
                             "date": "1500.01.01",
                             "description": "TestDescription",
                             "content": "TestContent",
+                            "isInPlot": null,
                             "memoryRefId": null,
-                            "nextEventId": null,
+                            "prevEventId": null,
                             "tags": [
                               {
                                 "tagId": 1,
@@ -106,9 +108,10 @@ class PlotEventControllerIntegrationTest {
         PlotEventRequestDto updateDto = new PlotEventRequestDto();
         updateDto.setEventType("dated");
         updateDto.setTitle("Updated Test Title");
-        updateDto.setDate("2025-01-01");
+        updateDto.setDate("2025.01.01");
         updateDto.setDescription("Updated Test Description");
         updateDto.setContent("Updated Test Content");
+        updateDto.setInPlot(true);
         updateDto.setTags(Set.of(2L));
 
         mockMvc.perform(put("/api/plotEvents/{eventId}", eventId)
@@ -118,14 +121,16 @@ class PlotEventControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(json().isEqualTo("""
                         {
+                             "inPlot": true,
                              "eventType": "dated",
                              "eventId":1,
                              "title": "Updated Test Title",
-                             "date": "2025-01-01",
+                             "date": "2025.01.01",
                              "description": "Updated Test Description",
                              "content": "Updated Test Content",
+                             "isInPlot": true,
                              "memoryRefId": null,
-                             "nextEventId": null,
+                             "prevEventId": null,
                              "tags": [
                                {
                                   "tagId": 2,
@@ -143,19 +148,21 @@ class PlotEventControllerIntegrationTest {
     @Transactional
     @Rollback
     void testAddTagToPlotEvent() throws Exception {
-        mockMvc.perform(post("/api/plotEvents/{eventId}/tag/{tagId}", eventId, tagId+1)
+        mockMvc.perform(post("/api/plotEvents/{eventId}/tag/{tagId}", eventId, tagId + 1)
                         .cookie(jwtCookie))
                 .andExpect(status().isOk())
                 .andExpect(json().isEqualTo("""
                         {
+                            "inPlot": true,
                             "eventType": "dated",
                             "eventId": 1,
                             "title": "TestTitle",
                             "date": "1500.01.01",
                             "description": "TestDescription",
                             "content": "TestContent",
+                            "isInPlot": true,
                             "memoryRefId": null,
-                            "nextEventId": null,
+                            "prevEventId": null,
                             "tags": [
                               {
                                 "tagId": 2,
@@ -185,14 +192,16 @@ class PlotEventControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(json().isEqualTo("""
                         {
+                            "inPlot": true,
                             "eventType": "dated",
                             "eventId": 1,
                             "title": "TestTitle",
                             "date": "1500.01.01",
                             "description": "TestDescription",
                             "content": "TestContent",
+                            "isInPlot": true,
                             "memoryRefId": null,
-                            "nextEventId": null,
+                            "prevEventId": null,
                             "tags": [
                             ]
                           }"""));
@@ -207,13 +216,5 @@ class PlotEventControllerIntegrationTest {
                         .cookie(jwtCookie))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Plot event deleted successfully"));
-    }
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public BCryptPasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder(12);
-        }
     }
 }
