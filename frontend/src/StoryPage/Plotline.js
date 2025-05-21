@@ -218,15 +218,13 @@ const Plotline = ({
     );
   } else if (sortBy === "story") {
     const marginLeft = 50;
-    const marginRight = 50;
+    const marginRight = 130;
     const spacing = 100;
     const groupedOrdered = {};
     events.forEach((event) => {
       event.tags.forEach((tag) => {
         if (Number(tag.tagTypeId) === Number(groupBy)) {
-          if (!groupedOrdered[tag.tagId]) {
-            groupedOrdered[tag.tagId] = [];
-          }
+          if (!groupedOrdered[tag.tagId]) groupedOrdered[tag.tagId] = [];
           groupedOrdered[tag.tagId].push({
             eventId: event.eventId,
             tagId: tag.tagId,
@@ -248,30 +246,54 @@ const Plotline = ({
     });
     uniqueGroups.sort((a, b) => a.tagName.localeCompare(b.tagName));
 
-    const maxCount = Math.max(
-      ...uniqueGroups.map((group) => group.events.length)
+    const storyEvents = events.filter((evt) =>
+      evt.tags.some((tag) => Number(tag.tagTypeId) === Number(groupBy))
     );
-    const computedWidth = marginLeft + marginRight + spacing * (maxCount - 1);
-
-    const laneHeight = 50;
-    const yMap = {};
-    uniqueGroups.forEach((group, index) => {
-      yMap[group.tagId] = laneHeight * (index + 1);
+    const eventIndexMap = {};
+    storyEvents.forEach((evt, idx) => {
+      eventIndexMap[evt.eventId] = idx;
     });
 
-    const paths = uniqueGroups.map((group) => {
-      const evs = group.events;
-      if (evs.length < 2) return null;
-      let d = "";
-      for (let i = 0; i < evs.length - 1; i++) {
-        const x1 = marginLeft + i * spacing;
-        const x2 = marginLeft + (i + 1) * spacing;
-        const y = yMap[group.tagId];
+    const laneHeight = 40;
+    const yMap = {};
+    uniqueGroups.forEach((group, idx) => {
+      yMap[group.tagId] = laneHeight * (idx + 1);
+    });
 
-        const offset = (x2 - x1) / 3;
-        if (i === 0) d += `M ${x1} ${y} `;
-        d += `C ${x1 + offset} ${y}, ${x2 - offset} ${y}, ${x2} ${y} `;
+    const computedWidth =
+      marginLeft + marginRight + spacing * (storyEvents.length - 1);
+
+    const fetchEventDetails = async (eventId) => {
+      try {
+        const response = await apiService.getPlotEvent(eventId);
+        const data = await response.json();
+        setEditingEvent(data);
+        setShowEditModal(true);
+      } catch (error) {
+        console.error("Error fetching event details:", error);
       }
+    };
+
+    const paths = uniqueGroups.map((group) => {
+      const evs = group.events
+        .filter((e) => eventIndexMap.hasOwnProperty(e.eventId))
+        .sort((a, b) => eventIndexMap[a.eventId] - eventIndexMap[b.eventId]);
+      if (evs.length < 2) return null;
+
+      let d = "";
+      evs.forEach((e, i) => {
+        const x = marginLeft + eventIndexMap[e.eventId] * spacing;
+        const y = yMap[group.tagId];
+        if (i === 0) {
+          d += `M ${x} ${y} `;
+        } else {
+          const prev = evs[i - 1];
+          const prevX = marginLeft + eventIndexMap[prev.eventId] * spacing;
+          const offset = (x - prevX) / 3;
+          d += `C ${prevX + offset} ${y}, ${x - offset} ${y}, ${x} ${y} `;
+        }
+      });
+
       return (
         <path
           key={group.tagId}
@@ -284,12 +306,13 @@ const Plotline = ({
     });
 
     const dots = uniqueGroups.flatMap((group) =>
-      group.events.map((e, i) => {
-        const x = marginLeft + i * spacing;
+      group.events.map((e) => {
+        const idx = eventIndexMap[e.eventId];
+        const x = marginLeft + idx * spacing;
         const y = yMap[group.tagId];
         const isHighlighted = hoveredEventId === e.eventId;
         return (
-          <g key={`${e.eventId}-${e.tagId}-${i}`}>
+          <g key={`${e.eventId}-${group.tagId}`}>
             <circle
               cx={x}
               cy={y}
@@ -304,7 +327,7 @@ const Plotline = ({
                 fetchEventDetails(e.eventId);
               }}
             />
-            <text x={x + 10} y={y + 11} fontSize="10" fill="#303F9E">
+            <text x={x + 10} y={y - 7} fontSize="11" fill="#303F9E">
               {e.title}
             </text>
           </g>
@@ -312,20 +335,10 @@ const Plotline = ({
       })
     );
 
-    const fetchEventDetails = async (eventId) => {
-      try {
-        const response = await apiService.getPlotEvent(eventId);
-        const data = await response.json();
-        setEditingEvent(data);
-        setShowEditModal(true);
-      } catch (error) {
-        console.error("Error fetching event details:", error);
-      }
-    };
-
     return (
       <>
         <svg width={computedWidth} height={height}>
+          {/* baseline */}
           <line
             x1={marginLeft}
             y1={height / 2}
@@ -337,6 +350,7 @@ const Plotline = ({
           {paths}
           {dots}
         </svg>
+
         {showEditModal && editingEvent && (
           <EditEventModal
             show={showEditModal}
