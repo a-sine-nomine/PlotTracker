@@ -217,6 +217,7 @@ const Plotline = ({
       </>
     );
   } else if (sortBy === "story") {
+    const marginTop = 60;
     const marginLeft = 50;
     const marginRight = 130;
     const spacing = 100;
@@ -274,6 +275,21 @@ const Plotline = ({
       }
     };
 
+    const gridLines = storyEvents.map((_, idx) => {
+      const x = marginLeft + idx * spacing;
+      return (
+        <line
+          key={`vline-${idx}`}
+          x1={x}
+          y1={0}
+          x2={x}
+          y2={height}
+          stroke="#ccc"
+          strokeWidth="1"
+        />
+      );
+    });
+
     const paths = uniqueGroups.map((group) => {
       const evs = group.events
         .filter((e) => eventIndexMap.hasOwnProperty(e.eventId))
@@ -283,7 +299,7 @@ const Plotline = ({
       let d = "";
       evs.forEach((e, i) => {
         const x = marginLeft + eventIndexMap[e.eventId] * spacing;
-        const y = yMap[group.tagId];
+        const y = marginTop + yMap[group.tagId];
         if (i === 0) {
           d += `M ${x} ${y} `;
         } else {
@@ -309,7 +325,7 @@ const Plotline = ({
       group.events.map((e) => {
         const idx = eventIndexMap[e.eventId];
         const x = marginLeft + idx * spacing;
-        const y = yMap[group.tagId];
+        const y = marginTop + yMap[group.tagId];
         const isHighlighted = hoveredEventId === e.eventId;
         return (
           <g key={`${e.eventId}-${group.tagId}`}>
@@ -327,7 +343,14 @@ const Plotline = ({
                 fetchEventDetails(e.eventId);
               }}
             />
-            <text x={x + 10} y={y - 7} fontSize="11" fill="#303F9E">
+            <text
+              transform={`rotate(-45 ${x + 10} ${y})`}
+              x={x + 12}
+              y={y - 5}
+              fontSize="11"
+              fontWeight="100"
+              fill="#0B2A61"
+            >
               {e.title}
             </text>
           </g>
@@ -338,12 +361,13 @@ const Plotline = ({
     return (
       <>
         <svg width={computedWidth} height={height}>
+          {gridLines}
           {/* baseline */}
           <line
             x1={marginLeft}
-            y1={height / 2}
+            y1={height}
             x2={computedWidth - marginRight}
-            y2={height / 2}
+            y2={height}
             stroke="#000"
             strokeWidth="1"
           />
