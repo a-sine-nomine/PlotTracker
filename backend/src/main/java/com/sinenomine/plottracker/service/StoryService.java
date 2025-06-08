@@ -57,6 +57,7 @@ public class StoryService {
         Story story = new Story();
         story.setTitle(storyRequestDto.getTitle());
         story.setDescription(storyRequestDto.getDescription());
+        story.setDateFormat(storyRequestDto.getDateFormat());
         story.setUser(user);
         return storyRepo.save(story);
     }

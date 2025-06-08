@@ -144,10 +144,9 @@ const StoryPage = () => {
   }) => {
     setGroupBy(newGroupBy);
     setSortBy(newSortBy);
-    const filtered = plotEvents.filter((event) => {
-      const eventTagIds = event.tags.map((t) => t.tagId);
+    const byTags = plotEvents.filter((event) => {
       const eventGroupTags = event.tags.filter(
-        (t) => t.tagTypeId === Number(newGroupBy)
+        (t) => Number(t.tagTypeId) === Number(newGroupBy)
       );
       if (filterMode === "or") {
         return eventGroupTags.some((t) => checkedIds.includes(t.tagId));
@@ -158,21 +157,23 @@ const StoryPage = () => {
       }
     });
 
-    const datedEvents = plotEvents.filter((e) => e.date);
-    const allTimestamps = datedEvents.map((e) => parseDateStr(e.date));
-    const globalMin = Math.min(...allTimestamps);
-    const globalMax = Math.max(...allTimestamps);
+    const dated = plotEvents.filter((e) => e.date).map((e) => e.date);
+    const globalMin = dated.length
+      ? dated.reduce((min, d) => (d < min ? d : min), dated[0])
+      : "";
+    const globalMax = dated.length
+      ? dated.reduce((max, d) => (d > max ? d : max), dated[0])
+      : "";
 
-    const lower = startDate ? parseDateStr(startDate) : globalMin;
-    const upper = endDate ? parseDateStr(endDate) : globalMax;
+    const lower = startDate || globalMin;
+    const upper = endDate || globalMax;
 
-    var newFilterd = filtered.filter((e) => {
+    const dateFiltered = byTags.filter((e) => {
       if (!e.date) return false;
-      const ts = parseDateStr(e.date);
-      return ts >= lower && ts <= upper;
+      return e.date >= lower && e.date <= upper;
     });
 
-    setFilteredEvents(newFilterd);
+    setFilteredEvents(dateFiltered);
   };
 
   const openEdit = (evt) => {
@@ -306,26 +307,29 @@ const StoryPage = () => {
             />
           </div>
           <div className="plotline-container">
-            <Plotline
-              events={filteredEvents}
-              width={1200}
-              height={800}
-              storyId={storyId}
-              onEventUpdated={(updatedEvent) => {
-                setPlotEvents((prev) =>
-                  prev.map((e) =>
-                    e.eventId === updatedEvent.eventId ? updatedEvent : e
-                  )
-                );
-                setFilteredEvents((prev) =>
-                  prev.map((e) =>
-                    e.eventId === updatedEvent.eventId ? updatedEvent : e
-                  )
-                );
-              }}
-              groupBy={groupBy}
-              sortBy={sortBy}
-            />
+            {storyDetails && (
+              <Plotline
+                events={filteredEvents}
+                width={1200}
+                height={800}
+                storyId={storyId}
+                onEventUpdated={(updatedEvent) => {
+                  setPlotEvents((prev) =>
+                    prev.map((e) =>
+                      e.eventId === updatedEvent.eventId ? updatedEvent : e
+                    )
+                  );
+                  setFilteredEvents((prev) =>
+                    prev.map((e) =>
+                      e.eventId === updatedEvent.eventId ? updatedEvent : e
+                    )
+                  );
+                }}
+                groupBy={groupBy}
+                sortBy={sortBy}
+                dateFormat={storyDetails.dateFormat}
+              />
+            )}
           </div>
         </div>
       </div>

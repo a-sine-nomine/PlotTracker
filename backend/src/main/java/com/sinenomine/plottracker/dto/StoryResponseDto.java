@@ -13,10 +13,14 @@ public class StoryResponseDto {
     @JsonProperty("description")
     private String description;
 
-    public StoryResponseDto(Long storyId, String title, String description) {
+    @JsonProperty("dateFormat")
+    private String dateFormat;
+
+    public StoryResponseDto(Long storyId, String title, String description, String dateFormat) {
         this.storyId = storyId;
         this.title = title;
         this.description = description;
+        this.dateFormat = dateFormat;
     }
 
     public Long getStoryId() {
@@ -41,5 +45,13 @@ public class StoryResponseDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
     }
 }

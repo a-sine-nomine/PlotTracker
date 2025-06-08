@@ -56,7 +56,8 @@
   "newStoryModal": {
     "title": "New Story",
     "formTitle": "Title",
-    "formDescription": "Description"
+    "formDescription": "Description",
+    "formDateFormat": "Date format"
   },
   "editStoryModal": {
     "title": "Edit Story",
@@ -131,6 +132,7 @@
   "storyPage": {
     "tags": "Tags",
     "tagTypes": "Tag Types",
+    "noEventForGroup": "No events to display for this group.",
     "noEvents": "No plot events available for this story.",
     "noTags": "No tags.",
     "noTagTypes": "No tag types.",
@@ -178,6 +180,10 @@
 
     "titleRequired": "Title is required",
     "dateRequired": "Date is required",
-    "memoryRefRequired": "Memory reference is required"
+    "memoryRefRequired": "Memory reference is required",
+
+    "dateFormatSegments": "Date must have {{count}} parts separated by dots",
+    "dateFormatSegmentLength": "Segment {{segment}} must be exactly {{length}} digits",
+    "dateFormatSegmentMax": "Segment {{segment}} must be no greater than {{max}}"
   }
 }

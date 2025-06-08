@@ -17,6 +17,8 @@ public class Story {
 
     private String description;
 
+    private String dateFormat;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
@@ -43,6 +45,14 @@ public class Story {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
     }
 
     public Users getUser() {

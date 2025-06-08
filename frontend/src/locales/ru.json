@@ -56,7 +56,8 @@
   "newStoryModal": {
     "title": "Новая история",
     "formTitle": "Название",
-    "formDescription": "Описание"
+    "formDescription": "Описание",
+    "formDateFormat": "Формат даты"
   },
   "editStoryModal": {
     "title": "Редактировать историю",
@@ -131,6 +132,7 @@
   },
   "storyPage": {
     "tags": "Теги",
+    "noEventForGroup": "Для этой группы нет сюжетных событий.",
     "noEvents": "Для этой истории нет сюжетных событий.",
     "noTags": "Нет тегов.",
     "noTagTypes": "Нет типов тегов.",
@@ -180,6 +182,10 @@
 
     "titleRequired": "Название обязательно",
     "dateRequired": "Дата обязательна",
-    "memoryRefRequired": "Ссылка на вспоминанемое событие обязательна"
+    "memoryRefRequired": "Ссылка на вспоминанемое событие обязательна",
+
+    "dateFormatSegments": "Дата должна иметь {{count}} частей разделенных точками",
+    "dateFormatSegmentLength": "Сегмент {{segment}} должен иметь {{length}} знаков",
+    "dateFormatSegmentMax": "Сегмент {{segment}} должен быть не больше чем {{max}}"
   }
 }

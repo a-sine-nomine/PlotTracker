@@ -30,6 +30,7 @@ export default function NewEventModal({
 
   const [tagTypes, setTagTypes] = useState([]);
   const [tags, setTags] = useState([]);
+  const [storyDetails, setStoryDetails] = useState(null);
 
   const [selectedTagIds, setSelectedTagIds] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,6 +54,20 @@ export default function NewEventModal({
       .then((r) => r.json())
       .then(setStoryEvents);
   }, [show, storyId]);
+
+  useEffect(() => {
+    const fetchStoryDetails = async () => {
+      try {
+        const response = await apiService.getStoryDetails(storyId);
+        const data = await response.json();
+        setStoryDetails(data);
+      } catch (error) {
+        console.error("Error fetching story details:", error);
+      }
+    };
+    fetchStoryDetails();
+    console.log("Ha", storyDetails);
+  }, [show]);
 
   useEffect(() => {
     if (eventType === "dated" || eventType === "undated") {
@@ -98,6 +113,54 @@ export default function NewEventModal({
       !eventDate.trim()
     ) {
       errs.date = t("errors.dateRequired", "Date is required");
+    } else if (
+      (eventType === "dated" || eventType === "memory") &&
+      storyDetails?.dateFormat
+    ) {
+      const fmt = storyDetails.dateFormat;
+      const fmtSegs = fmt.split(".");
+      const dateSegs = eventDate.split(".");
+
+      if (dateSegs.length !== fmtSegs.length) {
+        errs.date = t(
+          "errors.dateFormatSegments",
+          {
+            count: fmtSegs.length,
+          },
+          `Date must have ${fmtSegs.length} parts separated by dots`
+        );
+      } else {
+        for (let i = 0; i < fmtSegs.length; i++) {
+          const seg = dateSegs[i];
+          const maxStr = fmtSegs[i];
+          const maxVal = Number(maxStr);
+
+          if (seg.length !== maxStr.length) {
+            errs.date = t(
+              "errors.dateFormatSegmentLength",
+              {
+                segment: i + 1,
+                length: maxStr.length,
+              },
+              `Segment ${i + 1} must be exactly ${maxStr.length} digits`
+            );
+            break;
+          }
+
+          const num = Number(seg);
+          if (isNaN(num) || num > maxVal) {
+            errs.date = t(
+              "errors.dateFormatSegmentMax",
+              {
+                segment: i + 1,
+                max: maxVal,
+              },
+              `Segment ${i + 1} must be no greater than ${maxVal}`
+            );
+            break;
+          }
+        }
+      }
     }
     if (eventType === "memory" && !eventMemoryRefId) {
       errs.memoryRef = t(
@@ -208,7 +271,9 @@ export default function NewEventModal({
             <Form.Label>{t("newEventModal.dateLabel")}</Form.Label>
             <Form.Control
               type="text"
-              placeholder="1500.01.01"
+              placeholder={
+                storyDetails ? storyDetails.dateFormat : "9999.12.31"
+              }
               value={eventDate}
               isInvalid={!!errors.date}
               disabled={eventType === "undated"}

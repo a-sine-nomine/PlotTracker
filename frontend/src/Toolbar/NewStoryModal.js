@@ -7,17 +7,20 @@ export default function NewStoryModal({ show, onHide, onNewStoryCreated }) {
   const { t } = useTranslation();
   const [newStoryTitle, setNewStoryTitle] = useState("");
   const [newStoryDescription, setNewStoryDescription] = useState("");
+  const [newStoryDateFormat, setNewStoryDateFormat] = useState("");
 
   const handleSave = async () => {
     try {
       const resp = await apiService.createStory({
         title: newStoryTitle,
         description: newStoryDescription,
+        dateFormat: newStoryDateFormat,
       });
       const data = await resp.json();
       onNewStoryCreated && onNewStoryCreated(data);
       setNewStoryTitle("");
       setNewStoryDescription("");
+      setNewStoryDateFormat("");
       onHide();
     } catch (err) {
       console.error("Error creating new story:", err);
@@ -27,6 +30,7 @@ export default function NewStoryModal({ show, onHide, onNewStoryCreated }) {
   const handleClose = () => {
     setNewStoryTitle("");
     setNewStoryDescription("");
+    setNewStoryDateFormat("");
     onHide();
   };
 
@@ -54,6 +58,16 @@ export default function NewStoryModal({ show, onHide, onNewStoryCreated }) {
               placeholder={t("newStoryModal.formDescription")}
               value={newStoryDescription}
               onChange={(e) => setNewStoryDescription(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="formNewStoryDateFormat">
+            <Form.Label>{t("newStoryModal.formDateFormat")}</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={1}
+              placeholder="9999.12.31"
+              value={newStoryDateFormat}
+              onChange={(e) => setNewStoryDateFormat(e.target.value)}
             />
           </Form.Group>
         </Form>
