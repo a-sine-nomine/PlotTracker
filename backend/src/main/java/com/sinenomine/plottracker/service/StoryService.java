@@ -236,6 +236,7 @@ public class StoryService {
         Story clone = new Story();
         clone.setTitle(template.getTitle());
         clone.setDescription(template.getDescription());
+        clone.setDateFormat(template.getDateFormat());
         clone.setUser(newUser);
         storyRepo.save(clone);
 

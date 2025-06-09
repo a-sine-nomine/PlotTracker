@@ -145,7 +145,7 @@ const VisualizationSettings = ({
           <Form.Label>{t("visualSettings.startDate", "Start date")}</Form.Label>
           <Form.Control
             type="text"
-            placeholder="YYYY-MM-DD"
+            placeholder=""
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
           />
@@ -155,7 +155,7 @@ const VisualizationSettings = ({
           <Form.Label>{t("visualSettings.endDate", "End date")}</Form.Label>
           <Form.Control
             type="text"
-            placeholder="YYYY-MM-DD"
+            placeholder=""
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
           />
