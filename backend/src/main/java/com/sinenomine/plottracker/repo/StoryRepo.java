@@ -13,7 +13,7 @@ public interface StoryRepo extends JpaRepository<Story, Long> {
     @Query("select s from Story s where s.user.username = :username")
     Set<Story> findByUser(String username);
 
-    @Query("SELECT new com.sinenomine.plottracker.dto.StoryResponseDto(s.storyId, s.title, s.description) " +
+    @Query("SELECT new com.sinenomine.plottracker.dto.StoryResponseDto(s.storyId, s.title, s.description, s.dateFormat) " +
             "FROM Story s WHERE s.user.username = :username")
     List<StoryResponseDto> findByUserResponses(String username);
 }

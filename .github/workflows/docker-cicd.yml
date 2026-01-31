@@ -11,6 +11,7 @@ jobs:
   build:
     name: Build docker images from compose
     runs-on: ubuntu-latest
+    environment: vps
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -27,7 +28,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         
     - name: Build Docker images
-      run: docker-compose build --push
+      run: docker compose build --push
 
     - name: Cleanup secrets
       if: always()
@@ -36,7 +37,8 @@ jobs:
   deploy:
     name: Deploy docker images from compose
     runs-on: ubuntu-latest
-
+    environment: vps
+    needs: build
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -55,10 +57,10 @@ jobs:
         cat docker-compose.yml | envsubst > docker-compose-secret.yml
 
     - name: Copy docker compose config
-      run: scp docker-compose-secret.yml ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:/opt/PlotTracker/docker-compose.yml
+      run: scp -P 2222 docker-compose-secret.yml ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:/opt/PlotTracker/docker-compose.yml
 
     - name: Deploy
-      run: ssh ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} "cd /opt/PlotTracker && docker-compose pull && docker-compose up -d && exit"
+      run: ssh -p 2222 ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} "cd /opt/PlotTracker && docker compose pull && docker compose up -d && exit"
 
     - name: Cleanup secrets
       if: always()

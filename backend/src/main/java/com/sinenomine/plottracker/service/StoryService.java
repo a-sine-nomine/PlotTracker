@@ -2,11 +2,15 @@ package com.sinenomine.plottracker.service;
 
 import com.sinenomine.plottracker.dto.StoryRequestDto;
 import com.sinenomine.plottracker.dto.StoryResponseDto;
+import com.sinenomine.plottracker.exception.DocumentGenerationException;
 import com.sinenomine.plottracker.exception.ResourceNotFoundException;
 import com.sinenomine.plottracker.exception.UnauthorizedException;
 import com.sinenomine.plottracker.model.*;
 import com.sinenomine.plottracker.model.Character;
 import com.sinenomine.plottracker.repo.*;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -53,6 +57,7 @@ public class StoryService {
         Story story = new Story();
         story.setTitle(storyRequestDto.getTitle());
         story.setDescription(storyRequestDto.getDescription());
+        story.setDateFormat(storyRequestDto.getDateFormat());
         story.setUser(user);
         return storyRepo.save(story);
     }
@@ -164,9 +169,20 @@ public class StoryService {
     }
 
     // Export plot events as a DOCX file for the specified story
-    public byte[] exportPlotEventsAsDocx(String username, Long storyId) {
+    public byte[] exportPlotEventsAsDocx(String username, Long storyId, String as) {
+        Story story = storyRepo.findById(storyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Story not found"));
+        if (!story.getUser().getUsername().equals(username)) {
+            throw new UnauthorizedException("Unauthorized access to story");
+        }
+        List<Character> characters = new ArrayList<>();
+
+        if (as.equals("script")) {
+            characters = characterRepo.findByTag_Story_StoryId(storyId);
+        }
+
         Set<PlotEvent> eventSet = getPlotEvents(username, storyId);
-        List<PlotEvent> events = new java.util.ArrayList<>(eventSet);
+        List<PlotEvent> events = new ArrayList<>(eventSet);
         PlotEvent firstEvent = events.stream()
                 .filter(e -> e.getPrevEvent() == null && e.getInPlot())
                 .findFirst()
@@ -178,6 +194,18 @@ public class StoryService {
             current = current.getNextEvent();
         }
         StringBuilder sb = new StringBuilder();
+
+        sb.append(story.getTitle()).append("\n\n");
+        sb.append(story.getDescription()).append("\n\n");
+
+        for (Character ch : characters) {
+            sb.append(ch.getTag().getTagName());
+            if (ch.getShortDescription() != null) {
+                sb.append(", ").append(ch.getShortDescription());
+            }
+            sb.append("\n\n");
+        }
+
         for (PlotEvent pe : orderedEvents) {
             if (pe.getContent() != null) {
                 sb.append(pe.getContent()).append("\n\n");
@@ -185,15 +213,18 @@ public class StoryService {
         }
         String finalContent = sb.toString();
 
-        try (org.apache.poi.xwpf.usermodel.XWPFDocument doc = new org.apache.poi.xwpf.usermodel.XWPFDocument();
+        try (XWPFDocument doc = new XWPFDocument();
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            org.apache.poi.xwpf.usermodel.XWPFParagraph paragraph = doc.createParagraph();
-            org.apache.poi.xwpf.usermodel.XWPFRun run = paragraph.createRun();
-            run.setText(finalContent);
+            String[] paras = finalContent.split("\\r?\\n\\r?\\n");
+            for (String para : paras) {
+                XWPFParagraph p = doc.createParagraph();
+                XWPFRun r = p.createRun();
+                r.setText(para);
+            }
             doc.write(baos);
             return baos.toByteArray();
         } catch (IOException e) {
-            throw new com.sinenomine.plottracker.exception.DocumentGenerationException("Error generating document: " + e.getMessage());
+            throw new DocumentGenerationException("Error generating document: " + e.getMessage());
         }
     }
 
@@ -205,6 +236,7 @@ public class StoryService {
         Story clone = new Story();
         clone.setTitle(template.getTitle());
         clone.setDescription(template.getDescription());
+        clone.setDateFormat(template.getDateFormat());
         clone.setUser(newUser);
         storyRepo.save(clone);
 

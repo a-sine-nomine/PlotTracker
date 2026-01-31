@@ -191,12 +191,13 @@ public class StoryController {
     // GET export plot events as a DOCX file
     @GetMapping("/{storyId}/export")
     public ResponseEntity<?> exportPlotEventsAsDocx(@AuthenticationPrincipal UserDetails userDetails,
-                                                    @PathVariable Long storyId) {
+                                                    @PathVariable Long storyId,
+                                                    @RequestParam(name = "as", required = false, defaultValue = "novella") String as) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
 
-        byte[] docBytes = storyService.exportPlotEventsAsDocx(userDetails.getUsername(), storyId);
+        byte[] docBytes = storyService.exportPlotEventsAsDocx(userDetails.getUsername(), storyId, as);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
         headers.setContentDispositionFormData("attachment", "plot_events.docx");

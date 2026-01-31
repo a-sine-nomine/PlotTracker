@@ -1,7 +1,13 @@
 package com.sinenomine.plottracker.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class ChangePasswordRequestDto {
+
+    @NotBlank(message = "errors.password.required")
     private String currentPassword;
+
+    @NotBlank(message = "errors.password.required")
     private String newPassword;
 
     public String getCurrentPassword() {

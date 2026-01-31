@@ -13,10 +13,21 @@ const ajax = async (url, method, body = null) => {
 
   const response = await fetch(url, options);
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(
-      errorText || `Request failed with status ${response.status}`
-    );
+    const raw = await response.text();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = null;
+    }
+    const message = parsed ? "API Error" : raw || "API Error";
+    const err = new Error(message);
+
+    err.status = response.status;
+    if (parsed !== null) err.body = parsed;
+
+    throw err;
   }
   return response;
 };

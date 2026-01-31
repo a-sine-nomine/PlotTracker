@@ -3,12 +3,10 @@ package com.sinenomine.plottracker.service;
 import com.sinenomine.plottracker.dto.ChangePasswordRequestDto;
 import com.sinenomine.plottracker.dto.DeleteUserRequestDto;
 import com.sinenomine.plottracker.dto.UserDto;
-import com.sinenomine.plottracker.exception.AuthException;
-import com.sinenomine.plottracker.exception.InvalidPasswordException;
-import com.sinenomine.plottracker.exception.RegistrationException;
-import com.sinenomine.plottracker.exception.UserNotFoundException;
+import com.sinenomine.plottracker.exception.*;
 import com.sinenomine.plottracker.model.Users;
 import com.sinenomine.plottracker.repo.UserRepo;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,7 +37,7 @@ public class UserService {
 
     public Users register(UserDto userDto) {
         if (userRepo.findByUsername(userDto.getUsername()) != null) {
-            throw new RegistrationException("Username already exists");
+            throw new UsernameExistsException(userDto.getUsername());
         }
         Users newUser = new Users();
         newUser.setUsername(userDto.getUsername());
@@ -85,7 +83,9 @@ public class UserService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new InvalidPasswordException("Password is incorrect");
         }
-        userRepo.delete(user);
+        user.setUsername(RandomStringUtils.random(50, true, true));
+        userRepo.save(user);
+        //userRepo.delete(user);
     }
 
     public Users getUser(String username) {

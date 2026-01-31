@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,13 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<?> register(@Valid @RequestBody UserDto userDto, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors())
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(bindingResult.getAllErrors());
-
-
+    public ResponseEntity<Users> register(@Valid @RequestBody UserDto userDto) {
         Users createdUser = userService.register(userDto);
         createdUser.setPassword(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);

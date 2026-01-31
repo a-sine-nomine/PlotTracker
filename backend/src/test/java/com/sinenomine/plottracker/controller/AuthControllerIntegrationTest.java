@@ -95,7 +95,7 @@ class AuthControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Username already exists"));
+                .andExpect(content().string("[{\"field\":\"username\",\"code\":\"errors.username.alreadyExists\",\"rejectedValue\":\"TestUser1\"}]"));
     }
 
     @Test
@@ -140,13 +140,5 @@ class AuthControllerIntegrationTest {
                 .andExpect(status().isOk())
                 //.andExpect(cookie().value("jwt", (Matcher<? super String>) null))
                 .andExpect(content().string("Logged out successfully"));
-    }
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public BCryptPasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder(12);
-        }
     }
 }

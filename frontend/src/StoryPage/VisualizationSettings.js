@@ -3,6 +3,8 @@ import { Button, Dropdown, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import "./VisualizationSettings.css";
 
+const NON_EDITABLE = ["Character", "Location", "Plot line"];
+
 const VisualizationSettings = ({
   availableTags,
   tagTypes,
@@ -106,11 +108,17 @@ const VisualizationSettings = ({
               if (onGroupByChange) onGroupByChange(e.target.value);
             }}
           >
-            {tagTypes.map((tt) => (
-              <option key={tt.tagTypeId} value={tt.tagTypeId}>
-                {tt.name}
-              </option>
-            ))}
+            {tagTypes.map((tt) => {
+              const isNonEditable = NON_EDITABLE.includes(tt.name);
+              const displayName = isNonEditable
+                ? t(`tagTypeRow.${tt.name}`)
+                : tt.name;
+              return (
+                <option key={tt.tagTypeId} value={tt.tagTypeId}>
+                  {displayName}
+                </option>
+              );
+            })}
           </Form.Control>
         </Form.Group>
         {/* Sort By select */}
@@ -137,7 +145,7 @@ const VisualizationSettings = ({
           <Form.Label>{t("visualSettings.startDate", "Start date")}</Form.Label>
           <Form.Control
             type="text"
-            placeholder="YYYY-MM-DD"
+            placeholder=""
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
           />
@@ -147,7 +155,7 @@ const VisualizationSettings = ({
           <Form.Label>{t("visualSettings.endDate", "End date")}</Form.Label>
           <Form.Control
             type="text"
-            placeholder="YYYY-MM-DD"
+            placeholder=""
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
           />

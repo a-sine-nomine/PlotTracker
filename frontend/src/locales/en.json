@@ -56,6 +56,12 @@
   "newStoryModal": {
     "title": "New Story",
     "formTitle": "Title",
+    "formDescription": "Description",
+    "formDateFormat": "Date format"
+  },
+  "editStoryModal": {
+    "title": "Edit Story",
+    "formTitle": "Title",
     "formDescription": "Description"
   },
   "newEventModal": {
@@ -126,6 +132,7 @@
   "storyPage": {
     "tags": "Tags",
     "tagTypes": "Tag Types",
+    "noEventForGroup": "No events to display for this group.",
     "noEvents": "No plot events available for this story.",
     "noTags": "No tags.",
     "noTagTypes": "No tag types.",
@@ -161,8 +168,22 @@
     "uploadImage": "Upload Image"
   },
   "errors": {
+    "errorFallback": "Something went wrong, please try again later.",
+    "username.required": "Username is required",
+    "username.max": "Username cannot exceed 50 characters",
+    "username.alreadyExists": "This username already exists",
+    "password.required": "Password is required",
+    "password.max": "Password cannot exceed 255 characters",
+    "password.wrong": "Current password is incorrect",
+
+    "auth.authenticationFailed": "Authentication is failed",
+
     "titleRequired": "Title is required",
     "dateRequired": "Date is required",
-    "memoryRefRequired": "Memory reference is required"
+    "memoryRefRequired": "Memory reference is required",
+
+    "dateFormatSegments": "Date must have {{count}} parts separated by dots",
+    "dateFormatSegmentLength": "Segment {{segment}} must be exactly {{length}} digits",
+    "dateFormatSegmentMax": "Segment {{segment}} must be no greater than {{max}}"
   }
 }

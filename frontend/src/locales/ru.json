@@ -56,6 +56,12 @@
   "newStoryModal": {
     "title": "Новая история",
     "formTitle": "Название",
+    "formDescription": "Описание",
+    "formDateFormat": "Формат даты"
+  },
+  "editStoryModal": {
+    "title": "Редактировать историю",
+    "formTitle": "Название",
     "formDescription": "Описание"
   },
   "newEventModal": {
@@ -126,6 +132,7 @@
   },
   "storyPage": {
     "tags": "Теги",
+    "noEventForGroup": "Для этой группы нет сюжетных событий.",
     "noEvents": "Для этой истории нет сюжетных событий.",
     "noTags": "Нет тегов.",
     "noTagTypes": "Нет типов тегов.",
@@ -163,8 +170,22 @@
     "uploadImage": "Загрузить изображение"
   },
   "errors": {
+    "errorFallback": "Что-то пошло не так, попробуйте позже.",
+    "username.required": "Необходимо имя пользователя",
+    "username.max": "Длина имени пользователя не может превышать 50 символов",
+    "username.alreadyExists": "Это имя уже существует",
+    "password.required": "Необходим пароль",
+    "password.max": "Длина пароля не может превышать 255 символов",
+    "password.wrong": "Текущий пароль неверный",
+
+    "auth.authenticationFailed": "Неуспешный логин",
+
     "titleRequired": "Название обязательно",
     "dateRequired": "Дата обязательна",
-    "memoryRefRequired": "Ссылка на вспоминанемое событие обязательна"
+    "memoryRefRequired": "Ссылка на вспоминанемое событие обязательна",
+
+    "dateFormatSegments": "Дата должна иметь {{count}} частей разделенных точками",
+    "dateFormatSegmentLength": "Сегмент {{segment}} должен иметь {{length}} знаков",
+    "dateFormatSegmentMax": "Сегмент {{segment}} должен быть не больше чем {{max}}"
   }
 }

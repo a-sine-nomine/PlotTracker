@@ -14,6 +14,9 @@ public class StoryRequestDto {
     @JsonProperty("description")
     private String description;
 
+    @JsonProperty("dateFormat")
+    private String dateFormat;
+
     public String getTitle() {
         return title;
     }
@@ -28,5 +31,13 @@ public class StoryRequestDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
     }
 }

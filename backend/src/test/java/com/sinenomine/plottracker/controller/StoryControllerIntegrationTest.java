@@ -169,6 +169,7 @@ class StoryControllerIntegrationTest {
         plotEventRequest.setDate("2025-05-01");
         plotEventRequest.setDescription("This is a test event");
         plotEventRequest.setContent("Some content");
+        plotEventRequest.setInPlot(true);
         plotEventRequest.setTags(Set.of());
 
         mockMvc.perform(post("/api/stories/{id}/plotevents", storyId)
@@ -182,6 +183,7 @@ class StoryControllerIntegrationTest {
         plotEventRequest2.setDate("2025-03-01");
         plotEventRequest2.setDescription("This is a test event 3");
         plotEventRequest2.setContent("Some content 3");
+        plotEventRequest2.setInPlot(true);
         plotEventRequest2.setTags(Set.of());
 
         mockMvc.perform(post("/api/stories/{id}/plotevents", storyId)
@@ -196,14 +198,16 @@ class StoryControllerIntegrationTest {
                 .andExpect(json().isEqualTo("""
                         [
                           {
+                            "inPlot": true,
                             "eventType": "dated",
                             "eventId": 1,
                             "title": "TestTitle",
                             "date": "1500.01.01",
                             "description": "TestDescription",
                             "content": "TestContent",
+                            "isInPlot": true,
                             "memoryRefId": null,
-                            "nextEventId": null,
+                            "prevEventId": null,
                             "tags": [
                               {
                                 "tagId": 1,
@@ -215,25 +219,29 @@ class StoryControllerIntegrationTest {
                             ]
                           },
                           {
+                            "inPlot": true,
                             "eventType": "dated",
                             "eventId": 3,
                             "title": "Test Event 2",
                             "date": "2025-05-01",
                             "description": "This is a test event",
                             "content": "Some content",
+                            "isInPlot": true,
                             "memoryRefId": null,
-                            "nextEventId": null,
+                            "prevEventId": null,
                             "tags": []
                           },
                           {
+                            "inPlot": true,
                             "eventType": "dated",
                             "eventId": 4,
                             "title": "Test Event 3",
                             "date": "2025-03-01",
                             "description": "This is a test event 3",
                             "content": "Some content 3",
+                            "isInPlot": true,
                             "memoryRefId": null,
-                            "nextEventId": null,
+                            "prevEventId": null,
                             "tags": []
                           }
                         ]"""));
@@ -250,6 +258,7 @@ class StoryControllerIntegrationTest {
         plotEventRequest.setDate("2025-05-01");
         plotEventRequest.setDescription("This is a test event");
         plotEventRequest.setContent("Some content");
+        plotEventRequest.setInPlot(true);
         plotEventRequest.setTags(Set.of());
 
         mockMvc.perform(post("/api/stories/{id}/plotevents", storyId)
@@ -262,7 +271,8 @@ class StoryControllerIntegrationTest {
                 .andExpect(jsonPath("$.title").value("Test Event 2"))
                 .andExpect(jsonPath("$.date").value("2025-05-01"))
                 .andExpect(jsonPath("$.description").value("This is a test event"))
-                .andExpect(jsonPath("$.content").value("Some content"));
+                .andExpect(jsonPath("$.content").value("Some content"))
+                .andExpect(jsonPath("$.isInPlot").value(true));
     }
 
     @Test
@@ -274,13 +284,5 @@ class StoryControllerIntegrationTest {
                         .cookie(jwtCookie))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Story deleted successfully"));
-    }
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public BCryptPasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder(12);
-        }
     }
 }

@@ -118,7 +118,12 @@ const Toolbar = ({
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item
-                onClick={() => window.open("https://github.com/", "_blank")}
+                onClick={() =>
+                  window.open(
+                    "https://disk.yandex.com/i/uqHmx5ubgHDOAA",
+                    "_blank"
+                  )
+                }
               >
                 {t("toolbar.documentation")}
               </Dropdown.Item>
@@ -136,7 +141,7 @@ const Toolbar = ({
               <Dropdown.Item onClick={() => handleExport("script")}>
                 {t("toolbar.exportAsScript", "As script")}
               </Dropdown.Item>
-              <Dropdown.Item onClick={() => handleExport("novel")}>
+              <Dropdown.Item onClick={() => handleExport("novella")}>
                 {t("toolbar.exportAsNovel", "As novel")}
               </Dropdown.Item>
             </Dropdown.Menu>
